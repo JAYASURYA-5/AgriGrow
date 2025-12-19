@@ -641,10 +641,12 @@ const News = () => {
           <div className="flex gap-3 overflow-x-auto pb-2">
             {topBreaking.map(item => (
               <div key={item.id} className="min-w-[260px] flex-shrink-0 rounded-xl bg-card-light dark:bg-card-dark overflow-hidden shadow-sm">
-                <div
-                  className="w-full h-36 bg-center bg-no-repeat bg-cover"
-                  style={{ backgroundImage: `url("${item.image}")` }}
-                ></div>
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-36 object-cover"
+                  loading="lazy"
+                />
                 <div className="p-3">
                   <p className={`text-xs font-semibold uppercase ${getCategoryColor(item.category)}`}>{item.category.toUpperCase()}</p>
                   <a
@@ -668,10 +670,12 @@ const News = () => {
         <h3 className="text-lg font-bold leading-tight tracking-[-0.015em] pb-2 text-gray-800 dark:text-white">Latest Updates</h3>
         {filteredNews.map(item => (
           <div key={item.id} className="mb-4 flex items-start gap-4 rounded-xl bg-card-light dark:bg-card-dark p-4 shadow-sm">
-            <div
-              className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-lg"
-              style={{ backgroundImage: `url("${item.image}")` }}
-            ></div>
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 aspect-square object-cover rounded-lg"
+              loading="lazy"
+            />
             <div className="flex min-w-0 grow flex-col items-stretch justify-center gap-1">
               <p className={`text-xs font-semibold uppercase tracking-wide ${getCategoryColor(item.category)}`}>{item.category.toUpperCase()}</p>
               <a
