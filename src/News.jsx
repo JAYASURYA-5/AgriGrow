@@ -39,20 +39,20 @@ const News = () => {
   // Image mapping by category for low network support
   const categoryImages = {
     market: [
-      'https://via.placeholder.com/1200x600/4CAF50/FFFFFF?text=Market+Analysis',
-      'https://via.placeholder.com/1200x600/FF9800/FFFFFF?text=Trade+Market',
+      'https://picsum.photos/1200/600?random=1',
+      'https://picsum.photos/1200/600?random=2',
     ],
     weather: [
-      'https://via.placeholder.com/1200x600/2196F3/FFFFFF?text=Weather+Forecast',
-      'https://via.placeholder.com/1200x600/00BCD4/FFFFFF?text=Climate+Data',
+      'https://picsum.photos/1200/600?random=3',
+      'https://picsum.photos/1200/600?random=4',
     ],
     'crop-health': [
-      'https://via.placeholder.com/1200x600/8BC34A/FFFFFF?text=Crop+Health',
-      'https://via.placeholder.com/1200x600/4CAF50/FFFFFF?text=Pest+Management',
+      'https://picsum.photos/1200/600?random=5',
+      'https://picsum.photos/1200/600?random=6',
     ],
     technology: [
-      'https://via.placeholder.com/1200x600/2196F3/FFFFFF?text=AgriTech',
-      'https://via.placeholder.com/1200x600/673AB7/FFFFFF?text=Innovation',
+      'https://picsum.photos/1200/600?random=7',
+      'https://picsum.photos/1200/600?random=8',
     ],
   };
 
