@@ -1,12 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+// Image component with lazy loading and low network support
+const NewsImage = ({ src, alt, className }) => {
+  const [imageSrc, setImageSrc] = useState(src);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const placeholderSvg = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjU3QzAwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMzAiIGZpbGw9IiNGRkYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BZ3JpRmxvdyBOZXdzPC90ZXh0Pjwvc3ZnPg==';
+
+  return (
+    <img
+      src={error ? placeholderSvg : imageSrc}
+      alt={alt}
+      className={className}
+      loading="lazy"
+      onLoad={() => setIsLoading(false)}
+      onError={() => {
+        setError(true);
+        setImageSrc(placeholderSvg);
+        setIsLoading(false);
+      }}
+      style={{
+        opacity: isLoading ? 0.7 : 1,
+        transition: 'opacity 0.3s ease',
+      }}
+    />
+  );
+};
+
 const News = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
   const [showSearch, setShowSearch] = useState(false);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+
+  // Image mapping by category for low network support
+  const categoryImages = {
+    market: [
+      'https://via.placeholder.com/1200x600/4CAF50/FFFFFF?text=Market+Analysis',
+      'https://via.placeholder.com/1200x600/FF9800/FFFFFF?text=Trade+Market',
+    ],
+    weather: [
+      'https://via.placeholder.com/1200x600/2196F3/FFFFFF?text=Weather+Forecast',
+      'https://via.placeholder.com/1200x600/00BCD4/FFFFFF?text=Climate+Data',
+    ],
+    'crop-health': [
+      'https://via.placeholder.com/1200x600/8BC34A/FFFFFF?text=Crop+Health',
+      'https://via.placeholder.com/1200x600/4CAF50/FFFFFF?text=Pest+Management',
+    ],
+    technology: [
+      'https://via.placeholder.com/1200x600/2196F3/FFFFFF?text=AgriTech',
+      'https://via.placeholder.com/1200x600/673AB7/FFFFFF?text=Innovation',
+    ],
+  };
 
   // News data extracted from HTML
   const newsItems = [
@@ -17,7 +65,7 @@ const News = () => {
       title: 'Parliament clears bill replacing MGNREGA amid protests',
       summary: 'Lok Sabha passes a bill replacing MGNREGA; debate continues over impact on rural employment and farmer welfare.',
       source: 'Economic Times • 19 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[0],
       link: 'https://economictimes.indiatimes.com/news/economy/policy/parliament-clears-vb-g-ram-g-bill-replacing-mgnrega-amid-opposition-protests/articleshow/126064211.cms'
     },
     {
@@ -27,7 +75,7 @@ const News = () => {
       title: 'India-Oman CEPA: duty-free access to several agri items',
       summary: 'The CEPA is expected to grant duty-free access for many Indian agricultural and processed food products, boosting export opportunities.',
       source: 'Economic Times • 18 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1585317019892-c8f61a1a8a8c?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[1],
       link: 'https://economictimes.indiatimes.com/news/india/india-oman-cepa-a-blueprint-for-shared-future-pm-on-deal/articleshow/126063038.cms'
     },
     {
@@ -37,7 +85,7 @@ const News = () => {
       title: 'IMD: Current Weather Status & Extended Range Forecast (18–31 Dec 2025)',
       summary: 'IMD released an extended range forecast and advisories for winter season; farmers are advised to check local agromet advisories.',
       source: 'IMD • 18 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1536431311894-8c1366d8dadc?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[0],
       link: 'https://mausam.imd.gov.in/Forecast/marquee_data/ERF%2018.12.25.pdf'
     },
     {
@@ -47,7 +95,7 @@ const News = () => {
       title: 'Government to extend FPO scheme for five years to address scaling challenges',
       summary: 'Extension aims to improve capacity, access to capital and compliance for Farmer Producer Organisations benefiting lakhs of farmers.',
       source: 'Economic Times • 12 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[0],
       link: 'https://economictimes.indiatimes.com/news/economy/agriculture/govt-to-extend-fpo-scheme-for-five-years-address-compliance-and-capital-hurdles/articleshow/125929830.cms'
     },
     {
@@ -57,7 +105,7 @@ const News = () => {
       title: 'India\'s rice output may hit record 152 MT in 2025-26',
       summary: 'USDA projects record rice production for India, citing favorable monsoon and expanded planting areas; impacts expected for domestic markets and exports.',
       source: 'Economic Times • 12 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[0],
       link: 'https://economictimes.indiatimes.com/news/economy/agriculture/indias-rice-output-may-hit-record-152-mt-in-2025-26/articleshow/125920140.cms'
     },
     {
@@ -67,7 +115,7 @@ const News = () => {
       title: 'PM-Kisan, PMFBY and KCC: scheme updates and beneficiary advisories',
       summary: 'Guidance on enrolment, claim timelines and beneficiary support for major central schemes; check official portals for latest circulars.',
       source: 'Government Portals • ongoing',
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][0],
       link: 'https://pmkisan.gov.in'
     },
     {
@@ -77,7 +125,7 @@ const News = () => {
       title: 'Commodity advisories: pulses, oilseeds and horticulture',
       summary: 'Weekly market briefs highlighting MSP decisions, procurement windows and price advisories affecting smallholder incomes.',
       source: 'Market Desk • updated weekly',
-      image: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[1],
       link: 'https://agmarknet.gov.in'
     },
     {
@@ -87,7 +135,7 @@ const News = () => {
       title: 'Fall armyworm outbreak detected in 15 districts',
       summary: 'Agricultural departments issue alerts for fall armyworm management; farmers advised to implement integrated pest management strategies.',
       source: 'Agri Ministry • 17 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][1],
       link: 'https://pib.gov.in/PressReleasePage.aspx'
     },
     {
@@ -97,7 +145,7 @@ const News = () => {
       title: 'IoT-based soil monitoring systems now subsidized',
       summary: 'Government announces 40% subsidy on advanced soil sensors and monitoring devices for precision agriculture adoption.',
       source: 'Tech Agriculture • 16 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1559027615-cd2628902d4a?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[1],
       link: 'https://agritech.gov.in'
     },
     {
@@ -107,7 +155,7 @@ const News = () => {
       title: 'Western disturbance may bring isolated showers to North India',
       summary: 'Met department predicts scattered rainfall in Punjab, Haryana and Himachal Pradesh; advisories issued for frost management.',
       source: 'IMD Meteorology • 15 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1433995306078-c32e82ef0cf1?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[0],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -117,7 +165,7 @@ const News = () => {
       title: 'Wheat prices surge on delayed harvesting',
       summary: 'Delayed rabi season harvesting drives wheat prices up by 8% in wholesale markets; procurement operations accelerate.',
       source: 'Commodity Exchange • 14 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1487730116645-74489c95b41b?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[1],
       link: 'https://ncdex.com'
     },
     {
@@ -127,7 +175,7 @@ const News = () => {
       title: 'Early blight resistance varieties released for potato cultivation',
       summary: 'ICAR releases 3 new potato varieties with enhanced disease resistance; suitable for eastern India growing conditions.',
       source: 'ICAR Research • 13 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1490312247390-675fc6228883?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][0],
       link: 'https://icar.org.in'
     },
     {
@@ -137,7 +185,7 @@ const News = () => {
       title: 'Blockchain-based farm produce tracking system launched',
       summary: 'New platform enables transparent tracking of agricultural products from farm to consumer; improves market access for farmers.',
       source: 'Startup News • 12 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1551432302-8c87c005ff6b?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[1],
       link: 'https://agrifarm-blockchain.in'
     },
     {
@@ -147,7 +195,7 @@ const News = () => {
       title: 'E-NAM trading volume crosses 2 billion rupees monthly',
       summary: 'Electronic National Agriculture Market achieves record trading volume with participation from 2000+ mandis across India.',
       source: 'Economic Times • 11 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[0],
       link: 'https://enam.gov.in'
     },
     {
@@ -157,7 +205,7 @@ const News = () => {
       title: 'Winter frost warning issued for next 72 hours',
       summary: 'Cold wave alert for northern plains; temperatures expected to dip to 2-4°C; advisory for crop and livestock protection.',
       source: 'Weather Alert • 10 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1534274988757-a28bf1a4c817?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[1],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -167,7 +215,7 @@ const News = () => {
       title: 'Integrated Pest Management workshop held in 50 villages',
       summary: 'ICAR-KVK conducts hands-on training for sustainable pest control without chemical pesticides; farmers show 30% cost reduction.',
       source: 'Krishi Vigyan Kendra • 09 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1500628346881-b72b27e84530?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][1],
       link: 'https://icar.org.in'
     },
     {
@@ -177,7 +225,7 @@ const News = () => {
       title: 'Drone-based pesticide spraying covers 50,000 hectares',
       summary: 'Agricultural drones reduce pesticide usage by 30% and labor costs by 40%; adoption grows rapidly in Punjab and Haryana.',
       source: 'Agri Innovation • 08 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1576696170949-9ff6c9a1b3f1?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[0],
       link: 'https://agridrones.gov.in'
     },
     {
@@ -187,7 +235,7 @@ const News = () => {
       title: 'Soybean prices rally on export demand surge',
       summary: 'Global export orders boost soybean prices; Indian farmers benefit from improved market rates and increased procurement.',
       source: 'Commodity Markets • 07 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[0],
       link: 'https://agmarknet.gov.in'
     },
     {
@@ -197,7 +245,7 @@ const News = () => {
       title: 'Bacteriophage therapy shows promise for bacterial wilt',
       summary: 'Research institutions demonstrate effectiveness of biological agents in controlling bacterial wilt in crops.',
       source: 'Agricultural Research • 06 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1576091160495-112519173cf5?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][0],
       link: 'https://icar.org.in'
     },
     {
@@ -207,7 +255,7 @@ const News = () => {
       title: 'December rainfall expected above normal in South India',
       summary: 'Meteorological department forecasts above-normal precipitation for December; suitable for rabi crop development.',
       source: 'IMD Prediction • 05 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1431684612881-fcc67e7aaf51?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[0],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -217,7 +265,7 @@ const News = () => {
       title: 'AI-powered crop disease detection app launched free',
       summary: 'Mobile application uses machine learning to identify crop diseases with 95% accuracy; available for all Indian farmers.',
       source: 'Tech Ministry • 04 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[1],
       link: 'https://crophealth-ai.gov.in'
     },
     {
@@ -227,7 +275,7 @@ const News = () => {
       title: 'Cotton exports hit 5-year high',
       summary: 'India\'s cotton exports reach highest level since 2020; strong demand from global textile industry boosts farmer incomes.',
       source: 'Export Data • 03 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1598075743101-5d1caa86e9b0?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[1],
       link: 'https://commerce.gov.in'
     },
     {
@@ -237,7 +285,7 @@ const News = () => {
       title: 'Organic certification fast-tracked for 10,000 farmers',
       summary: 'Government accelerates organic certification process; reduces processing time from 12 to 3 months for verified farmers.',
       source: 'Organic Farming Board • 02 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1488459716781-641087b12e43?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][1],
       link: 'https://ofai.gov.in'
     },
     {
@@ -247,7 +295,7 @@ const News = () => {
       title: 'El Niño impact: monsoon review and next season outlook',
       summary: 'IMD releases comprehensive analysis of El Niño influence on 2025 monsoon; forecasts 2026 monsoon expectations.',
       source: 'IMD Climate Report • 01 Dec 2025',
-      image: 'https://images.unsplash.com/photo-1535207432675-e6c3febf8731?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[1],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -257,7 +305,7 @@ const News = () => {
       title: 'Precision agriculture pilot shows 25% yield improvement',
       summary: 'Field trials demonstrate variable rate application technology increases yield and reduces input costs significantly.',
       source: 'Agricultural Bureau • 30 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[0],
       link: 'https://precisionfarming.gov.in'
     },
     {
@@ -267,7 +315,7 @@ const News = () => {
       title: 'Groundnut prices stabilize after volatility',
       summary: 'Market stabilizes as supply-demand balance improves; farmers advised to store for better future prices.',
       source: 'Market Analysis • 29 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[0],
       link: 'https://agmarknet.gov.in'
     },
     {
@@ -277,7 +325,7 @@ const News = () => {
       title: 'Nematode management guide released for sugarcane',
       summary: 'ICAR releases comprehensive guideline for managing root-knot nematodes in sugarcane cultivation.',
       source: 'ICAR Sugarcane • 28 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1500643158481-a6366d267173?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][0],
       link: 'https://icar.org.in'
     },
     {
@@ -287,7 +335,7 @@ const News = () => {
       title: 'Frost risk decreases as minimum temperatures rise',
       summary: 'Weather patterns show gradual warming; frost advisory lifted for most plains regions.',
       source: 'IMD Daily Bulletin • 27 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1534274988757-a28bf1a4c817?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[1],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -297,7 +345,7 @@ const News = () => {
       title: 'Water-saving drip irrigation subsidy increased to 60%',
       summary: 'Government hikes subsidy for drip and sprinkler systems to encourage water conservation in agriculture.',
       source: 'Ministry Announcement • 26 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[1],
       link: 'https://pmksy.gov.in'
     },
     {
@@ -307,7 +355,7 @@ const News = () => {
       title: 'Sugarcane fair price scheme benefits 2 lakh farmers',
       summary: 'Extended sugarcane support program provides minimum income guarantee to participating farmers across 5 states.',
       source: 'Agricultural News • 25 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1500643158481-a6366d267173?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[0],
       link: 'https://agricouncil.gov.in'
     },
     {
@@ -317,7 +365,7 @@ const News = () => {
       title: 'Bio-fortified rice varieties improve nutritional outcomes',
       summary: 'Field studies show bio-fortified rice varieties increase iron and zinc content; beneficial for dietary deficiency zones.',
       source: 'Nutrition Research • 24 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][0],
       link: 'https://icar.org.in'
     },
     {
@@ -327,7 +375,7 @@ const News = () => {
       title: 'Prediction: Scattered showers likely in next 48 hours',
       summary: 'Moderate weather systems bring light rainfall; beneficial for rabi sowing areas across northern plains.',
       source: 'Weather Forecast • 23 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1433995306078-c32e82ef0cf1?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[0],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -337,7 +385,7 @@ const News = () => {
       title: 'Vertical farming startup secures 50 crore funding',
       summary: 'Agritech startup advances indoor vertical farming; plans to establish 20 vertical farms across metro cities.',
       source: 'Startup News • 22 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1488459716781-641087b12e43?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[0],
       link: 'https://verticalfarm-india.com'
     },
     {
@@ -347,7 +395,7 @@ const News = () => {
       title: 'Spice prices rise on export demand',
       summary: 'Indian spices see 12% price increase due to strong international demand; farmers celebrate improved margins.',
       source: 'Commodity Report • 21 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1596040001635-c0baf4c19ef2?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[1],
       link: 'https://agmarknet.gov.in'
     },
     {
@@ -357,7 +405,7 @@ const News = () => {
       title: 'Mycorrhizal fungi inoculants improve crop yields',
       summary: 'Application of beneficial fungi enhances nutrient uptake; studies show 15-20% yield improvement across crops.',
       source: 'Agricultural Science • 20 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][1],
       link: 'https://icar.org.in'
     },
     {
@@ -367,7 +415,7 @@ const News = () => {
       title: 'Climate pattern analysis: winter intensifying gradually',
       summary: 'Temperature trends show normal winter progression; farmers advised to prepare for standard frost management.',
       source: 'Climate Center • 19 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1534274988757-a28bf1a4c817?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[1],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -377,7 +425,7 @@ const News = () => {
       title: 'Smart greenhouse project covers 500 hectares',
       summary: 'Climate-controlled greenhouse network reduces water usage by 40%; supports year-round vegetable production.',
       source: 'Horticultural Ministry • 18 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1488459716781-641087b12e43?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[1],
       link: 'https://horticulture.gov.in'
     },
     {
@@ -387,7 +435,7 @@ const News = () => {
       title: 'Mustard oil exports reach historic peak',
       summary: 'Mustard seed production surplus drives record exports; farmers benefit from premium international prices.',
       source: 'Export Chronicle • 17 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1596040001635-c0baf4c19ef2?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[0],
       link: 'https://commerce.gov.in'
     },
     {
@@ -397,7 +445,7 @@ const News = () => {
       title: 'Herbal pest control formulas show effectiveness',
       summary: 'Natural herbal solutions prove effective against common agricultural pests; reduces chemical dependency.',
       source: 'Natural Agriculture • 16 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1488459716781-641087b12e43?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][0],
       link: 'https://naturalfarming.gov.in'
     },
     {
@@ -407,7 +455,7 @@ const News = () => {
       title: 'Air quality index improves as monsoon winds return',
       summary: 'Wind patterns shift; better air quality aids crop pollination and growth; advisory for dust management.',
       source: 'Environmental Report • 15 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1433995306078-c32e82ef0cf1?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[0],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -417,7 +465,7 @@ const News = () => {
       title: 'Robotics in agriculture: harvest automation progresses',
       summary: 'Autonomous harvesting robots begin commercial deployment; labor shortage solutions gain momentum.',
       source: 'Tech Agriculture • 14 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1576896170949-9ff6c9a1b3f1?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[0],
       link: 'https://agrirobots.gov.in'
     },
     {
@@ -427,7 +475,7 @@ const News = () => {
       title: 'Dairy prices strengthen on monsoon fodder scarcity',
       summary: 'Feed shortage supports milk prices; dairy farmers see improved profitability during off-season.',
       source: 'Dairy News • 13 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1563618513-5e9e1c00e2f4?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.market[1],
       link: 'https://dairy.gov.in'
     },
     {
@@ -437,7 +485,7 @@ const News = () => {
       title: 'Arbuscular mycorrhizal fungi banking established',
       summary: 'Microbial resource centers created for conservation and distribution of beneficial fungi across states.',
       source: 'Biodiversity Board • 12 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages['crop-health'][1],
       link: 'https://icar.org.in'
     },
     {
@@ -447,7 +495,7 @@ const News = () => {
       title: 'High pressure system brings fair weather',
       summary: 'Clear skies expected for next week; suitable conditions for field operations and crop management activities.',
       source: 'Daily Forecast • 11 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1534274988757-a28bf1a4c817?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.weather[1],
       link: 'https://mausam.imd.gov.in'
     },
     {
@@ -457,7 +505,7 @@ const News = () => {
       title: 'Satellite imagery AI enables crop monitoring at scale',
       summary: 'Advanced satellite-based AI system monitors 100,000+ farms; provides real-time crop health alerts to farmers.',
       source: 'Space Technology • 10 Nov 2025',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop&q=95',
+      image: categoryImages.technology[1],
       link: 'https://farmsatellite.gov.in'
     }
   ];
