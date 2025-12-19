@@ -39,7 +39,7 @@ const News = () => {
   // Image mapping by category for low network support
   const categoryImages = {
     market: [
-      'https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=1200&h=600&fit=crop&q=80', // farming market
+      'https://images.unsplash.com/photo-1488459716781-641087b12e43?w=1200&h=600&fit=crop&q=80', // agricultural market
       'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=600&fit=crop&q=80', // farm produce
     ],
     weather: [
@@ -48,10 +48,10 @@ const News = () => {
     ],
     'crop-health': [
       'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=1200&h=600&fit=crop&q=80', // crops/plants
-      'https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=1200&h=600&fit=crop&q=80', // healthy crops
+      'https://images.unsplash.com/photo-1500628346881-b72b27e84530?w=1200&h=600&fit=crop&q=80', // healthy crops
     ],
     technology: [
-      'https://images.unsplash.com/photo-1578926078328-123456789012?w=1200&h=600&fit=crop&q=80', // farm tech
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=600&fit=crop&q=80', // farm technology
       'https://images.unsplash.com/photo-1559027615-cd2628902d4a?w=1200&h=600&fit=crop&q=80', // agri technology
     ],
   };
