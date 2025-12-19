@@ -39,20 +39,20 @@ const News = () => {
   // Image mapping by category for low network support
   const categoryImages = {
     market: [
-      'https://picsum.photos/1200/600?random=1',
-      'https://picsum.photos/1200/600?random=2',
+      'https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=1200&h=600&fit=crop&q=80', // farming market
+      'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=600&fit=crop&q=80', // farm produce
     ],
     weather: [
-      'https://picsum.photos/1200/600?random=3',
-      'https://picsum.photos/1200/600?random=4',
+      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&h=600&fit=crop&q=80', // rain/weather
+      'https://images.unsplash.com/photo-1534274988757-a28bf1a4c817?w=1200&h=600&fit=crop&q=80', // frost/weather
     ],
     'crop-health': [
-      'https://picsum.photos/1200/600?random=5',
-      'https://picsum.photos/1200/600?random=6',
+      'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=1200&h=600&fit=crop&q=80', // crops/plants
+      'https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=1200&h=600&fit=crop&q=80', // healthy crops
     ],
     technology: [
-      'https://picsum.photos/1200/600?random=7',
-      'https://picsum.photos/1200/600?random=8',
+      'https://images.unsplash.com/photo-1578926078328-123456789012?w=1200&h=600&fit=crop&q=80', // farm tech
+      'https://images.unsplash.com/photo-1559027615-cd2628902d4a?w=1200&h=600&fit=crop&q=80', // agri technology
     ],
   };
 
