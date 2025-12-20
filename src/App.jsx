@@ -2,18 +2,24 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import News from './News';
-import Weather from './Weather';
+import Wea from './wea.jsx';
 import Market from './Market';
 import Analysis from './Analysis';
 import Chatbot from './Chatbot';
 import Community from './Community';
 import Desease from './Desease';
 import Intercrop from './Intercrop';
-import Lms from './Lms';
+import Page from './page.tsx';
 import Scheme from './Scheme';
 import Settings from './Settings';
 import Upload from './Upload';
 import UserProfile from './UserProfile';
+import Som from './som.jsx';
+import Quc from './quc.tsx';
+import Eco from './eco.jsx';
+import Dp from './dp.jsx';
+import Comm from './comm.jsx';
+
 
 // Theme Context
 const ThemeContext = createContext();
@@ -77,18 +83,24 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
-          <Route path="/weather" element={<Weather />} />
+          <Route path="/wea" element={<Wea />} />
           <Route path="/market" element={<Market />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/comm" element={<Comm />} />
           <Route path="/disease" element={<Desease />} />
           <Route path="/intercrop" element={<Intercrop />} />
-          <Route path="/lms" element={<Lms />} />
+          <Route path="/lms" element={<Page />} />
           <Route path="/scheme" element={<Scheme />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="/quc" element={<Quc />} />
+          <Route path="/som" element={<Som />} />
+          <Route path="/eco/*" element={<Eco />} />
+          <Route path="/dp" element={<Dp />} />
+          <Route path="/page" element={<Page />} />
         </Routes>
       </Router>
     </ThemeProvider>

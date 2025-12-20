@@ -456,10 +456,11 @@ const Home = () => {
             </div>
 
             {/* View Forecast Button */}
-            <Link to="/weather" className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 gap-2">
+            <Link to="/wea" className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 gap-2">
               <span className="material-symbols-outlined text-lg">calendar_today</span>
-              <span className="truncate">View Detailed Forecast</span>
-            </Link>
+                <span className="truncate">View Detailed Forecast</span>
+              </Link>
+            
           </div>
         </div>
       </div>
@@ -474,7 +475,7 @@ const Home = () => {
               <p className="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal">Check intercrop suggestions for pest control.</p>
             </div>
           </div>
-          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/intercrop')}>
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/som')}>
             <span className="truncate">View Suggestions</span>
           </button>
         </div>
@@ -539,7 +540,7 @@ const Home = () => {
         <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 dark:from-[#2a5c32] dark:via-[#1f4820] dark:to-[#19341b] p-4 hover:shadow-2xl hover:from-white/20 hover:to-white/10 dark:hover:from-[#3a7c42] dark:hover:to-[#2a5c32] transition-all duration-300 border border-white/20 dark:border-white/10 group hover:scale-[1.02]">
           <div className="flex justify-between items-center">
             <p className="text-black dark:text-white font-bold text-lg">Crop Health</p>
-            <Link to="/intercrop" className="text-primary text-sm font-semibold hover:text-primary/80 hover:scale-105 transition-all duration-200">View Report</Link>
+            <Link to="/som" className="text-primary text-sm font-semibold hover:text-primary/80 hover:scale-105 transition-all duration-200">View Report</Link>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative size-20">
@@ -572,7 +573,7 @@ const Home = () => {
           <span className="material-symbols-outlined text-5xl text-indigo-500 group-hover:scale-125 transition-transform">school</span>
           <span className="font-semibold text-sm">LMS</span>
         </Link>
-        <Link to="/disease" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-red-500/20 via-red-400/10 to-transparent dark:from-red-600/25 dark:via-red-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-red-500/30 hover:to-red-400/10 dark:hover:from-red-600/35 dark:hover:to-red-500/20 transition-all duration-300 active:scale-95 border border-red-400/30 dark:border-red-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/dp" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-red-500/20 via-red-400/10 to-transparent dark:from-red-600/25 dark:via-red-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-red-500/30 hover:to-red-400/10 dark:hover:from-red-600/35 dark:hover:to-red-500/20 transition-all duration-300 active:scale-95 border border-red-400/30 dark:border-red-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-red-500 group-hover:scale-125 transition-transform">photo_camera</span>
           <span className="font-semibold text-sm">Disease Detection</span>
         </Link>
@@ -580,7 +581,7 @@ const Home = () => {
           <span className="material-symbols-outlined text-5xl text-emerald-500 group-hover:scale-125 transition-transform">policy</span>
           <span className="font-semibold text-sm">Scheme</span>
         </Link>
-        <Link to="/market" className="relative cursor-pointer flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-400/10 to-transparent dark:from-amber-600/25 dark:via-amber-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-amber-500/30 hover:to-amber-400/10 dark:hover:from-amber-600/35 dark:hover:to-amber-500/20 transition-all duration-300 active:scale-95 border border-amber-400/30 dark:border-amber-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/quc" className="relative cursor-pointer flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-400/10 to-transparent dark:from-amber-600/25 dark:via-amber-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-amber-500/30 hover:to-amber-400/10 dark:hover:from-amber-600/35 dark:hover:to-amber-500/20 transition-all duration-300 active:scale-95 border border-amber-400/30 dark:border-amber-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-amber-500 group-hover:scale-125 transition-transform">trending_up</span>
           <span className="font-semibold text-sm">Market Prices</span>
         </Link>
@@ -589,11 +590,15 @@ const Home = () => {
       {/* Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 h-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-white/10 z-10">
         <div className="flex justify-around items-center h-full max-w-lg mx-auto">
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/community">
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/page">
+            <span className="material-symbols-outlined">school</span>
+            <span className="text-xs font-medium">LMS</span>
+          </Link>
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/comm">
             <span className="material-symbols-outlined">groups</span>
             <span className="text-xs font-medium">Community</span>
           </Link>
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/market">
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/eco">
             <span className="material-symbols-outlined">storefront</span>
             <span className="text-xs font-medium">Market</span>
           </Link>
