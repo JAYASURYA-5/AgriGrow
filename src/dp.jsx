@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ImageUpload from '../crop-disease-predictor/src/components/ImageUpload.jsx';
 import Results from '../crop-disease-predictor/src/components/Results.jsx';
 import { analyzeDisease } from '../crop-disease-predictor/src/services/api';
-import './App.css';
+import '../crop-disease-predictor/src/App.css';
 
 function App() {
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [results, setResults] = useState(null);
@@ -72,7 +74,7 @@ function App() {
 
         {/* Agricultural Field Pattern */}
         <div className="crop-field"></div>
-        
+
         {/* Floating Leaves */}
         <div className="floating-leaves">
           {[...Array(15)].map((_, i) => (
@@ -84,8 +86,8 @@ function App() {
               '--rotation': `${Math.random() * 360}deg`,
             }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
               </svg>
             </div>
           ))}
@@ -115,40 +117,46 @@ function App() {
         <div className="sun-effect"></div>
       </div>
       <div className="content-wrapper">
-      <header className="app-header">
-        <div className="header-content">
-          <svg className="leaf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-          </svg>
-          <h1>Crop Disease Predictor</h1>
-        </div>
-        <p>Upload a crop image to detect diseases and get treatment recommendations</p>
-      </header>
-
-      <main className="main-content">
-        <ImageUpload
-          onImageSelect={handleImageSelect}
-          imagePreview={imagePreview}
-          onReset={handleReset}
-          onAnalyze={handleAnalyze}
-          loading={loading}
-          hasImage={!!selectedImage}
-        />
-
-        {error && (
-          <div className="error-message">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
+        <header className="app-header">
+          <button onClick={() => navigate('/')} className="back-button" aria-label="Go back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            <p>{error}</p>
+            Back to Home
+          </button>
+          <div className="header-content">
+            <svg className="leaf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+            </svg>
+            <h1>Crop Disease Predictor</h1>
           </div>
-        )}
+          <p>Upload a crop image to detect diseases and get treatment recommendations</p>
+        </header>
 
-        <Results results={results} loading={loading} />
-      </main>
+        <main className="main-content">
+          <ImageUpload
+            onImageSelect={handleImageSelect}
+            imagePreview={imagePreview}
+            onReset={handleReset}
+            onAnalyze={handleAnalyze}
+            loading={loading}
+            hasImage={!!selectedImage}
+          />
+
+          {error && (
+            <div className="error-message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <p>{error}</p>
+            </div>
+          )}
+
+          <Results results={results} loading={loading} />
+        </main>
 
       </div>
     </div>

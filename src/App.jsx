@@ -6,7 +6,6 @@ import Wea from './wea.jsx';
 import Market from './Market';
 import Analysis from './Analysis';
 import Chatbot from './Chatbot';
-import Community from './Community';
 import Desease from './Desease';
 import Intercrop from './Intercrop';
 import Page from './page.tsx';
@@ -87,11 +86,13 @@ function App() {
           <Route path="/market" element={<Market />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/chatbot" element={<Chatbot />} />
-          <Route path="/community" element={<Community />} />
           <Route path="/comm" element={<Comm />} />
           <Route path="/disease" element={<Desease />} />
           <Route path="/intercrop" element={<Intercrop />} />
           <Route path="/lms" element={<Page />} />
+          <Route path="/courses" element={<Page />} />
+          <Route path="/playlists" element={<Page />} />
+          <Route path="/favorites" element={<Page />} />
           <Route path="/scheme" element={<Scheme />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/upload" element={<Upload />} />

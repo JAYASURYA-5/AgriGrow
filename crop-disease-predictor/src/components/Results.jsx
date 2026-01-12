@@ -55,9 +55,13 @@ function Results({ results, loading }) {
         </svg>
         Analysis Results
       </h2>
+      <div className="analysis-summary">
+        <div className="summary-item">
+          <strong>Disease:</strong> {results.disease_name || 'Unknown Disease'}
+        </div>
+      </div>
 
       <div className="results-content">
-        {/* Disease Name and Confidence */}
         <div className={`status-badge ${isHealthy ? 'healthy' : 'diseased'}`}>
           <div className="status-info">
             {isHealthy ? (
@@ -73,7 +77,7 @@ function Results({ results, loading }) {
               </svg>
             )}
             <div className="status-details">
-              <h3>Disease Name: {results.disease_name || 'Unknown'}</h3>
+              <h3>{results.disease_name || 'Unknown'}</h3>
             </div>
           </div>
           <div className="confidence">
@@ -82,90 +86,82 @@ function Results({ results, loading }) {
           </div>
         </div>
 
-        {/* Severity Level - Always show */}
-        <div className="result-section">
-          <h4>Severity Level</h4>
-          {results.severity ? (
-            <span className={`severity-badge ${
-              results.severity.toLowerCase().includes('none') || results.severity.toLowerCase().includes('healthy')
-                ? 'severity-none'
-                : `severity-${results.severity.toLowerCase().split(' ')[0]}`
-            }`}>
-              {results.severity}
-            </span>
-          ) : (
-            <span className="severity-badge severity-none">None (Healthy)</span>
-          )}
-        </div>
+        {!isHealthy && (
+          <>
+            <div className="result-section">
+              <h4>Disease Detected</h4>
+              <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#ef4444', marginBottom: '0.5rem' }}>
+                {results.disease_name || 'Unknown Disease'}
+              </div>
+            </div>
 
-        {/* Symptoms Observed - Always show */}
-        <div className="result-section">
-          <h4>Symptoms Observed</h4>
-          {results.symptoms && results.symptoms.length > 0 ? (
-            <ul>
-              {results.symptoms.map((symptom, index) => (
-                <li key={index}>{symptom}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="no-data">No specific symptoms detected. Plant appears healthy.</p>
-          )}
-        </div>
+            {results.severity && (
+              <div className="result-section">
+                <h4>Severity Level</h4>
+                <span className={`severity-badge severity-${results.severity.toLowerCase()}`}>
+                  {results.severity}
+                </span>
+              </div>
+            )}
 
-        {/* Possible Causes - Always show */}
-        <div className="result-section">
-          <h4>Possible Causes</h4>
-          {results.causes && results.causes.length > 0 ? (
-            <ul>
-              {results.causes.map((cause, index) => (
-                <li key={index}>{cause}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="no-data">No disease causes identified. Plant is healthy.</p>
-          )}
-        </div>
+            {results.symptoms && results.symptoms.length > 0 && (
+              <div className="result-section">
+                <h4>Symptoms Observed</h4>
+                <ul>
+                  {results.symptoms.map((symptom, index) => (
+                    <li key={index}>{symptom}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-        {/* Step-by-Step Treatment Guide - Always show */}
-        <div className="result-section treatment-section">
-          <h4>
-            <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
-            Step-by-Step Treatment Guide
-          </h4>
-          {results.treatment && results.treatment.length > 0 ? (
-            <ol className="treatment-steps">
-              {results.treatment.map((step, index) => (
-                <li key={index}>
-                  <span className="step-number">{index + 1}</span>
-                  <span className="step-content">{step}</span>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="no-data">No treatment required. Continue regular maintenance practices.</p>
-          )}
-        </div>
+            {results.causes && results.causes.length > 0 && (
+              <div className="result-section">
+                <h4>Possible Causes</h4>
+                <ul>
+                  {results.causes.map((cause, index) => (
+                    <li key={index}>{cause}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-        {/* Prevention Tips - Always show */}
-        <div className="result-section prevention-section">
-          <h4>
-            <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            Prevention Tips
-          </h4>
-          {results.prevention && results.prevention.length > 0 ? (
-            <ul>
-              {results.prevention.map((tip, index) => (
-                <li key={index}>{tip}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="no-data">Continue current preventive measures to maintain plant health.</p>
-          )}
-        </div>
+            {results.treatment && results.treatment.length > 0 && (
+              <div className="result-section treatment-section">
+                <h4>
+                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                  Step-by-Step Treatment Guide
+                </h4>
+                <ol className="treatment-steps">
+                  {results.treatment.map((step, index) => (
+                    <li key={index}>
+                      <span className="step-number">{index + 1}</span>
+                      <span className="step-content">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+
+            {results.prevention && results.prevention.length > 0 && (
+              <div className="result-section prevention-section">
+                <h4>
+                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  Prevention Tips
+                </h4>
+                <ul>
+                  {results.prevention.map((tip, index) => (
+                    <li key={index}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

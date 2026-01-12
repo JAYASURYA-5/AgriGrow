@@ -9,7 +9,7 @@
  * @returns {Promise<Object>} - Prediction results with disease information
  */
 export async function analyzeDisease(imageFile) {
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/predict';
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/predict';
 
   // Prefer sending the raw file (keeps metadata and avoids base64 loss)
   const formData = new FormData();

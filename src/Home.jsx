@@ -590,7 +590,7 @@ const Home = () => {
       {/* Bottom Navigation Bar */}
       <div className="fixed bottom-0 left-0 right-0 h-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-white/10 z-10">
         <div className="flex justify-around items-center h-full max-w-lg mx-auto">
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/page">
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/lms">
             <span className="material-symbols-outlined">school</span>
             <span className="text-xs font-medium">LMS</span>
           </Link>

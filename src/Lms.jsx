@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+/*import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Lms = () => {
@@ -68,7 +68,7 @@ const Lms = () => {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display">
-      {/* Top App Bar */}
+      {/* Top App Bar */}/*
       <div className="flex items-center p-4 pb-2 bg-background-light dark:bg-background-dark sticky top-0 z-10">
         <button
           onClick={handleBack}
@@ -84,7 +84,7 @@ const Lms = () => {
         <div className="flex w-12 items-center justify-end"></div>
       </div>
 
-      {/* Search Bar */}
+      {/* Search Bar */}/*
       <div className="px-4 py-3">
         <label className="flex flex-col min-w-40 h-12 w-full">
           <div className="flex w-full flex-1 items-stretch rounded-lg h-full">
@@ -102,12 +102,12 @@ const Lms = () => {
         </label>
       </div>
 
-      {/* Featured Content Header */}
+      {/* Featured Content Header */}/*
       <div className="px-4 pt-4 pb-2">
         <h2 className="text-lg font-bold text-black dark:text-white">Featured For You</h2>
       </div>
 
-      {/* Carousel */}
+      {/* Carousel */}/*
       <div className="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex items-stretch p-4 pt-0 gap-4">
           {featuredContent.map((item) => (
@@ -125,7 +125,7 @@ const Lms = () => {
         </div>
       </div>
 
-      {/* Chips */}
+      {/* Chips */}/*
       <div className="flex gap-3 px-4 pb-4 overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {categories.map((category) => (
           <div
@@ -144,7 +144,7 @@ const Lms = () => {
         ))}
       </div>
 
-      {/* Content Cards Section */}
+      {/* Content Cards Section */}/*
       <div className="flex flex-col gap-4 px-4 pb-24">
         {filteredArticles.map((article) => (
           <div key={article.id} className="@container">
@@ -169,7 +169,7 @@ const Lms = () => {
         ))}
       </div>
 
-      {/* AI Chat FAB */}
+      {/* AI Chat FAB */}/*
       <div className="fixed bottom-6 right-6 z-20">
         <button
           onClick={handleChatClick}
@@ -185,3 +185,4 @@ const Lms = () => {
 };
 
 export default Lms;
+/*
