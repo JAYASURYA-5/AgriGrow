@@ -147,7 +147,6 @@
   color: rgba(76, 175, 80, 0.6);
   animation: leafFloat var(--duration) ease-in-out infinite;
   animation-delay: var(--delay);
-  transform-style: preserve-3d;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
@@ -159,27 +158,27 @@
 
 @keyframes leafFloat {
   0% {
-    transform: translate3d(0, 0, 0) rotateZ(var(--rotation)) rotateY(0deg);
+    transform: translate(0, 0) rotateZ(var(--rotation));
     opacity: 0.4;
   }
 
   25% {
-    transform: translate3d(30px, -80px, 30px) rotateZ(calc(var(--rotation) + 90deg)) rotateY(45deg);
+    transform: translate(30px, -80px) rotateZ(calc(var(--rotation) + 90deg));
     opacity: 0.7;
   }
 
   50% {
-    transform: translate3d(-20px, -150px, 60px) rotateZ(calc(var(--rotation) + 180deg)) rotateY(90deg);
+    transform: translate(-20px, -150px) rotateZ(calc(var(--rotation) + 180deg));
     opacity: 0.9;
   }
 
   75% {
-    transform: translate3d(40px, -80px, 30px) rotateZ(calc(var(--rotation) + 270deg)) rotateY(45deg);
+    transform: translate(40px, -80px) rotateZ(calc(var(--rotation) + 270deg));
     opacity: 0.7;
   }
 
   100% {
-    transform: translate3d(0, 0, 0) rotateZ(calc(var(--rotation) + 360deg)) rotateY(0deg);
+    transform: translate(0, 0) rotateZ(calc(var(--rotation) + 360deg));
     opacity: 0.4;
   }
 }
@@ -197,22 +196,21 @@
     radial-gradient(circle at 50% 50%, rgba(129, 178, 20, 0.2) 0%, transparent 50%),
     radial-gradient(circle at 30% 80%, rgba(104, 159, 56, 0.3) 0%, transparent 40%);
   animation: agriculturalMeshMove 25s ease-in-out infinite;
-  transform-style: preserve-3d;
 }
 
 @keyframes agriculturalMeshMove {
 
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    transform: translate(0, 0) rotate(0deg) scale(1);
   }
 
   33% {
-    transform: translate3d(80px, 60px, 0) rotate(120deg) scale(1.1);
+    transform: translate(80px, 60px) rotate(120deg) scale(1.1);
   }
 
   66% {
-    transform: translate3d(-60px, 80px, 0) rotate(240deg) scale(0.9);
+    transform: translate(-60px, 80px) rotate(240deg) scale(0.9);
   }
 }
 
@@ -230,11 +228,10 @@
   bottom: 0;
   background: linear-gradient(180deg,
       transparent 0%,
-      rgba(76, 175, 80, 0.4) 30%,
+      rgba(182, 183, 182, 0.4) 30%,
       rgba(76, 175, 80, 0.6) 100%);
   clip-path: polygon(50% 100%, 45% 60%, 40% 40%, 35% 20%, 30% 0%, 70% 0%, 65% 20%, 60% 40%, 55% 60%);
   animation: plantGrow 6s ease-in-out infinite;
-  transform-style: preserve-3d;
 }
 
 .plant-1 {
@@ -262,12 +259,12 @@
 
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scaleY(0.9) rotateY(0deg);
+    transform: translate(0, 0) scaleY(0.9);
     opacity: 0.6;
   }
 
   50% {
-    transform: translate3d(10px, -20px, 30px) scaleY(1.1) rotateY(5deg);
+    transform: translate(10px, -20px) scaleY(1.1);
     opacity: 0.9;
   }
 }
@@ -286,19 +283,18 @@
   border-radius: 50%;
   animation: sunMove 30s ease-in-out infinite;
   filter: blur(20px);
-  transform-style: preserve-3d;
 }
 
 @keyframes sunMove {
 
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate(0, 0) scale(1);
     opacity: 0.6;
   }
 
   50% {
-    transform: translate3d(-30px, 30px, 50px) scale(1.2);
+    transform: translate(20px, 30px) scale(1.1);
     opacity: 0.8;
   }
 }

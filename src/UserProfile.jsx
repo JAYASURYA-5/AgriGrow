@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from './Contexts';
+import { db } from './services/db';
 
 const UserProfile = () => {
+  const { user, logout, login } = useAuth();
   const navigate = useNavigate();
+
+  if (!user) return <Navigate to="/login" replace />;
+
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('activity');
   const [userData, setUserData] = useState({
-    name: 'Jordan Peterson',
-    farm: 'Green Valley Farms',
-    phone: '+1-202-555-0182',
-    email: 'j.peterson@greenvalley.com',
-    farmSize: '150 Acres',
-    location: 'Central Valley, CA',
-    keyCrops: ['Corn', 'Soybeans']
+    name: '',
+    farm: '',
+    phone: '',
+    email: '',
+    farmSize: '',
+    location: { name: '' },
+    keyCrops: [],
+    profileImage: '',
+    gender: ''
   });
 
   const [editForm, setEditForm] = useState({
@@ -26,110 +34,68 @@ const UserProfile = () => {
   });
 
   useEffect(() => {
-    // Load user data from localStorage on component mount
-    const savedUser = localStorage.getItem('ag_user');
-    if (savedUser) {
-      try {
-        const parsed = JSON.parse(savedUser);
-        setUserData(prev => ({ ...prev, ...parsed }));
-      } catch (e) {
-        console.error('Error loading user data:', e);
-      }
+    if (user) {
+      setUserData(prev => ({ ...prev, ...user }));
     }
-  }, []);
+  }, [user]);
 
   const handleEditClick = () => {
     setEditForm({
-      name: userData.name,
-      farm: userData.farm,
-      phone: userData.phone,
-      email: userData.email,
-      farmSize: userData.farmSize,
-      location: userData.location,
-      keyCrops: Array.isArray(userData.keyCrops) ? userData.keyCrops.join(', ') : userData.keyCrops
+      name: userData.name || '',
+      farm: userData.farm || '',
+      phone: userData.phone || '',
+      email: userData.email || '',
+      farmSize: userData.farmSize || '',
+      location: userData.location?.name || '',
+      keyCrops: Array.isArray(userData.keyCrops) ? userData.keyCrops.join(', ') : (userData.keyCrops || '')
     });
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    const updatedUser = {
-      ...userData,
-      name: editForm.name,
-      farm: editForm.farm,
-      phone: editForm.phone,
-      email: editForm.email,
-      farmSize: editForm.farmSize,
-      location: editForm.location,
-      keyCrops: editForm.keyCrops.split(',').map(crop => crop.trim()).filter(crop => crop.length > 0)
-    };
-    setUserData(updatedUser);
-    localStorage.setItem('ag_user', JSON.stringify(updatedUser));
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const updatedFields = {
+        name: editForm.name,
+        farm: editForm.farm,
+        phone: editForm.phone,
+        email: editForm.email,
+        farmSize: editForm.farmSize,
+        location: { ...userData.location, name: editForm.location },
+        keyCrops: editForm.keyCrops.split(',').map(c => c.trim()).filter(c => c !== '')
+      };
 
-    // Show success toast
-    const toast = document.createElement('div');
-    toast.textContent = 'Profile saved';
-    Object.assign(toast.style, {
-      position: 'fixed',
-      bottom: '24px',
-      right: '24px',
-      background: '#112',
-      color: '#fff',
-      padding: '8px 12px',
-      borderRadius: '8px',
-      zIndex: 9999
-    });
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+      const saved = await db.updateProfile(user.id, updatedFields);
+      login(saved); // Update global context state
+      setUserData(prev => ({ ...prev, ...saved }));
+      setIsEditing(false);
+
+      // Toast notification
+      const toast = document.createElement('div');
+      toast.textContent = 'Profile updated successfully';
+      Object.assign(toast.style, {
+        position: 'fixed', bottom: '24px', right: '24px', backgroundColor: '#10b981', color: 'white',
+        padding: '12px 24px', borderRadius: '12px', zIndex: '9999', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+      });
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    } catch (e) {
+      alert(e.message);
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
   };
 
-  const handleBackClick = () => {
-    navigate('/');
-  };
-
   const handleLogout = () => {
-    // Handle logout logic here
-    console.log('Logout clicked');
+    logout();
+    navigate('/login');
   };
 
   const activities = [
-    {
-      icon: 'monitoring',
-      title: 'Sensor data checked',
-      subtitle: 'Field A-12 | 2 hours ago'
-    },
-    {
-      icon: 'water_drop',
-      title: 'Irrigation schedule updated',
-      subtitle: 'Zone 4 | Yesterday'
-    },
-    {
-      icon: 'article',
-      title: 'New report generated',
-      subtitle: 'Soil Moisture Analysis | 3 days ago'
-    }
-  ];
-
-  const settingsItems = [
-    {
-      icon: 'notifications',
-      title: 'Notifications',
-      href: '#'
-    },
-    {
-      icon: 'help_outline',
-      title: 'Help & Support',
-      href: '#'
-    },
-    {
-      icon: 'gavel',
-      title: 'Terms of Service',
-      href: '#'
-    }
+    { icon: 'monitoring', title: 'Sensor data checked', subtitle: 'Field A-12 | 2 hours ago' },
+    { icon: 'water_drop', title: 'Irrigation schedule updated', subtitle: 'Zone 4 | Yesterday' },
+    { icon: 'article', title: 'New report generated', subtitle: 'Soil Moisture Analysis | 3 days ago' }
   ];
 
   return (
@@ -137,16 +103,13 @@ const UserProfile = () => {
       {/* Top App Bar */}
       <div className="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-border-light dark:border-border-dark">
         <div className="flex size-12 shrink-0 items-center">
-          <button onClick={handleBackClick} aria-label="Back to home">
+          <button onClick={() => navigate('/')} aria-label="Back to home">
             <span className="material-symbols-outlined text-text-light-primary dark:text-dark-primary text-2xl">arrow_back</span>
           </button>
         </div>
         <h2 className="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">My Profile</h2>
         <div className="flex w-12 items-center justify-end">
-          <button
-            onClick={handleLogout}
-            className="text-accent text-base font-bold leading-normal tracking-[0.015em] shrink-0"
-          >
+          <button onClick={handleLogout} className="text-accent text-base font-bold leading-normal tracking-[0.015em] shrink-0">
             Logout
           </button>
         </div>
@@ -158,289 +121,190 @@ const UserProfile = () => {
           <div className="flex gap-4 flex-col items-center">
             <div className="relative">
               <div
-                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-2 border-primary/50"
-                style={{ backgroundImage: `url("https://example.com/profile.jpg")` }}
+                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary shadow-xl"
+                style={{ backgroundImage: `url("${userData.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex'}")` }}
               ></div>
               <button className="absolute bottom-0 right-0 flex items-center justify-center size-8 bg-primary text-white rounded-full border-2 border-background-light dark:border-background-dark">
                 <span className="material-symbols-outlined text-lg">edit</span>
               </button>
             </div>
             <div className="flex flex-col items-center justify-center">
-              <p className="text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">{userData.name}</p>
-              <p className="text-accent text-base font-normal leading-normal text-center">{userData.farm}</p>
+              <p className="text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">{userData.name || 'User'}</p>
+              <p className="text-accent text-base font-normal leading-normal text-center">{userData.farm || 'Your Farm'}</p>
             </div>
           </div>
           <button
             onClick={handleEditClick}
             className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] shadow-sm hover:bg-primary/90 transition-colors"
           >
-            <span className="truncate">Edit Profile</span>
+            <span>Edit Profile</span>
           </button>
         </div>
       </div>
 
-      {/* Edit Form */}
+      {/* Edit Form Modal/Overlay */}
       {isEditing && (
-        <div className="px-4">
-          <div className="bg-card-light dark:bg-card-dark border border-gray-300 dark:border-gray-600 rounded-lg p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md bg-white dark:bg-card-dark rounded-3xl shadow-2xl p-6 overflow-y-auto max-h-[90vh]">
+            <h3 className="text-xl font-bold mb-4">Edit Profile</h3>
             <div className="space-y-4">
-              <label className="flex flex-col">
-                <span className="text-sm font-medium pb-1">Name</span>
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">Name</span>
                 <input
-                  className="form-input rounded-lg p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white"
-                  type="text"
-                  placeholder="Your name"
+                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
                   value={editForm.name}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                 />
               </label>
-              <label className="flex flex-col">
-                <span className="text-sm font-medium pb-1">Farm name</span>
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">Farm Name</span>
                 <input
-                  className="form-input rounded-lg p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white"
-                  type="text"
-                  placeholder="Farm name"
+                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
                   value={editForm.farm}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, farm: e.target.value }))}
+                  onChange={(e) => setEditForm({ ...editForm, farm: e.target.value })}
                 />
               </label>
-              <label className="flex flex-col">
-                <span className="text-sm font-medium pb-1">Phone</span>
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">Phone Number</span>
                 <input
-                  className="form-input rounded-lg p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white"
-                  type="tel"
-                  placeholder="Phone number"
+                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
                   value={editForm.phone}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
+                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
                 />
               </label>
-              <label className="flex flex-col">
-                <span className="text-sm font-medium pb-1">Email</span>
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">Email</span>
                 <input
-                  className="form-input rounded-lg p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white"
-                  type="email"
-                  placeholder="Email"
+                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
                   value={editForm.email}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                 />
               </label>
-              <label className="flex flex-col">
-                <span className="text-sm font-medium pb-1">Farm Size</span>
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">Farm Size</span>
                 <input
-                  className="form-input rounded-lg p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white"
-                  type="text"
-                  placeholder="e.g. 150 Acres"
+                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
                   value={editForm.farmSize}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, farmSize: e.target.value }))}
+                  onChange={(e) => setEditForm({ ...editForm, farmSize: e.target.value })}
                 />
               </label>
-              <label className="flex flex-col">
-                <span className="text-sm font-medium pb-1">Location</span>
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">Location</span>
                 <input
-                  className="form-input rounded-lg p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white"
-                  type="text"
-                  placeholder="e.g. Central Valley, CA"
+                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
                   value={editForm.location}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, location: e.target.value }))}
+                  onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
                 />
               </label>
-              <label className="flex flex-col">
-                <span className="text-sm font-medium pb-1">Key Crops (comma-separated)</span>
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">Key Crops (comma separated)</span>
                 <input
-                  className="form-input rounded-lg p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white"
-                  type="text"
-                  placeholder="e.g. Corn, Soybeans, Wheat"
+                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
                   value={editForm.keyCrops}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, keyCrops: e.target.value }))}
+                  onChange={(e) => setEditForm({ ...editForm, keyCrops: e.target.value })}
                 />
               </label>
-              <div className="flex gap-2 pt-2">
-                <button
-                  onClick={handleSave}
-                  className="flex-1 rounded-lg bg-primary text-white py-2 font-semibold hover:bg-primary/90 transition-colors"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="flex-1 rounded-lg bg-gray-200 dark:bg-gray-700 text-black dark:text-white py-2 font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                >
-                  Cancel
-                </button>
+              <div className="flex gap-3 pt-4">
+                <button onClick={handleSave} className="flex-1 bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition-all">Save</button>
+                <button onClick={handleCancel} className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-200 transition-all">Cancel</button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Personal Information Section */}
-      <div className="px-4">
-        <div className="bg-card-light dark:bg-card-dark rounded-xl shadow-sm">
-          <h3 className="text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Personal Information</h3>
-          <div className="flex items-center gap-4 px-4 min-h-14 justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-10 text-primary">
-                <span className="material-symbols-outlined">phone</span>
-              </div>
-              <p className="text-base font-normal leading-normal flex-1 truncate">Phone</p>
+      {/* Info Sections */}
+      <div className="px-4 space-y-6">
+        <div className="bg-card-light dark:bg-card-dark rounded-2xl p-4 shadow-sm space-y-4">
+          <h3 className="font-bold border-b border-border-light dark:border-border-dark pb-2">Personal Information</h3>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">phone</span>
+              <span className="text-sm">Phone</span>
             </div>
-            <div className="shrink-0">
-              <p className="text-base font-normal leading-normal text-text-light-secondary dark:text-dark-secondary">
-                {userData.phone}
-              </p>
-            </div>
+            <span className="font-bold text-sm">{userData.phone || 'N/A'}</span>
           </div>
-          <div className="flex items-center gap-4 px-4 min-h-14 justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-10 text-primary">
-                <span className="material-symbols-outlined">email</span>
-              </div>
-              <p className="text-base font-normal leading-normal flex-1 truncate">Email</p>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">person</span>
+              <span className="text-sm">Gender</span>
             </div>
-            <div className="shrink-0">
-              <p className="text-base font-normal leading-normal text-text-light-secondary dark:text-dark-secondary">
-                {userData.email}
-              </p>
-            </div>
+            <span className="text-sm opacity-70">{userData.gender || 'Not set'}</span>
           </div>
-          <div className="h-2"></div>
-
-          {/* Farm Details Section */}
-          <h3 className="text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Farm Details</h3>
-          <div className="flex items-center gap-4 px-4 min-h-14 justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-10 text-primary">
-                <span className="material-symbols-outlined">straighten</span>
-              </div>
-              <p className="text-base font-normal leading-normal flex-1 truncate">Farm Size</p>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">email</span>
+              <span className="text-sm">Email</span>
             </div>
-            <div className="shrink-0">
-              <p className="text-base font-normal leading-normal text-text-light-secondary dark:text-dark-secondary">
-                {userData.farmSize}
-              </p>
-            </div>
+            <span className="text-sm truncate max-w-[200px]">{userData.email || 'N/A'}</span>
           </div>
-          <div className="flex items-center gap-4 px-4 min-h-14 justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-10 text-primary">
-                <span className="material-symbols-outlined">location_on</span>
-              </div>
-              <p className="text-base font-normal leading-normal flex-1 truncate">Location</p>
-            </div>
-            <div className="shrink-0">
-              <p className="text-base font-normal leading-normal text-text-light-secondary dark:text-dark-secondary">
-                {userData.location}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 px-4 min-h-14 justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-10 text-primary">
-                <span className="material-symbols-outlined">grass</span>
-              </div>
-              <p className="text-base font-normal leading-normal flex-1 truncate">Key Crops</p>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              {userData.keyCrops.map((crop, index) => (
-                <span key={index} className="text-xs font-medium bg-accent/20 text-accent py-1 px-2 rounded-full">
-                  {crop}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="h-4"></div>
-        </div>
-      </div>
-
-      {/* Activity & Engagement Section */}
-      <div className="p-4">
-        <div className="flex gap-2 p-1 bg-background-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg" role="tablist">
-          <button
-            onClick={() => setActiveTab('activity')}
-            className={`flex-1 rounded-md py-2 text-sm font-bold ${
-              activeTab === 'activity'
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-text-light-secondary dark:text-dark-secondary'
-            }`}
-            role="tab"
-          >
-            Activity
-          </button>
-          <button
-            onClick={() => setActiveTab('saved')}
-            className={`flex-1 rounded-md py-2 text-sm font-bold ${
-              activeTab === 'saved'
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-text-light-secondary dark:text-dark-secondary'
-            }`}
-            role="tab"
-          >
-            Saved
-          </button>
-          <button
-            onClick={() => setActiveTab('subscription')}
-            className={`flex-1 rounded-md py-2 text-sm font-bold ${
-              activeTab === 'subscription'
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-text-light-secondary dark:text-dark-secondary'
-            }`}
-            role="tab"
-          >
-            Subscription
-          </button>
         </div>
 
-        {activeTab === 'activity' && (
-          <div className="mt-4 space-y-3" role="tabpanel">
-            {activities.map((activity, index) => (
-              <div key={index} className="flex items-center gap-4 bg-card-light dark:bg-card-dark p-3 rounded-lg">
-                <div className="flex items-center justify-center rounded-lg bg-primary/20 shrink-0 size-10 text-primary">
-                  <span className="material-symbols-outlined">{activity.icon}</span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-base font-medium leading-tight">{activity.title}</p>
-                  <p className="text-sm text-text-light-secondary dark:text-dark-secondary">{activity.subtitle}</p>
-                </div>
-              </div>
+        <div className="bg-card-light dark:bg-card-dark rounded-2xl p-4 shadow-sm space-y-4">
+          <h3 className="font-bold border-b border-border-light dark:border-border-dark pb-2">Farm Details</h3>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">straighten</span>
+              <span className="text-sm">Farm Size</span>
+            </div>
+            <span className="text-sm opacity-70">{userData.farmSize || 'N/A'}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">location_on</span>
+              <span className="text-sm">Location</span>
+            </div>
+            <span className="text-sm opacity-70 truncate max-w-[200px]">{userData.location?.name || 'N/A'}</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">grass</span>
+              <span className="text-sm">Key Crops</span>
+            </div>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {userData.keyCrops?.map((crop, i) => (
+                <span key={i} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">{crop}</span>
+              )) || <span className="text-xs opacity-50 italic">No crops listed</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs section */}
+        <div className="pb-8">
+          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 mb-4">
+            {['activity', 'saved'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 py-2 text-sm font-bold rounded-lg capitalize transition-all ${activeTab === tab ? 'bg-primary text-white shadow-md' : 'text-gray-500'}`}
+              >
+                {tab}
+              </button>
             ))}
           </div>
-        )}
 
-        {activeTab === 'saved' && (
-          <div className="mt-4 space-y-3" role="tabpanel">
-            <p className="text-center text-text-light-secondary dark:text-dark-secondary py-8">
-              No saved items yet
-            </p>
-          </div>
-        )}
-
-        {activeTab === 'subscription' && (
-          <div className="mt-4 space-y-3" role="tabpanel">
-            <p className="text-center text-text-light-secondary dark:text-dark-secondary py-8">
-              Subscription details will appear here
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* App Settings & Support Section */}
-      <div className="px-4 pb-8">
-        <div className="bg-card-light dark:bg-card-dark rounded-xl shadow-sm">
-          <h3 className="text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Settings & Support</h3>
-          {settingsItems.map((item, index) => (
-            <a key={index} className="flex items-center gap-4 px-4 min-h-14 justify-between group" href={item.href}>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center rounded-lg bg-accent/20 shrink-0 size-10 text-accent">
-                  <span className="material-symbols-outlined">{item.icon}</span>
+          {activeTab === 'activity' && (
+            <div className="space-y-3">
+              {activities.map((act, i) => (
+                <div key={i} className="flex items-center gap-4 bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm">
+                  <div className="bg-primary/20 p-2 rounded-xl text-primary">
+                    <span className="material-symbols-outlined">{act.icon}</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">{act.title}</p>
+                    <p className="text-xs opacity-60">{act.subtitle}</p>
+                  </div>
                 </div>
-                <p className="text-base font-normal leading-normal flex-1 truncate">{item.title}</p>
-              </div>
-              <div className="shrink-0 text-text-light-secondary dark:text-dark-secondary group-hover:text-text-light-primary dark:group-hover:text-dark-primary transition-colors">
-                <span className="material-symbols-outlined">chevron_right</span>
-              </div>
-            </a>
-          ))}
-          <div className="h-2"></div>
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'saved' && (
+            <div className="text-center py-10 opacity-50">
+              <span className="material-symbols-outlined text-5xl mb-2">bookmark_border</span>
+              <p>No saved items yet</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

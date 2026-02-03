@@ -574,9 +574,8 @@ const News = () => {
           <button
             key={filter}
             onClick={() => handleChipClick(filter)}
-            className={`chip flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-4 transition-all ${
-              activeFilter === filter ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white'
-            }`}
+            className={`chip flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-4 transition-all ${activeFilter === filter ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white'
+              }`}
             aria-pressed={activeFilter === filter}
           >
             <p className="text-sm font-medium leading-normal">

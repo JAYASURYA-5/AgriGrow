@@ -18,7 +18,7 @@ export default function WeatherDashboard() {
   const getWeatherEmoji = (main, desc) => {
     const mainLower = main?.toLowerCase() || '';
     const descLower = desc?.toLowerCase() || '';
-    
+
     if (mainLower === 'clear') return '☀️';
     if (mainLower === 'clouds') {
       if (descLower.includes('few')) return '🌤️';
@@ -49,9 +49,9 @@ export default function WeatherDashboard() {
       const weatherRes = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
       );
-      
+
       if (!weatherRes.ok) throw new Error('City not found');
-      
+
       const weatherData = await weatherRes.json();
       setWeather(weatherData);
 
@@ -60,7 +60,7 @@ export default function WeatherDashboard() {
       );
       const forecastData = await forecastRes.json();
       setForecast(forecastData);
-      
+
     } catch (err) {
       setError(err.message || 'Failed to fetch weather data');
       setWeather(null);
@@ -88,18 +88,18 @@ export default function WeatherDashboard() {
           `https://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=10&appid=${API_KEY}`
         );
         const data = await response.json();
-        
+
         const formattedSuggestions = data.map(item => ({
           name: item.name,
           country: item.country,
           state: item.state,
           lat: item.lat,
           lon: item.lon,
-          display: item.state 
+          display: item.state
             ? `${item.name}, ${item.state}, ${item.country}`
             : `${item.name}, ${item.country}`
         }));
-        
+
         setSuggestions(formattedSuggestions);
         setShowSuggestions(true);
       } catch (error) {
@@ -121,8 +121,8 @@ export default function WeatherDashboard() {
   };
 
   const formatTime = (timestamp) => {
-    return new Date(timestamp * 1000).toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
+    return new Date(timestamp * 1000).toLocaleTimeString('en-US', {
+      hour: '2-digit',
       minute: '2-digit',
       hour12: true
     });
@@ -130,9 +130,9 @@ export default function WeatherDashboard() {
 
   const shareWeather = () => {
     if (!weather) return;
-    
+
     const shareText = `Weather in ${weather.name}: ${Math.round(weather.main.temp)}°C, ${weather.weather[0].description}`;
-    
+
     if (navigator.share) {
       navigator.share({ title: 'Weather Forecast', text: shareText })
         .catch(() => copyToClipboard(shareText));
@@ -149,7 +149,7 @@ export default function WeatherDashboard() {
 
   const getThreeDayForecast = () => {
     if (!forecast) return [];
-    
+
     const dailyData = {};
     forecast.list.forEach(item => {
       const date = new Date(item.dt * 1000).toDateString();
@@ -163,10 +163,10 @@ export default function WeatherDashboard() {
       const data = dailyData[key];
       const avgTemp = data.temps.reduce((a, b) => a + b) / data.temps.length;
       return {
-        date: new Date(data.date * 1000).toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          month: 'short', 
-          day: 'numeric' 
+        date: new Date(data.date * 1000).toLocaleDateString('en-US', {
+          weekday: 'long',
+          month: 'short',
+          day: 'numeric'
         }),
         avgTemp: Math.round(avgTemp),
         maxTemp: Math.round(Math.max(...data.temps)),
@@ -180,8 +180,8 @@ export default function WeatherDashboard() {
   const getChartData = () => {
     if (!forecast) return [];
     return forecast.list.slice(0, 8).map(item => ({
-      time: new Date(item.dt * 1000).toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
+      time: new Date(item.dt * 1000).toLocaleTimeString('en-US', {
+        hour: '2-digit',
         minute: '2-digit',
         hour12: false
       }),
@@ -204,7 +204,7 @@ export default function WeatherDashboard() {
                 onFocus={() => city.length >= 2 && setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 placeholder="Search for a city..."
-                className="w-full px-5 py-4 pr-12 bg-slate-600/50 border-2 border-slate-500/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                className="w-full px-5 py-4 pr-12 bg-white border-2 border-slate-500/30 rounded-xl text-black placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               />
               <button
                 onClick={fetchWeather}
@@ -261,7 +261,7 @@ export default function WeatherDashboard() {
           )}
 
           {weather && forecast && !loading && (
-            <div 
+            <div
               onClick={() => setShowFullDashboard(true)}
               className="max-w-xl mx-auto bg-slate-700/60 backdrop-blur-xl rounded-3xl p-10 shadow-2xl cursor-pointer hover:transform hover:-translate-y-2 transition-all"
             >
@@ -287,8 +287,8 @@ export default function WeatherDashboard() {
                 {forecast.list.slice(0, 6).map((item, idx) => (
                   <div key={idx} className="text-center">
                     <div className="text-sm text-gray-400 mb-2">
-                      {new Date(item.dt * 1000).toLocaleTimeString('en-US', { 
-                        hour: '2-digit', 
+                      {new Date(item.dt * 1000).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
                         minute: '2-digit',
                         hour12: false
                       })}
@@ -414,8 +414,8 @@ export default function WeatherDashboard() {
               {forecast.list.slice(0, 8).map((item, idx) => (
                 <div key={idx} className="bg-slate-600/40 rounded-xl p-4 text-center">
                   <div className="text-sm text-gray-400 mb-2">
-                    {new Date(item.dt * 1000).toLocaleTimeString('en-US', { 
-                      hour: '2-digit', 
+                    {new Date(item.dt * 1000).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
                       minute: '2-digit',
                       hour12: false
                     })}
@@ -434,29 +434,29 @@ export default function WeatherDashboard() {
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={getChartData()}>
-                  <XAxis 
-                    dataKey="time" 
+                  <XAxis
+                    dataKey="time"
                     stroke="#9ca3af"
                     tick={{ fill: '#9ca3af' }}
                   />
-                  <YAxis 
+                  <YAxis
                     stroke="#9ca3af"
                     tick={{ fill: '#9ca3af' }}
                     domain={['dataMin - 2', 'dataMax + 2']}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#334155', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#334155',
                       border: 'none',
                       borderRadius: '8px',
                       color: '#fff'
                     }}
                     formatter={(value) => [`${value.toFixed(1)}°C`, 'Temperature']}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="temp" 
-                    stroke="#f97316" 
+                  <Line
+                    type="monotone"
+                    dataKey="temp"
+                    stroke="#f97316"
                     strokeWidth={3}
                     dot={{ fill: '#f97316', r: 6 }}
                     activeDot={{ r: 8 }}

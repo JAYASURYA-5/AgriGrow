@@ -33,7 +33,7 @@ const SelectionPanel = ({
           <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <Wind className="w-4 h-4" />Soil Type
           </label>
-          <select value={selectedSoil} onChange={(e) => setSelectedSoil(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none bg-white">
+          <select value={selectedSoil} onChange={(e) => setSelectedSoil(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none bg-white text-gray-900">
             <option value="">Select soil type</option>
             {soilTypes.map(soil => <option key={soil.id} value={soil.id}>{soil.name} - {soil.description}</option>)}
           </select>
@@ -43,7 +43,7 @@ const SelectionPanel = ({
           <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <Sun className="w-4 h-4" />Climate Zone
           </label>
-          <select value={selectedClimate} onChange={(e) => setSelectedClimate(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none bg-white">
+          <select value={selectedClimate} onChange={(e) => setSelectedClimate(e.target.value)} className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none bg-white text-gray-900">
             <option value="">Select climate</option>
             {climateTypes.map(climate => <option key={climate.id} value={climate.id}>{climate.name} ({climate.temp})</option>)}
           </select>

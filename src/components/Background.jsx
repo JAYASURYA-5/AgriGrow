@@ -9,16 +9,9 @@ const Background = () => {
     const handleMouseMove = (e) => {
       const { clientX, clientY } = e;
 
-      // Update mouse glow position with smoother offset
+      // Update mouse glow position
       if (glowRef.current) {
         glowRef.current.style.transform = `translate(${clientX - 500}px, ${clientY - 500}px)`;
-      }
-
-      // Update 3D grid tilt for parallax feel
-      if (gridRef.current) {
-        const xRotation = (clientY / window.innerHeight - 0.5) * 15; // -7.5 to 7.5 deg
-        const yRotation = (clientX / window.innerWidth - 0.5) * -15; // 7.5 to -7.5 deg
-        gridRef.current.style.transform = `rotateX(${65 + xRotation}deg) rotateZ(${yRotation}deg)`;
       }
     };
 

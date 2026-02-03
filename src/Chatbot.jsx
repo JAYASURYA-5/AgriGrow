@@ -118,10 +118,10 @@ const Chatbot = () => {
 
   // CSV Query Functions
   const getSoilRecommendations = (state, district = null) => {
-    let filtered = csvData.filter(row => 
+    let filtered = csvData.filter(row =>
       row.state && row.state.toLowerCase() === state.toLowerCase()
     );
-    
+
     if (district) {
       filtered = filtered.filter(row =>
         row.district && row.district.toLowerCase() === district.toLowerCase()
@@ -155,7 +155,7 @@ const Chatbot = () => {
 
   const getWeatherSummary = (state, month = null) => {
     let filtered = csvData.filter(row => row.state && row.state.toLowerCase() === state.toLowerCase());
-    
+
     if (month) {
       filtered = filtered.filter(row => row.month && row.month.toLowerCase() === month.toLowerCase());
     }
@@ -180,7 +180,7 @@ const Chatbot = () => {
 
   const findBestCrops = (state, soilType = null) => {
     let filtered = csvData.filter(row => row.state && row.state.toLowerCase() === state.toLowerCase());
-    
+
     if (soilType) {
       filtered = filtered.filter(row => row.soil_type && row.soil_type.toLowerCase() === soilType.toLowerCase());
     }
@@ -193,7 +193,7 @@ const Chatbot = () => {
     filtered.forEach(row => {
       const soil = row.soil_type;
       soilCounts[soil] = (soilCounts[soil] || 0) + 1;
-      
+
       if (!soilConditions[soil]) {
         soilConditions[soil] = {
           avg_pH: 0,
@@ -231,7 +231,7 @@ const Chatbot = () => {
       if (stateMatch) {
         const parts = stateMatch[1].trim().split(',').map(p => p.trim());
         const result = getSoilRecommendations(parts[0], parts[1]);
-        
+
         if (result) {
           return `**Soil Analysis for ${result.location}**\n\n` +
             `pH: ${result.soilData.soil_pH}\n` +
@@ -248,12 +248,12 @@ const Chatbot = () => {
     if (msg.includes('weather') || msg.includes('temperature') || msg.includes('rainfall') || msg.includes('humidity')) {
       const stateMatch = msg.match(/in\s+([a-zA-Z\s,]+)/i) || msg.match(/([A-Z][a-zA-Z\s]+)\s+(?:weather|temperature|rainfall)/i);
       const monthMatch = msg.match(/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/i);
-      
+
       if (stateMatch) {
         const state = stateMatch[1].trim().split(',')[0].trim();
         const month = monthMatch ? monthMatch[1] : null;
         const result = getWeatherSummary(state, month);
-        
+
         if (result) {
           return `**${result.summary}**\n\n` +
             `Temperature: ${result.temperature}°C\n` +
@@ -273,7 +273,7 @@ const Chatbot = () => {
         const parts = stateMatch[1].trim().split(',');
         const state = parts[0].trim();
         const soilType = parts[1] ? parts[1].trim() : null;
-        
+
         const result = findBestCrops(state, soilType);
         if (result) {
           let response = `**Crop & Soil Information for ${result.state}**\n\n`;
@@ -397,17 +397,17 @@ const Chatbot = () => {
 
   const getDefaultAgriculturalResponse = (userMessage) => {
     const msg = userMessage.toLowerCase();
-    
+
     // Tomato specific
     if (msg.includes('tomato') || (msg.includes('plant') && msg.includes('vegetable'))) {
       return 'Tomatoes thrive in warm weather (20-30°C). Plant after last frost, ensure 6-8 hours sunlight, consistent watering, and 60-90cm spacing. For specific soil/climate data, ask "soil in [State]" or "weather in [State]".';
     }
-    
+
     // Pest management
     if (msg.includes('pest') && !msg.includes('soil')) {
       return 'For pest control: Monitor crops early, practice crop rotation, maintain proper spacing, and use integrated pest management. Tell me the crop and pest type for specific advice. Ask "soil in [location]" for regional pest data.';
     }
-    
+
     // Soil and fertilizer
     if (msg.includes('soil') || msg.includes('fertilizer')) {
       let answer = 'Test soil pH and nutrients regularly. Use organic matter and apply N-P-K fertilizers based on soil test results.\n\n';
@@ -416,42 +416,42 @@ const Chatbot = () => {
       answer += 'I can help with nitrogen, phosphorus, potassium, pH, and organic matter levels for your region.';
       return answer;
     }
-    
+
     // Weather and climate
     if (msg.includes('weather') || msg.includes('rain') || msg.includes('temperature') || msg.includes('climate')) {
       return 'Weather is crucial for farming. For your region\'s data, ask: "weather in [State]" or include the month: "weather in [State], July"\n\nI can provide: Temperature, rainfall, humidity, and wind speed data for better farm planning.';
     }
-    
+
     // Disease diagnosis
     if (msg.includes('disease') || msg.includes('symptom')) {
       return 'To diagnose diseases, tell me:\n1. **Crop**: What are you growing?\n2. **Symptoms**: Leaf spots, wilting, yellowing, powder, etc.\n3. **Location**: Ask "soil in [State]" for regional disease patterns\n\nYou can also upload a plant image using the "Diagnose Crop Disease" button.';
     }
-    
+
     // Pest-specific
     if (msg.includes('aphid') || msg.includes('whitefly') || msg.includes('caterpillar') || msg.includes('mite')) {
       return 'Common pest solutions:\n- **Aphids/Whiteflies**: Neem oil, insecticidal soap, yellow sticky traps\n- **Caterpillars**: Bt spray, hand-picking, crop rotation\n- **Mites**: Water spray, neem oil, increase humidity\n\nFor region-specific information, ask: "soil in [State]"';
     }
-    
+
     // Crop selection
     if (msg.includes('grow') || msg.includes('cultivate') || msg.includes('plant') || msg.includes('sow')) {
       return 'To choose the right crop:\n1. Check regional soil data: "soil in [State]"\n2. Check weather: "weather in [State]"\n3. Learn crop info: "crop in [State]"\n\nI can provide data for 14 Indian states to help you select suitable crops.';
     }
-    
+
     // Scheme/policy/subsidy
     if (msg.includes('scheme') || msg.includes('subsidy') || msg.includes('grant') || msg.includes('policy')) {
       return 'Agricultural schemes vary by country. Tell me your country/state and I can provide details on:\n- Government subsidies\n- Loan programs\n- Crop insurance\n- PM KISAN and FPO benefits\n\nWhich state are you in?';
     }
-    
+
     // Irrigation
     if (msg.includes('irrigation') || msg.includes('water') || msg.includes('watering')) {
       return 'Irrigation depends on rainfall and soil type. Check regional data:\n- "weather in [State]" - see rainfall amounts\n- "soil in [State]" - soil water-holding capacity\n\nThis helps determine irrigation frequency and amount needed.';
     }
-    
+
     // Market prices
     if (msg.includes('price') || msg.includes('market') || msg.includes('sell')) {
       return 'For market information, tell me:\n1. **Crop**: What are you selling?\n2. **Location**: Which market/state?\n\nI can help with price trends and market analysis. Also check regional soil/weather data to forecast yields.';
     }
-    
+
     // Generic fallback - encourage specificity
     return 'I can help with:\n\n**Soil Data**: Ask "soil in [State]" - get pH, nutrients, recommendations\n**Weather**: Ask "weather in [State]" - temperature, rainfall, humidity\n**Crops**: Ask "crop in [State]" - suitable crops for your region\n**Diseases**: Describe symptoms and crop type\n**General Advice**: About pests, fertilizers, irrigation, schemes\n\nGive me your location for the most accurate, data-driven answers!';
   };
@@ -539,7 +539,7 @@ const Chatbot = () => {
             if (schemes) {
               let answer = `**${country.toUpperCase()} Agricultural Schemes:**\n`;
               schemes.schemes.forEach((s, i) => {
-                answer += `\n${i+1}. **${s.name}**: ${s.description}\nAmount/Eligibility: ${s.amount || 'Check eligibility'}\n`;
+                answer += `\n${i + 1}. **${s.name}**: ${s.description}\nAmount/Eligibility: ${s.amount || 'Check eligibility'}\n`;
                 if (s.link) answer += `Link: ${s.link}`;
               });
               return answer;
@@ -733,11 +733,11 @@ const Chatbot = () => {
     addMessage('Fetching top 3 high-rate crops (last 30 days)...', false);
     addTypingIndicator();
     const sample = [];
-    sample.push({crop: 'Coffee', region: 'Brazil/Ethiopia', change: '+6.2%', note: 'example data (configure market API for live prices)'});
-    sample.push({crop: 'Palm oil', region: 'Malaysia/Indonesia', change: '+4.8%', note: 'example data (configure market API for live prices)'});
-    sample.push({crop: 'Maize', region: 'USA/Argentina', change: '+3.1%', note: 'example data (configure market API for live prices)'});
+    sample.push({ crop: 'Coffee', region: 'Brazil/Ethiopia', change: '+6.2%', note: 'example data (configure market API for live prices)' });
+    sample.push({ crop: 'Palm oil', region: 'Malaysia/Indonesia', change: '+4.8%', note: 'example data (configure market API for live prices)' });
+    sample.push({ crop: 'Maize', region: 'USA/Argentina', change: '+3.1%', note: 'example data (configure market API for live prices)' });
     let msg = 'Top 3 (sample) — last 30 days:\n';
-    sample.forEach((s,i) => { msg += `${i+1}. ${s.crop} (${s.region}) — ${s.change} — ${s.note}\n`; });
+    sample.forEach((s, i) => { msg += `${i + 1}. ${s.crop} (${s.region}) — ${s.change} — ${s.note}\n`; });
     msg += '\nTo enable live market prices, add a market API key to the CONFIG (e.g., provider: commodities-api) or ask me to integrate a specific provider.';
     removeTypingIndicator();
     addMessage(msg, false);

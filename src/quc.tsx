@@ -179,7 +179,7 @@ function QucDashboard() {
               onChange={(e) => handleFilterChange('category', e.target.value)}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-emerald-500 hover:border-emerald-400 transition"
             >
-              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+              {categories.map(c => <option key={c} value={c} className="text-black">{c}</option>)}
             </select>
           </div>
 
@@ -190,7 +190,7 @@ function QucDashboard() {
               onChange={(e) => handleFilterChange('commodity', e.target.value)}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-emerald-500 hover:border-emerald-400 transition"
             >
-              {commodities.map(c => <option key={c} value={c}>{c}</option>)}
+              {commodities.map(c => <option key={c} value={c} className="text-black">{c}</option>)}
             </select>
           </div>
 
@@ -201,7 +201,7 @@ function QucDashboard() {
               onChange={(e) => handleFilterChange('state', e.target.value)}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-emerald-500 hover:border-emerald-400 transition"
             >
-              {states.map(s => <option key={s} value={s}>{s}</option>)}
+              {states.map(s => <option key={s} value={s} className="text-black">{s}</option>)}
             </select>
           </div>
 
@@ -212,7 +212,7 @@ function QucDashboard() {
               onChange={(e) => handleFilterChange('calculationType', e.target.value)}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-emerald-500 hover:border-emerald-400 transition"
             >
-              {calculationTypes.map(c => <option key={c} value={c}>{c}</option>)}
+              {calculationTypes.map(c => <option key={c} value={c} className="text-black">{c}</option>)}
             </select>
           </div>
         </div>

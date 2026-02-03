@@ -249,11 +249,10 @@ const Scheme = () => {
         <div className="flex gap-2 overflow-x-auto px-4 pb-4 pt-0 [-ms-overflow-style:none] [scrollbar-width:none] scrollbar-hide">
           <button
             id="filter-all"
-            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${
-              activeFilter === 'all'
+            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${activeFilter === 'all'
                 ? 'bg-primary text-white shadow-md'
                 : 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-sm'
-            }`}
+              }`}
             onClick={() => handleFilterClick('all')
             }
           >
@@ -262,11 +261,10 @@ const Scheme = () => {
           </button>
           <button
             id="filter-subsidy"
-            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${
-              activeFilter === 'subsidy'
+            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${activeFilter === 'subsidy'
                 ? 'bg-emerald-500 text-white shadow-md'
                 : 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-emerald-500 hover:shadow-sm'
-            }`}
+              }`}
             onClick={() => handleFilterClick('subsidy')}
           >
             <span className="material-symbols-outlined text-lg">card_giftcard</span>
@@ -274,11 +272,10 @@ const Scheme = () => {
           </button>
           <button
             id="filter-loan"
-            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${
-              activeFilter === 'loan'
+            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${activeFilter === 'loan'
                 ? 'bg-blue-500 text-white shadow-md'
                 : 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:shadow-sm'
-            }`}
+              }`}
             onClick={() => handleFilterClick('loan')}
           >
             <span className="material-symbols-outlined text-lg">account_balance</span>
@@ -286,11 +283,10 @@ const Scheme = () => {
           </button>
           <button
             id="filter-insurance"
-            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${
-              activeFilter === 'insurance'
+            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${activeFilter === 'insurance'
                 ? 'bg-orange-500 text-white shadow-md'
                 : 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-orange-500 hover:shadow-sm'
-            }`}
+              }`}
             onClick={() => handleFilterClick('insurance')}
           >
             <span className="material-symbols-outlined text-lg">shield</span>
@@ -300,130 +296,129 @@ const Scheme = () => {
           <button
             id="filter-toggle"
             aria-expanded={showFilterPanel}
-            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${
-              showFilterPanel
+            className={`flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg px-4 font-medium transition-all duration-200 ${showFilterPanel
                 ? 'bg-gray-100 dark:bg-zinc-700 text-primary border border-primary'
                 : 'bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:shadow-sm'
-            }`}
+              }`}
             onClick={toggleFilterPanel}
           >
             <span className="material-symbols-outlined text-lg">tune</span>
             <p className="text-sm">More Filters</p>
           </button>
         </div>
-        
+
         {/* Filter panel */}
         {showFilterPanel && (
           <div className="absolute left-4 right-4 top-28 z-20 max-w-3xl rounded-xl bg-white dark:bg-zinc-900 p-6 shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between pb-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <span className="material-symbols-outlined text-xl text-primary">tune</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Advanced Filters</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Refine your search results</p>
-                  </div>
+            <div className="flex items-center justify-between pb-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                  <span className="material-symbols-outlined text-xl text-primary">tune</span>
                 </div>
-                <button
-                  id="filter-close"
-                  aria-label="Close filters"
-                  className="h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
-                  onClick={toggleFilterPanel}
-                >
-                  <span className="material-symbols-outlined text-gray-600 dark:text-gray-400">close</span>
-                </button>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Advanced Filters</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Refine your search results</p>
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
-                {/* Sort Section */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-lg text-primary">sort</span>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">Sort Options</p>
-                  </div>
-                  <div className="space-y-2 pl-6">
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <input
-                        type="radio"
-                        name="sort-order"
-                        value="desc"
-                        checked={sortOrder === 'desc'}
-                        onChange={(e) => setSortOrder(e.target.value)}
-                        className="w-4 h-4 accent-primary"
-                      />
-                      <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-base">history</span>
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Newest First</span>
-                      </div>
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <input
-                        type="radio"
-                        name="sort-order"
-                        value="asc"
-                        checked={sortOrder === 'asc'}
-                        onChange={(e) => setSortOrder(e.target.value)}
-                        className="w-4 h-4 accent-primary"
-                      />
-                      <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-base">schedule</span>
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Oldest First</span>
-                      </div>
-                    </label>
-                  </div>
+              <button
+                id="filter-close"
+                aria-label="Close filters"
+                className="h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
+                onClick={toggleFilterPanel}
+              >
+                <span className="material-symbols-outlined text-gray-600 dark:text-gray-400">close</span>
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
+              {/* Sort Section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-lg text-primary">sort</span>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">Sort Options</p>
                 </div>
-                
-                {/* View Section */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-lg text-primary">visibility</span>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">View Options</p>
-                  </div>
-                  <div className="space-y-2 pl-6">
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        id="filter-latest"
-                        checked={showLatest}
-                        onChange={(e) => setShowLatest(e.target.checked)}
-                        className="w-4 h-4 rounded accent-primary"
-                      />
-                      <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-base">new_releases</span>
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Latest Schemes Only</span>
-                      </div>
-                    </label>
-                  </div>
+                <div className="space-y-2 pl-6">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="sort-order"
+                      value="desc"
+                      checked={sortOrder === 'desc'}
+                      onChange={(e) => setSortOrder(e.target.value)}
+                      className="w-4 h-4 accent-primary"
+                    />
+                    <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                      <span className="material-symbols-outlined text-base">history</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Newest First</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="sort-order"
+                      value="asc"
+                      checked={sortOrder === 'asc'}
+                      onChange={(e) => setSortOrder(e.target.value)}
+                      className="w-4 h-4 accent-primary"
+                    />
+                    <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                      <span className="material-symbols-outlined text-base">schedule</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Oldest First</span>
+                    </div>
+                  </label>
                 </div>
-                
-                {/* Actions Section */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-lg text-primary">check_circle</span>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">Actions</p>
-                  </div>
-                  <div className="flex flex-col gap-2 pl-6">
-                    <button
-                      id="filter-apply"
-                      className="flex h-9 items-center justify-center gap-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-all duration-200 shadow-sm hover:shadow-md"
-                      onClick={applyFilters}
-                    >
-                      <span className="material-symbols-outlined text-base">check</span>
-                      Apply
-                    </button>
-                    <button
-                      id="filter-reset"
-                      className="flex h-9 items-center justify-center gap-2 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300 font-medium transition-all duration-200"
-                      onClick={resetFilters}
-                    >
-                      <span className="material-symbols-outlined text-base">refresh</span>
-                      Reset
-                    </button>
-                  </div>
+              </div>
+
+              {/* View Section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-lg text-primary">visibility</span>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">View Options</p>
+                </div>
+                <div className="space-y-2 pl-6">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      id="filter-latest"
+                      checked={showLatest}
+                      onChange={(e) => setShowLatest(e.target.checked)}
+                      className="w-4 h-4 rounded accent-primary"
+                    />
+                    <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                      <span className="material-symbols-outlined text-base">new_releases</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Latest Schemes Only</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Actions Section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-lg text-primary">check_circle</span>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">Actions</p>
+                </div>
+                <div className="flex flex-col gap-2 pl-6">
+                  <button
+                    id="filter-apply"
+                    className="flex h-9 items-center justify-center gap-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                    onClick={applyFilters}
+                  >
+                    <span className="material-symbols-outlined text-base">check</span>
+                    Apply
+                  </button>
+                  <button
+                    id="filter-reset"
+                    className="flex h-9 items-center justify-center gap-2 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300 font-medium transition-all duration-200"
+                    onClick={resetFilters}
+                  >
+                    <span className="material-symbols-outlined text-base">refresh</span>
+                    Reset
+                  </button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
       </div>
 
       {/* Schemes List */}

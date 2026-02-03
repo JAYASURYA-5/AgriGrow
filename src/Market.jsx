@@ -132,9 +132,8 @@ const Market = () => {
       <div className="flex gap-3 px-4 py-1 overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <button
           onClick={() => handleFilterClick('category')}
-          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-2 ${
-            activeFilters.category ? 'bg-primary text-white' : 'bg-primary/20 dark:bg-primary/30 text-primary'
-          }`}
+          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full pl-4 pr-2 ${activeFilters.category ? 'bg-primary text-white' : 'bg-primary/20 dark:bg-primary/30 text-primary'
+            }`}
         >
           <p className="text-sm font-medium leading-normal">Category</p>
           <div className={activeFilters.category ? 'text-white' : 'text-primary'}>
@@ -143,9 +142,8 @@ const Market = () => {
         </button>
         <button
           onClick={() => handleFilterClick('location')}
-          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full border pl-4 pr-2 ${
-            activeFilters.location ? 'bg-primary text-white border-primary' : 'bg-card-light dark:bg-card-dark border-border-light dark:border-border-dark text-text-light dark:text-text-dark'
-          }`}
+          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full border pl-4 pr-2 ${activeFilters.location ? 'bg-primary text-white border-primary' : 'bg-card-light dark:bg-card-dark border-border-light dark:border-border-dark text-text-light dark:text-text-dark'
+            }`}
         >
           <p className="text-sm font-medium leading-normal">Location</p>
           <div className={activeFilters.location ? 'text-white' : 'text-text-light dark:text-text-dark'}>
@@ -154,9 +152,8 @@ const Market = () => {
         </button>
         <button
           onClick={() => handleFilterClick('price')}
-          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full border pl-4 pr-2 ${
-            activeFilters.price ? 'bg-primary text-white border-primary' : 'bg-card-light dark:bg-card-dark border-border-light dark:border-border-dark text-text-light dark:text-text-dark'
-          }`}
+          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full border pl-4 pr-2 ${activeFilters.price ? 'bg-primary text-white border-primary' : 'bg-card-light dark:bg-card-dark border-border-light dark:border-border-dark text-text-light dark:text-text-dark'
+            }`}
         >
           <p className="text-sm font-medium leading-normal">Price</p>
           <div className={activeFilters.price ? 'text-white' : 'text-text-light dark:text-text-dark'}>
@@ -165,9 +162,8 @@ const Market = () => {
         </button>
         <button
           onClick={() => handleFilterClick('organic')}
-          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full border pl-4 pr-2 ${
-            activeFilters.organic ? 'bg-primary text-white border-primary' : 'bg-card-light dark:bg-card-dark border-border-light dark:border-border-dark text-text-light dark:text-text-dark'
-          }`}
+          className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full border pl-4 pr-2 ${activeFilters.organic ? 'bg-primary text-white border-primary' : 'bg-card-light dark:bg-card-dark border-border-light dark:border-border-dark text-text-light dark:text-text-dark'
+            }`}
         >
           <p className="text-sm font-medium leading-normal">Organic</p>
           <div className={activeFilters.organic ? 'text-white' : 'text-text-light dark:text-text-dark'}>

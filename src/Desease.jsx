@@ -157,31 +157,28 @@ const Desease = () => {
             <div className="flex flex-col">
               <div className="flex border-b border-gray-200 dark:border-gray-700">
                 <button
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === 'overview'
-                      ? 'text-primary border-b-2 border-primary'
-                      : 'text-text-light/70 dark:text-text-dark/70'
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'overview'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-text-light/70 dark:text-text-dark/70'
+                    }`}
                   onClick={() => setActiveTab('overview')}
                 >
                   Overview
                 </button>
                 <button
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === 'symptoms'
-                      ? 'text-primary border-b-2 border-primary'
-                      : 'text-text-light/70 dark:text-text-dark/70'
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'symptoms'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-text-light/70 dark:text-text-dark/70'
+                    }`}
                   onClick={() => setActiveTab('symptoms')}
                 >
                   Symptoms
                 </button>
                 <button
-                  className={`px-4 py-2 text-sm font-medium ${
-                    activeTab === 'treatment'
-                      ? 'text-primary border-b-2 border-primary'
-                      : 'text-text-light/70 dark:text-text-dark/70'
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'treatment'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-text-light/70 dark:text-text-dark/70'
+                    }`}
                   onClick={() => setActiveTab('treatment')}
                 >
                   Treatment
@@ -233,11 +230,10 @@ const Desease = () => {
               <p className="text-text-light dark:text-text-dark text-base font-bold leading-tight">
                 {item.disease}
               </p>
-              <p className={`text-sm leading-normal ${
-                item.isHealthy
-                  ? 'text-success font-medium'
-                  : 'text-text-light/70 dark:text-text-dark/70'
-              }`}>
+              <p className={`text-sm leading-normal ${item.isHealthy
+                ? 'text-success font-medium'
+                : 'text-text-light/70 dark:text-text-dark/70'
+                }`}>
                 {item.isHealthy ? 'Healthy' : item.date}
               </p>
             </div>

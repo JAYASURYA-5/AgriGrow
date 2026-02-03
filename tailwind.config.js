@@ -9,8 +9,16 @@ export default {
     extend: {
       colors: {
         'primary': '#0ff022',
-        'background-light': '#f5f8f6',
-        'background-dark': '#102212',
+        'background-light': 'var(--background-light)',
+        'background-dark': 'var(--background-dark)',
+        'card-light': 'var(--card-light)',
+        'card-dark': 'var(--card-dark)',
+        'text-light': 'var(--text-light)',
+        'text-dark': 'var(--text-dark)',
+        'text-secondary-light': 'var(--text-secondary-light)',
+        'text-secondary-dark': 'var(--text-secondary-dark)',
+        'border-light': 'var(--border-light)',
+        'border-dark': 'var(--border-dark)',
       },
       fontFamily: {
         'display': ['Space Grotesk', 'sans-serif'],

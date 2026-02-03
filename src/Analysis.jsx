@@ -80,31 +80,28 @@ const Analysis = () => {
       <div className="px-4">
         <div className="flex border-b border-gray-200 dark:border-gray-700 mb-4">
           <button
-            className={`px-4 py-2 text-sm font-medium ${
-              activeTab === 'overview'
+            className={`px-4 py-2 text-sm font-medium ${activeTab === 'overview'
                 ? 'text-primary border-b-2 border-primary'
                 : 'text-text-light/70 dark:text-text-dark/70'
-            }`}
+              }`}
             onClick={() => setActiveTab('overview')}
           >
             Overview
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium ${
-              activeTab === 'trends'
+            className={`px-4 py-2 text-sm font-medium ${activeTab === 'trends'
                 ? 'text-primary border-b-2 border-primary'
                 : 'text-text-light/70 dark:text-text-dark/70'
-            }`}
+              }`}
             onClick={() => setActiveTab('trends')}
           >
             Trends
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium ${
-              activeTab === 'recommendations'
+            className={`px-4 py-2 text-sm font-medium ${activeTab === 'recommendations'
                 ? 'text-primary border-b-2 border-primary'
                 : 'text-text-light/70 dark:text-text-dark/70'
-            }`}
+              }`}
             onClick={() => setActiveTab('recommendations')}
           >
             Recommendations

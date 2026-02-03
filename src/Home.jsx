@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useTheme, useAuth } from './Contexts';
 
 const Home = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { theme, updateTheme } = useTheme();
+
   const [weatherData, setWeatherData] = useState({
     temp: 24,
     condition: 'Sunny',
@@ -10,7 +15,8 @@ const Home = () => {
     rain: 'Clear skies today',
     location: 'Farm Location Weather',
     weatherCode: 0,
-    timezone: null
+    timezone: null,
+    cityName: 'Loading...'
   });
   const [userName, setUserName] = useState('Alex');
   const [greeting, setGreeting] = useState('Good Morning');
@@ -19,31 +25,51 @@ const Home = () => {
   const [locationInput, setLocationInput] = useState('');
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [locationStatus, setLocationStatus] = useState('');
-  const [weatherImage, setWeatherImage] = useState('');
+
+  // Image Carousel State
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const agriImages = [
+    'https://images.unsplash.com/photo-1625246333195-bf404ec83659?q=80&w=1000&auto=format&fit=crop', // Tractor/Field
+    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop', // Green Field
+    'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1000&auto=format&fit=crop', // Farmer
+    'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?q=80&w=1000&auto=format&fit=crop', // Crops
+    'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=1000&auto=format&fit=crop'  // Wheat
+  ];
+
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
 
+  // Auto-switch images
   useEffect(() => {
-    // Load user data
-    const raw = localStorage.getItem('ag_user');
-    if (raw) {
-      try {
-        const user = JSON.parse(raw);
-        setUserName(user.name || 'Alex');
-      } catch (e) {
-        console.warn('Failed to parse user data:', e);
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % agriImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.name || 'Alex');
+      if (user.location && user.location.lat && user.location.lon) {
+        fetchWeatherByCoords(user.location.lat, user.location.lon);
+      } else {
+        fetchWeather();
       }
+      updateGreeting(user.timezone);
+    } else {
+      fetchWeather();
+      updateGreeting();
     }
 
-    // Update greeting
-    updateGreeting();
-
-    // Fetch weather
-    fetchWeather();
-
     // Refresh weather every 10 minutes
-    const interval = setInterval(fetchWeather, 600000);
+    const interval = setInterval(() => {
+      if (user?.location?.lat) {
+        fetchWeatherByCoords(user.location.lat, user.location.lon);
+      } else {
+        fetchWeather();
+      }
+    }, 600000);
     return () => clearInterval(interval);
-  }, []);
+  }, [user]);
 
   const updateGreeting = (timezone = null) => {
     let hour = new Date().getHours();
@@ -68,24 +94,6 @@ const Home = () => {
     else greet = 'Good Night';
 
     setGreeting(greet);
-  };
-
-  const getTimeOfDayImage = (hour, weatherCode) => {
-    const isRaining = weatherCode >= 51 && weatherCode <= 82;
-    if (isRaining) {
-      return 'https://images.unsplash.com/photo-1433995306078-c32e82ef0cf1?w=1200&h=600&fit=crop&q=80';
-    }
-
-    if (hour >= 6 && hour < 10) {
-      return 'https://images.unsplash.com/photo-1495567720989-cebdbdd97913?w=1200&h=600&fit=crop&q=80';
-    }
-    if (hour >= 10 && hour < 17) {
-      return 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=600&fit=crop&q=80';
-    }
-    if (hour >= 17 && hour < 20) {
-      return 'https://images.unsplash.com/photo-1495567720989-cebdbdd97913?w=1200&h=600&fit=crop&q=80';
-    }
-    return 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1200&h=600&fit=crop&q=80';
   };
 
   const getWeatherDescription = (code) => {
@@ -222,26 +230,14 @@ const Home = () => {
       rain: rainText,
       location: `${locationName} Farm Location`,
       weatherCode: data.weather_code,
-      timezone
+      timezone,
+      cityName: locationName
     });
 
     setIsLoadingWeather(false);
 
     if (timezone) {
-      try {
-        const hstr = new Intl.DateTimeFormat('en-US', {
-          hour: 'numeric',
-          hour12: false,
-          timeZone: timezone
-        }).format(new Date());
-        const hour = parseInt(hstr, 10);
-        if (!Number.isNaN(hour)) {
-          const image = getTimeOfDayImage(hour, data.weather_code);
-          setWeatherImage(image);
-        }
-      } catch (e) {
-        console.warn('Error computing local hour:', e);
-      }
+      // Just formatting hour if needed for other logic, but image logic is removed
     }
 
     updateGreeting(timezone);
@@ -257,8 +253,6 @@ const Home = () => {
       lastUpdated: new Date().toISOString()
     }));
   };
-
-  const navigate = useNavigate();
 
   const handleProfileClick = () => {
     navigate('/userprofile');
@@ -339,18 +333,30 @@ const Home = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col">
+    <div className="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark text-black dark:text-white">
       {/* Top App Bar */}
-      <div className="relative flex items-center bg-gradient-to-r from-background-light to-white/5 dark:from-background-dark dark:to-[#1a2f1f] p-3 pb-2 sticky top-0 z-10 border-b border-white/10 shadow-sm backdrop-blur-sm">
+      <div className="relative flex items-center bg-gradient-to-r from-background-light to-transparent dark:from-background-dark dark:to-[#1a2f1f] p-3 pb-2 sticky top-0 z-10 border-b border-white/10 shadow-sm backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <button onClick={handleProfileClick} className="flex shrink-0 items-center hover:scale-105 transition-transform duration-150" aria-label="Open profile">
-            <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10 ring-2 ring-primary/50 hover:ring-primary transition-all duration-200 shadow-md" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBuYkGnTlww6celWbltbv1SrRgO0-dosGOFALS-6JPg5QWQsIcMAYiL7-uV8-QSx-2R8M754MFuYzEB6z8DAAoyTWrucjsbs_r3EM3WwEFaBuwaXYw8AZoA2NiAyBEZJ4i-2Lql_bDP1FvboK3JXcpxJfG74E2295l-VgumU6YdVcwcEl5uNhRhrSnke2u6XkyOX0Msc4g8ASnwQKApjATSFZT9ux0EMl0VI75Lxnx0zUh1dpLVPe9XqPvQZZ97KGBEEe_AOnVMkKs")'}}></div>
+            <div
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-12 h-12 ring-2 ring-primary/50 hover:ring-primary transition-all duration-200 shadow-lg border-2 border-white dark:border-background-dark"
+              style={{ backgroundImage: `url("${user?.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex'}")` }}
+            ></div>
           </button>
           <h2 className="text-black dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Arigrow</h2>
         </div>
         <div className="flex-1"></div>
-        <div className="absolute right-3 top-3">
-          <button onClick={handleNotificationsClick} className="flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-primary/10 dark:bg-primary/20 text-primary hover:bg-primary/20 dark:hover:bg-primary/30 transition-all duration-200 hover:scale-110 gap-2 text-base font-bold leading-normal tracking-[0.015em] p-0" aria-label="Notifications">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => updateTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="flex shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-primary/10 dark:bg-primary/20 text-primary hover:bg-primary/20 dark:hover:bg-primary/30 transition-all duration-200 hover:scale-110 p-0"
+            aria-label="Toggle Theme"
+          >
+            <span className="material-symbols-outlined text-2xl">
+              {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+            </span>
+          </button>
+          <button onClick={handleNotificationsClick} className="flex shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-primary/10 dark:bg-primary/20 text-primary hover:bg-primary/20 dark:hover:bg-primary/30 transition-all duration-200 hover:scale-110 p-0" aria-label="Notifications">
             <span className="material-symbols-outlined text-2xl">notifications</span>
           </button>
         </div>
@@ -400,7 +406,7 @@ const Home = () => {
 
       {/* Main Weather Card */}
       <div className="px-4 pb-4 -mt-2 animate-slide-in-up">
-        <div className="flex flex-col items-stretch justify-start rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white/15 via-white/10 to-white/5 dark:from-[#2a5c32] dark:via-[#1f4820] dark:to-[#19341b] overflow-hidden border border-white/20 dark:border-white/10 group hover:scale-[1.02]">
+        <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-white/5 via-transparent to-transparent dark:from-[#2a5c32] dark:via-[#1f4820] dark:to-[#19341b] p-4 hover:shadow-2xl hover:from-white/10 hover:to-transparent dark:hover:from-[#3a7c42] dark:hover:to-[#2a5c32] transition-all duration-300 border border-white/20 dark:border-white/10 group hover:scale-[1.02]">
           {/* Weather Image */}
           <div className="w-full bg-center bg-no-repeat aspect-video bg-cover relative overflow-hidden">
             {isLoadingWeather && (
@@ -408,28 +414,28 @@ const Home = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
               </div>
             )}
-            {weatherImage && (
-              <img
-                src={weatherImage}
-                alt="Weather image"
-                className="absolute top-6 right-4 bottom-4 left-4 w-[calc(100%-32px)] h-[calc(100%-32px)] object-cover rounded-lg"
-              />
-            )}
+            {/* Carousel Image */}
+            <img
+              key={currentImageIndex} // Key forces re-render for animation
+              src={agriImages[currentImageIndex]}
+              alt="Agriculture Background"
+              className="absolute top-6 right-4 bottom-4 left-4 w-[calc(100%-32px)] h-[calc(100%-32px)] object-cover rounded-lg animate-fade-in-down transition-all duration-1000"
+            />
           </div>
 
           {/* Weather Info */}
           <div className="flex flex-col gap-4 p-4">
             {/* Location Header */}
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-xl">location_on</span>
-              <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">{userFarm} Farm Location</p>
+              <span className="material-symbols-outlined text-primary text-xl animate-pulse">location_on</span>
+              <p className="text-gray-600 dark:text-gray-300 text-sm font-bold uppercase tracking-wider">{weatherData.cityName || 'Your Farm'}</p>
             </div>
 
             {/* Main Weather Display - Large */}
             <div className="flex flex-col gap-1">
               <p className="text-gray-500 dark:text-gray-400 text-sm font-normal">Current Weather</p>
               <div className="flex items-baseline gap-3">
-                <p className="text-black dark:text-white text-5xl font-bold leading-tight" style={{color: getTempColor(weatherData.temp)}}>
+                <p className="text-black dark:text-white text-5xl font-bold leading-tight" style={{ color: getTempColor(weatherData.temp) }}>
                   {weatherData.temp}°C
                 </p>
               </div>
@@ -458,9 +464,9 @@ const Home = () => {
             {/* View Forecast Button */}
             <Link to="/wea" className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 gap-2">
               <span className="material-symbols-outlined text-lg">calendar_today</span>
-                <span className="truncate">View Detailed Forecast</span>
-              </Link>
-            
+              <span className="truncate">View Detailed Forecast</span>
+            </Link>
+
           </div>
         </div>
       </div>
@@ -537,7 +543,7 @@ const Home = () => {
 
       {/* Crop Health Summary */}
       <div className="px-4 pb-4">
-        <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 dark:from-[#2a5c32] dark:via-[#1f4820] dark:to-[#19341b] p-4 hover:shadow-2xl hover:from-white/20 hover:to-white/10 dark:hover:from-[#3a7c42] dark:hover:to-[#2a5c32] transition-all duration-300 border border-white/20 dark:border-white/10 group hover:scale-[1.02]">
+        <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-white/5 via-transparent to-transparent dark:from-[#2a5c32] dark:via-[#1f4820] dark:to-[#19341b] p-4 hover:shadow-2xl hover:from-white/10 hover:to-transparent dark:hover:from-[#3a7c42] dark:hover:to-[#2a5c32] transition-all duration-300 border border-white/20 dark:border-white/10 group hover:scale-[1.02]">
           <div className="flex justify-between items-center">
             <p className="text-black dark:text-white font-bold text-lg">Crop Health</p>
             <Link to="/som" className="text-primary text-sm font-semibold hover:text-primary/80 hover:scale-105 transition-all duration-200">View Report</Link>
@@ -568,7 +574,7 @@ const Home = () => {
       </div>
 
       {/* Quick Actions Panel */}
-      <div className="grid grid-cols-2 gap-4 px-4 pb-24">
+      <div className="grid grid-cols-3 gap-4 px-4 pb-24">
         <Link to="/lms" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-indigo-400/10 to-transparent dark:from-indigo-600/25 dark:via-indigo-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-indigo-500/30 hover:to-indigo-400/10 dark:hover:from-indigo-600/35 dark:hover:to-indigo-500/20 transition-all duration-300 active:scale-95 border border-indigo-400/30 dark:border-indigo-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-indigo-500 group-hover:scale-125 transition-transform">school</span>
           <span className="font-semibold text-sm">LMS</span>
@@ -585,29 +591,41 @@ const Home = () => {
           <span className="material-symbols-outlined text-5xl text-amber-500 group-hover:scale-125 transition-transform">trending_up</span>
           <span className="font-semibold text-sm">Market Prices</span>
         </Link>
+        <Link to="/fin" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-violet-500/20 via-violet-400/10 to-transparent dark:from-violet-600/25 dark:via-violet-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-violet-500/30 hover:to-violet-400/10 dark:hover:from-violet-600/35 dark:hover:to-violet-500/20 transition-all duration-300 active:scale-95 border border-violet-400/30 dark:border-violet-400/40 group hover:scale-110 hover:-translate-y-1">
+          <span className="material-symbols-outlined text-5xl text-violet-500 group-hover:scale-125 transition-transform">wallet</span>
+          <span className="font-semibold text-sm">Finance</span>
+        </Link>
+        <Link to="/cal" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-cyan-500/20 via-cyan-400/10 to-transparent dark:from-cyan-600/25 dark:via-cyan-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-cyan-500/30 hover:to-cyan-400/10 dark:hover:from-cyan-600/35 dark:hover:to-cyan-500/20 transition-all duration-300 active:scale-95 border border-cyan-400/30 dark:border-cyan-400/40 group hover:scale-110 hover:-translate-y-1">
+          <span className="material-symbols-outlined text-5xl text-cyan-500 group-hover:scale-125 transition-transform">calendar_month</span>
+          <span className="font-semibold text-sm">Crop Calendar</span>
+        </Link>
+        <Link to="/animal" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-400/10 to-transparent dark:from-orange-600/25 dark:via-orange-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-orange-500/30 hover:to-orange-400/10 dark:hover:from-orange-600/35 dark:hover:to-orange-500/20 transition-all duration-300 active:scale-95 border border-orange-400/30 dark:border-orange-400/40 group hover:scale-110 hover:-translate-y-1">
+          <span className="material-symbols-outlined text-5xl text-orange-500 group-hover:scale-125 transition-transform">pets</span>
+          <span className="font-semibold text-sm">Livestock</span>
+        </Link>
       </div>
 
       {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 h-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-white/10 z-10">
-        <div className="flex justify-around items-center h-full max-w-lg mx-auto">
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/lms">
-            <span className="material-symbols-outlined">school</span>
+      <div className="fixed bottom-0 left-0 right-0 h-20 bg-background-light dark:bg-background-dark backdrop-blur-sm border-t border-white/10 z-10">
+        <div className="flex justify-around items-center h-full w-full px-2">
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/lms">
+            <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">school</span>
             <span className="text-xs font-medium">LMS</span>
           </Link>
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/comm">
-            <span className="material-symbols-outlined">groups</span>
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/comm">
+            <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">groups</span>
             <span className="text-xs font-medium">Community</span>
           </Link>
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/eco">
-            <span className="material-symbols-outlined">storefront</span>
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/eco">
+            <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">storefront</span>
             <span className="text-xs font-medium">Market</span>
           </Link>
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/news">
-            <span className="material-symbols-outlined">article</span>
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/news">
+            <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">article</span>
             <span className="text-xs font-medium">News</span>
           </Link>
-          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" to="/settings">
-            <span className="material-symbols-outlined">settings</span>
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/settings">
+            <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">settings</span>
             <span className="text-xs font-medium">Settings</span>
           </Link>
         </div>

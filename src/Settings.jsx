@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTheme } from './App';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTheme, useAuth } from './Contexts';
 
 const Settings = () => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const { theme, updateTheme } = useTheme();
 
@@ -66,11 +67,8 @@ const Settings = () => {
   };
 
   const handleLogout = () => {
-    // Clear user data and navigate to home
-    localStorage.removeItem('ag_user');
-    localStorage.removeItem('ag_selected_location');
-    localStorage.removeItem('ag_weather');
-    navigate('/');
+    logout();
+    navigate('/login');
   };
 
   const handleChangePassword = () => {
