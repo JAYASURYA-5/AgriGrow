@@ -23,14 +23,10 @@ import Fin from './fin.jsx';
 import Cal from './cal.jsx';
 import Login from './Login';
 import Signup from './Signup';
+import LivestockWrapper from './LivestockWrapper';
 
-import AnimalDashboard from './components/Animal/AnimalDashboard';
-import AnimalRegistration from './components/Animal/AnimalRegistration';
-import HealthMonitoring from './components/Animal/HealthMonitoring';
-import AnimalTracking from './components/Animal/AnimalTracking';
-import FeedPlanner from './components/Animal/FeedPlanner';
-import EnvironmentMonitor from './components/Animal/EnvironmentMonitor';
-import AlertsSystem from './components/Animal/AlertsSystem';
+
+
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
@@ -61,17 +57,6 @@ function AppContent() {
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/comm" element={<Comm />} />
         <Route path="/disease" element={<Desease />} />
-
-        {/* Animal Management Routes */}
-        <Route path="/animal" element={<AnimalDashboard />} />
-        <Route path="/animal/register" element={<AnimalRegistration />} />
-        <Route path="/animal/health" element={<HealthMonitoring />} />
-        <Route path="/animal/tracking" element={<AnimalTracking />} />
-        <Route path="/animal/feed" element={<FeedPlanner />} />
-        <Route path="/animal/environment" element={<EnvironmentMonitor />} />
-        <Route path="/animal/alerts" element={<AlertsSystem />} />
-        <Route path="/animal/disease" element={<Dp />} />
-
         <Route path="/lms" element={<Page />} />
         <Route path="/courses" element={<Page />} />
         <Route path="/playlists" element={<Page />} />
@@ -87,6 +72,8 @@ function AppContent() {
         <Route path="/page" element={<Page />} />
         <Route path="/fin" element={<Fin />} />
         <Route path="/cal" element={<Cal />} />
+        <Route path="/livestock/*" element={<LivestockWrapper />} />
+       
       </Routes>
     </Router>
   );

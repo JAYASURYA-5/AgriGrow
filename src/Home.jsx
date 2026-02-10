@@ -599,7 +599,7 @@ const Home = () => {
           <span className="material-symbols-outlined text-5xl text-cyan-500 group-hover:scale-125 transition-transform">calendar_month</span>
           <span className="font-semibold text-sm">Crop Calendar</span>
         </Link>
-        <Link to="/animal" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-400/10 to-transparent dark:from-orange-600/25 dark:via-orange-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-orange-500/30 hover:to-orange-400/10 dark:hover:from-orange-600/35 dark:hover:to-orange-500/20 transition-all duration-300 active:scale-95 border border-orange-400/30 dark:border-orange-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/livestock" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-400/10 to-transparent dark:from-orange-600/25 dark:via-orange-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-orange-500/30 hover:to-orange-400/10 dark:hover:from-orange-600/35 dark:hover:to-orange-500/20 transition-all duration-300 active:scale-95 border border-orange-400/30 dark:border-orange-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-orange-500 group-hover:scale-125 transition-transform">pets</span>
           <span className="font-semibold text-sm">Livestock</span>
         </Link>
