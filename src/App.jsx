@@ -23,18 +23,16 @@ import Fin from './fin.jsx';
 import Cal from './cal.jsx';
 import Login from './Login';
 import Signup from './Signup';
-import LivestockWrapper from './LivestockWrapper';
+import LivestockApp from './LivestockApp/LivestockApp';
 
-
-
+// AuthRoute component to protect routes
+const AuthRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
-
-  // Simple component to redirect if authenticated
-  const AuthRoute = ({ children, redirectTo = '/' }) => {
-    return isAuthenticated ? <Navigate to={redirectTo} replace /> : children;
-  };
 
   return (
     <Router>
@@ -72,8 +70,7 @@ function AppContent() {
         <Route path="/page" element={<Page />} />
         <Route path="/fin" element={<Fin />} />
         <Route path="/cal" element={<Cal />} />
-        <Route path="/livestock/*" element={<LivestockWrapper />} />
-       
+        <Route path="/Livestock/*" element={<LivestockApp />} />
       </Routes>
     </Router>
   );

@@ -333,13 +333,13 @@ const Home = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark text-black dark:text-white">
+    <div className="relative flex min-h-screen min-w-full flex-col bg-[#f8fdf7] dark:bg-background-dark text-black dark:text-white overflow-x-hidden">
       {/* Top App Bar */}
-      <div className="relative flex items-center bg-gradient-to-r from-background-light to-transparent dark:from-background-dark dark:to-[#1a2f1f] p-3 pb-2 sticky top-0 z-10 border-b border-white/10 shadow-sm backdrop-blur-sm">
+      <div className="relative flex items-center bg-[#f8fdf7] dark:bg-background-dark p-3 pb-2 sticky top-0 z-10 border-b border-white/10 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <button onClick={handleProfileClick} className="flex shrink-0 items-center hover:scale-105 transition-transform duration-150" aria-label="Open profile">
             <div
-              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-12 h-12 ring-2 ring-primary/50 hover:ring-primary transition-all duration-200 shadow-lg border-2 border-white dark:border-background-dark"
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-12 h-12 ring-2 ring-primary/50 hover:ring-primary transition-all duration-200 border-2 border-white dark:border-background-dark"
               style={{ backgroundImage: `url("${user?.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex'}")` }}
             ></div>
           </button>
@@ -462,7 +462,7 @@ const Home = () => {
             </div>
 
             {/* View Forecast Button */}
-            <Link to="/wea" className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 gap-2">
+            <Link to="/wea" className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 active:scale-95 transition-all duration-200 gap-2">
               <span className="material-symbols-outlined text-lg">calendar_today</span>
               <span className="truncate">View Detailed Forecast</span>
             </Link>
@@ -473,7 +473,7 @@ const Home = () => {
 
       {/* Alerts & Notifications */}
       <div className="px-4 pb-4">
-        <div className="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-amber-500/50 bg-gradient-to-br from-amber-500/15 to-amber-500/5 p-5 hover:shadow-lg transition-all duration-300 @[480px]:flex-row @[480px]:items-center">
+        <div className="flex flex-1 flex-col items-start justify-between gap-4 rounded-xl border border-amber-500/50 bg-gradient-to-br from-amber-500/15 to-amber-500/5 p-5 transition-all duration-300 @[480px]:flex-row @[480px]:items-center">
           <div className="flex items-center gap-4">
             <span className="material-symbols-outlined text-amber-400 text-3xl">warning</span>
             <div className="flex flex-col gap-1">
@@ -481,7 +481,7 @@ const Home = () => {
               <p className="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal">Check intercrop suggestions for pest control.</p>
             </div>
           </div>
-          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 hover:shadow-lg active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/som')}>
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/som')}>
             <span className="truncate">View Suggestions</span>
           </button>
         </div>
@@ -492,7 +492,7 @@ const Home = () => {
 
       {/* Sensor Data Grid */}
       <div className="grid grid-cols-2 gap-4 px-4 pb-4">
-        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-blue-500/10 via-blue-400/5 to-transparent dark:from-blue-500/15 dark:via-blue-600/10 dark:to-transparent p-4 hover:shadow-xl hover:from-blue-500/20 hover:to-blue-500/5 dark:hover:from-blue-600/25 dark:hover:to-blue-500/10 transition-all duration-300 border border-blue-400/20 dark:border-blue-400/30 group cursor-pointer transform hover:scale-105">
+        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-blue-500/10 via-blue-400/5 to-transparent dark:from-blue-500/15 dark:via-blue-600/10 dark:to-transparent p-4 hover:from-blue-500/20 hover:to-blue-500/5 dark:hover:from-blue-600/25 dark:hover:to-blue-500/10 transition-all duration-300 border border-blue-400/20 dark:border-blue-400/30 group cursor-pointer transform hover:scale-105">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-blue-500 text-xl group-hover:scale-110 transition-transform">water_drop</span>
             <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">Soil Moisture</p>
@@ -503,7 +503,7 @@ const Home = () => {
             <p className="text-gray-500 dark:text-gray-400 text-xs font-medium">Optimal</p>
           </div>
         </div>
-        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-orange-500/10 via-orange-400/5 to-transparent dark:from-orange-500/15 dark:via-orange-600/10 dark:to-transparent p-4 hover:shadow-xl hover:from-orange-500/20 hover:to-orange-500/5 dark:hover:from-orange-600/25 dark:hover:to-orange-500/10 transition-all duration-300 border border-orange-400/20 dark:border-orange-400/30 group cursor-pointer transform hover:scale-105">
+        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-orange-500/10 via-orange-400/5 to-transparent dark:from-orange-500/15 dark:via-orange-600/10 dark:to-transparent p-4 hover:from-orange-500/20 hover:to-orange-500/5 dark:hover:from-orange-600/25 dark:hover:to-orange-500/10 transition-all duration-300 border border-orange-400/20 dark:border-orange-400/30 group cursor-pointer transform hover:scale-105">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-orange-500 text-xl group-hover:scale-110 transition-transform">thermostat</span>
             <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">Temperature</p>
@@ -514,7 +514,7 @@ const Home = () => {
             <p className="text-gray-500 dark:text-gray-400 text-xs font-medium">Optimal</p>
           </div>
         </div>
-        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-cyan-500/10 via-cyan-400/5 to-transparent dark:from-cyan-500/15 dark:via-cyan-600/10 dark:to-transparent p-4 hover:shadow-xl hover:from-cyan-500/20 hover:to-cyan-500/5 dark:hover:from-cyan-600/25 dark:hover:to-cyan-500/10 transition-all duration-300 border border-cyan-400/20 dark:border-cyan-400/30 group cursor-pointer transform hover:scale-105">
+        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-cyan-500/10 via-cyan-400/5 to-transparent dark:from-cyan-500/15 dark:via-cyan-600/10 dark:to-transparent p-4 hover:from-cyan-500/20 hover:to-cyan-500/5 dark:hover:from-cyan-600/25 dark:hover:to-cyan-500/10 transition-all duration-300 border border-cyan-400/20 dark:border-cyan-400/30 group cursor-pointer transform hover:scale-105">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-cyan-500 text-xl group-hover:scale-110 transition-transform">humidity_percentage</span>
             <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">Humidity</p>
@@ -525,7 +525,7 @@ const Home = () => {
             <p className="text-gray-500 dark:text-gray-400 text-xs font-medium">Optimal</p>
           </div>
         </div>
-        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-purple-500/10 via-purple-400/5 to-transparent dark:from-purple-500/15 dark:via-purple-600/10 dark:to-transparent p-4 hover:shadow-xl hover:from-purple-500/20 hover:to-purple-500/5 dark:hover:from-purple-600/25 dark:hover:to-purple-500/10 transition-all duration-300 border border-purple-400/20 dark:border-purple-400/30 group cursor-pointer transform hover:scale-105">
+        <div className="flex flex-col items-start justify-between gap-2 rounded-xl bg-gradient-to-br from-purple-500/10 via-purple-400/5 to-transparent dark:from-purple-500/15 dark:via-purple-600/10 dark:to-transparent p-4 hover:from-purple-500/20 hover:to-purple-500/5 dark:hover:from-purple-600/25 dark:hover:to-purple-500/10 transition-all duration-300 border border-purple-400/20 dark:border-purple-400/30 group cursor-pointer transform hover:scale-105">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-purple-500 text-xl group-hover:scale-110 transition-transform">science</span>
             <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">Soil pH</p>
@@ -568,38 +568,38 @@ const Home = () => {
       {/* Section Header: Quick Actions */}
       <div className="flex items-center justify-between px-4 pt-8 pb-3">
         <h2 className="text-black dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] animate-fade-in-down">Quick Actions</h2>
-        <button onClick={handleChatClick} aria-label="Open Chat" className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 text-[#112212] shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-200 z-20" title="Chat with AgroAI">
+        <button onClick={handleChatClick} aria-label="Open Chat" className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 text-[#112212] hover:scale-110 active:scale-95 transition-all duration-200 z-20" title="Chat with AgroAI">
           <span className="material-symbols-outlined text-lg">support_agent</span>
         </button>
       </div>
 
       {/* Quick Actions Panel */}
       <div className="grid grid-cols-3 gap-4 px-4 pb-24">
-        <Link to="/lms" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-indigo-400/10 to-transparent dark:from-indigo-600/25 dark:via-indigo-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-indigo-500/30 hover:to-indigo-400/10 dark:hover:from-indigo-600/35 dark:hover:to-indigo-500/20 transition-all duration-300 active:scale-95 border border-indigo-400/30 dark:border-indigo-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/lms" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-indigo-500/20 via-indigo-400/10 to-transparent dark:from-indigo-600/25 dark:via-indigo-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-indigo-500/30 hover:to-indigo-400/10 dark:hover:from-indigo-600/35 dark:hover:to-indigo-500/20 transition-all duration-300 active:scale-95 border border-indigo-400/30 dark:border-indigo-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-indigo-500 group-hover:scale-125 transition-transform">school</span>
           <span className="font-semibold text-sm">LMS</span>
         </Link>
-        <Link to="/dp" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-red-500/20 via-red-400/10 to-transparent dark:from-red-600/25 dark:via-red-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-red-500/30 hover:to-red-400/10 dark:hover:from-red-600/35 dark:hover:to-red-500/20 transition-all duration-300 active:scale-95 border border-red-400/30 dark:border-red-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/dp" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-red-500/20 via-red-400/10 to-transparent dark:from-red-600/25 dark:via-red-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-red-500/30 hover:to-red-400/10 dark:hover:from-red-600/35 dark:hover:to-red-500/20 transition-all duration-300 active:scale-95 border border-red-400/30 dark:border-red-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-red-500 group-hover:scale-125 transition-transform">photo_camera</span>
           <span className="font-semibold text-sm">Disease Detection</span>
         </Link>
-        <Link to="/scheme" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-emerald-400/10 to-transparent dark:from-emerald-600/25 dark:via-emerald-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-emerald-500/30 hover:to-emerald-400/10 dark:hover:from-emerald-600/35 dark:hover:to-emerald-500/20 transition-all duration-300 active:scale-95 border border-emerald-400/30 dark:border-emerald-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/scheme" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-emerald-400/10 to-transparent dark:from-emerald-600/25 dark:via-emerald-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-emerald-500/30 hover:to-emerald-400/10 dark:hover:from-emerald-600/35 dark:hover:to-emerald-500/20 transition-all duration-300 active:scale-95 border border-emerald-400/30 dark:border-emerald-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-emerald-500 group-hover:scale-125 transition-transform">policy</span>
           <span className="font-semibold text-sm">Scheme</span>
         </Link>
-        <Link to="/quc" className="relative cursor-pointer flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-400/10 to-transparent dark:from-amber-600/25 dark:via-amber-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-amber-500/30 hover:to-amber-400/10 dark:hover:from-amber-600/35 dark:hover:to-amber-500/20 transition-all duration-300 active:scale-95 border border-amber-400/30 dark:border-amber-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/quc" className="relative cursor-pointer flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-400/10 to-transparent dark:from-amber-600/25 dark:via-amber-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-amber-500/30 hover:to-amber-400/10 dark:hover:from-amber-600/35 dark:hover:to-amber-500/20 transition-all duration-300 active:scale-95 border border-amber-400/30 dark:border-amber-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-amber-500 group-hover:scale-125 transition-transform">trending_up</span>
           <span className="font-semibold text-sm">Market Prices</span>
         </Link>
-        <Link to="/fin" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-violet-500/20 via-violet-400/10 to-transparent dark:from-violet-600/25 dark:via-violet-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-violet-500/30 hover:to-violet-400/10 dark:hover:from-violet-600/35 dark:hover:to-violet-500/20 transition-all duration-300 active:scale-95 border border-violet-400/30 dark:border-violet-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/fin" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-violet-500/20 via-violet-400/10 to-transparent dark:from-violet-600/25 dark:via-violet-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-violet-500/30 hover:to-violet-400/10 dark:hover:from-violet-600/35 dark:hover:to-violet-500/20 transition-all duration-300 active:scale-95 border border-violet-400/30 dark:border-violet-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-violet-500 group-hover:scale-125 transition-transform">wallet</span>
           <span className="font-semibold text-sm">Finance</span>
         </Link>
-        <Link to="/cal" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-cyan-500/20 via-cyan-400/10 to-transparent dark:from-cyan-600/25 dark:via-cyan-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-cyan-500/30 hover:to-cyan-400/10 dark:hover:from-cyan-600/35 dark:hover:to-cyan-500/20 transition-all duration-300 active:scale-95 border border-cyan-400/30 dark:border-cyan-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/cal" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-cyan-500/20 via-cyan-400/10 to-transparent dark:from-cyan-600/25 dark:via-cyan-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-cyan-500/30 hover:to-cyan-400/10 dark:hover:from-cyan-600/35 dark:hover:to-cyan-500/20 transition-all duration-300 active:scale-95 border border-cyan-400/30 dark:border-cyan-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-cyan-500 group-hover:scale-125 transition-transform">calendar_month</span>
           <span className="font-semibold text-sm">Crop Calendar</span>
         </Link>
-        <Link to="/livestock" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-400/10 to-transparent dark:from-orange-600/25 dark:via-orange-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:shadow-2xl hover:from-orange-500/30 hover:to-orange-400/10 dark:hover:from-orange-600/35 dark:hover:to-orange-500/20 transition-all duration-300 active:scale-95 border border-orange-400/30 dark:border-orange-400/40 group hover:scale-110 hover:-translate-y-1">
+        <Link to="/Livestock" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-400/10 to-transparent dark:from-orange-600/25 dark:via-orange-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-orange-500/30 hover:to-orange-400/10 dark:hover:from-orange-600/35 dark:hover:to-orange-500/20 transition-all duration-300 active:scale-95 border border-orange-400/30 dark:border-orange-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-orange-500 group-hover:scale-125 transition-transform">pets</span>
           <span className="font-semibold text-sm">Livestock</span>
         </Link>
