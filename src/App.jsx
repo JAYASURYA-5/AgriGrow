@@ -1,35 +1,35 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, AuthProvider, useAuth } from './Contexts';
 
+// Eagerly load critical pages
 import Home from './Home';
-import News from './News';
-import Wea from './wea.jsx';
-import Market from './Market';
-import Analysis from './Analysis';
-import Chatbot from './Chatbot';
-import Desease from './Desease';
-import Page from './page.tsx';
-import Scheme from './Scheme';
-import Settings from './Settings';
-import Upload from './Upload';
-import UserProfile from './UserProfile';
-import Som from './som.jsx';
-import Quc from './quc.tsx';
-import Eco from './eco.jsx';
-import Dp from './dp.jsx';
-import Comm from './comm.jsx';
-import Fin from './fin.jsx';
-import Cal from './cal.jsx';
 import Login from './Login';
 import Signup from './Signup';
-import LivestockApp from './LivestockApp/LivestockApp';
 
-// AuthRoute component to protect routes
-const AuthRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
-};
+// Lazy load non-critical components
+const News = React.lazy(() => import('./News'));
+const Wea = React.lazy(() => import('./wea.jsx'));
+const Market = React.lazy(() => import('./Market'));
+const Analysis = React.lazy(() => import('./Analysis'));
+const Chatbot = React.lazy(() => import('./Chatbot'));
+const Desease = React.lazy(() => import('./Desease'));
+const Page = React.lazy(() => import('./page.tsx'));
+const Scheme = React.lazy(() => import('./Scheme'));
+const Settings = React.lazy(() => import('./Settings'));
+const Upload = React.lazy(() => import('./Upload'));
+const UserProfile = React.lazy(() => import('./UserProfile'));
+const Som = React.lazy(() => import('./som.jsx'));
+const Quc = React.lazy(() => import('./quc.tsx'));
+const Eco = React.lazy(() => import('./eco.jsx'));
+const Dp = React.lazy(() => import('./dp.jsx'));
+const Comm = React.lazy(() => import('./comm.jsx'));
+const Fin = React.lazy(() => import('./fin.jsx'));
+const Cal = React.lazy(() => import('./cal.jsx'));
+const LivestockApp = React.lazy(() => import('./LivestockApp/LivestockApp'));
+
+// Loading fallback component
+const LoadingFallback = () => <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>;
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
@@ -37,40 +37,32 @@ function AppContent() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={
-          <AuthRoute>
-            <Login />
-          </AuthRoute>
-        } />
-        <Route path="/signup" element={
-          <AuthRoute>
-            <Signup />
-          </AuthRoute>
-        } />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" replace />} />
+        <Route path="/signup" element={!isAuthenticated ? <Signup /> : <Navigate to="/" replace />} />
         <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />} />
-        <Route path="/news" element={<News />} />
-        <Route path="/wea" element={<Wea />} />
-        <Route path="/market" element={<Market />} />
-        <Route path="/analysis" element={<Analysis />} />
-        <Route path="/chatbot" element={<Chatbot />} />
-        <Route path="/comm" element={<Comm />} />
-        <Route path="/disease" element={<Desease />} />
-        <Route path="/lms" element={<Page />} />
-        <Route path="/courses" element={<Page />} />
-        <Route path="/playlists" element={<Page />} />
-        <Route path="/favorites" element={<Page />} />
-        <Route path="/scheme" element={<Scheme />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/upload" element={<Upload />} />
-        <Route path="/userprofile" element={<UserProfile />} />
-        <Route path="/quc" element={<Quc />} />
-        <Route path="/som" element={<Som />} />
-        <Route path="/eco/*" element={<Eco />} />
-        <Route path="/dp" element={<Dp />} />
-        <Route path="/page" element={<Page />} />
-        <Route path="/fin" element={<Fin />} />
-        <Route path="/cal" element={<Cal />} />
-        <Route path="/Livestock/*" element={<LivestockApp />} />
+        <Route path="/news" element={<Suspense fallback={<LoadingFallback />}><News /></Suspense>} />
+        <Route path="/wea" element={<Suspense fallback={<LoadingFallback />}><Wea /></Suspense>} />
+        <Route path="/market" element={<Suspense fallback={<LoadingFallback />}><Market /></Suspense>} />
+        <Route path="/analysis" element={<Suspense fallback={<LoadingFallback />}><Analysis /></Suspense>} />
+        <Route path="/chatbot" element={<Suspense fallback={<LoadingFallback />}><Chatbot /></Suspense>} />
+        <Route path="/comm" element={<Suspense fallback={<LoadingFallback />}><Comm /></Suspense>} />
+        <Route path="/disease" element={<Suspense fallback={<LoadingFallback />}><Desease /></Suspense>} />
+        <Route path="/lms" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
+        <Route path="/courses" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
+        <Route path="/playlists" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
+        <Route path="/favorites" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
+        <Route path="/scheme" element={<Suspense fallback={<LoadingFallback />}><Scheme /></Suspense>} />
+        <Route path="/settings" element={<Suspense fallback={<LoadingFallback />}><Settings /></Suspense>} />
+        <Route path="/upload" element={<Suspense fallback={<LoadingFallback />}><Upload /></Suspense>} />
+        <Route path="/userprofile" element={<Suspense fallback={<LoadingFallback />}><UserProfile /></Suspense>} />
+        <Route path="/quc" element={<Suspense fallback={<LoadingFallback />}><Quc /></Suspense>} />
+        <Route path="/som" element={<Suspense fallback={<LoadingFallback />}><Som /></Suspense>} />
+        <Route path="/eco/*" element={<Suspense fallback={<LoadingFallback />}><Eco /></Suspense>} />
+        <Route path="/dp" element={<Suspense fallback={<LoadingFallback />}><Dp /></Suspense>} />
+        <Route path="/page" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
+        <Route path="/fin" element={<Suspense fallback={<LoadingFallback />}><Fin /></Suspense>} />
+        <Route path="/cal" element={<Suspense fallback={<LoadingFallback />}><Cal /></Suspense>} />
+        <Route path="/Livestock/*" element={<Suspense fallback={<LoadingFallback />}><LivestockApp /></Suspense>} />
       </Routes>
     </Router>
   );
