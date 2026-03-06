@@ -22,23 +22,26 @@ const Signup = () => {
     });
 
     const maleAvatars = [
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Adrian',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Jude'
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=John&style=circle',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike&style=circle',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=David&style=circle',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert&style=circle',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=James&style=circle'
     ];
 
+    // Modern, attractive, and visually distinct female avatars using Dicebear's latest styles
     const femaleAvatars = [
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Anya',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Lily',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Chloe',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Sassy',
-        'https://api.dicebear.com/7.x/avataaars/svg?seed=Kimberly'
+        'https://api.dicebear.com/7.x/notionists/svg?seed=Emma',
+        'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Sarah',
+        'https://api.dicebear.com/7.x/lorelei/svg?seed=Jessica',
+        'https://api.dicebear.com/7.x/micah/svg?seed=Rachel',
+        'https://api.dicebear.com/7.x/notionists/svg?seed=Amanda'
     ];
 
     const getAvatars = () => {
-        return formData.gender === 'Female' ? femaleAvatars : maleAvatars;
+        const selected = formData.gender === 'Female' ? femaleAvatars : maleAvatars;
+        console.log(`Gender Selected: ${formData.gender}, Showing Avatars:`, selected);
+        return selected;
     };
 
     const handleChange = (e) => {
@@ -46,6 +49,7 @@ const Signup = () => {
     };
 
     const handleGenderSelect = (gender) => {
+        console.log(`✓ Gender changed to: ${gender}`);
         setFormData({ ...formData, gender, profileImage: '' }); // Clear image when gender changes
     };
 
@@ -342,12 +346,12 @@ const Signup = () => {
                                     <div className="grid grid-cols-5 gap-2">
                                         {getAvatars().map((url, idx) => (
                                             <div
-                                                key={idx}
+                                                key={`${formData.gender}-avatar-${idx}`}
                                                 onClick={() => handleAvatarSelect(url)}
                                                 className={`relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${formData.profileImage === url ? 'border-primary ring-2 ring-primary/20 scale-110 z-10' : 'border-transparent opacity-60 hover:opacity-100'
                                                     }`}
                                             >
-                                                <img src={url} alt={`avatar-${idx}`} className="w-full h-full object-cover" />
+                                                <img src={url} alt={`${formData.gender.toLowerCase()}-avatar-${idx}`} className="w-full h-full object-cover" />
                                             </div>
                                         ))}
                                     </div>

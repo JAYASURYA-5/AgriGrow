@@ -147,7 +147,7 @@ const UserProfile = () => {
   // Manual location detection function
   const detectLocationManually = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
+      showErrorDialog('Geolocation is not supported by your browser. Please enter location manually.');
       return;
     }
 
@@ -158,41 +158,80 @@ const UserProfile = () => {
       async (position) => {
         const { latitude, longitude, accuracy } = position.coords;
         try {
+          // Try reverse geocoding to get readable address
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+            { timeout: 5000 }
           );
           const data = await response.json();
           const locationName = data.address?.village || data.address?.city || data.address?.town || 
-                              data.address?.county || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                              data.address?.county || data.address?.state || 
+                              `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
           
           setEditForm({ ...editForm, location: locationName });
+          setUserData(prev => ({
+            ...prev,
+            location: { ...prev.location, name: locationName, latitude, longitude, accuracy }
+          }));
 
-          const toast = document.createElement('div');
-          toast.textContent = `✓ Location detected: ${locationName}`;
-          Object.assign(toast.style, {
-            position: 'fixed', bottom: '24px', right: '24px', backgroundColor: '#10b981', color: 'white',
-            padding: '12px 24px', borderRadius: '12px', zIndex: '9999', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          });
-          document.body.appendChild(toast);
-          setTimeout(() => toast.remove(), 3000);
+          showSuccessToast(`📍 Location detected: ${locationName}`);
         } catch (error) {
-          setEditForm({ ...editForm, location: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
-          const toast = document.createElement('div');
-          toast.textContent = '✓ Coordinates detected';
-          Object.assign(toast.style, {
-            position: 'fixed', bottom: '24px', right: '24px', backgroundColor: '#10b981', color: 'white',
-            padding: '12px 24px', borderRadius: '12px', zIndex: '9999', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          });
-          document.body.appendChild(toast);
-          setTimeout(() => toast.remove(), 3000);
+          // Fallback to coordinates only
+          const coordsOnly = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+          setEditForm({ ...editForm, location: coordsOnly });
+          setUserData(prev => ({
+            ...prev,
+            location: { ...prev.location, name: coordsOnly, latitude, longitude, accuracy }
+          }));
+          showSuccessToast(`📍 Coordinates detected: ${coordsOnly}`);
         }
         if (detectBtn) detectBtn.disabled = false;
       },
       (error) => {
-        alert('Failed to detect location: ' + error.message);
+        let errorMsg = 'Could not detect location. Please enter manually.';
+        if (error.code === 1) errorMsg = 'Location permission denied. Please enable GPS and try again.';
+        else if (error.code === 2) errorMsg = 'Position unavailable. Please try again.';
+        else if (error.code === 3) errorMsg = 'Location request timeout. Please try again.';
+        
+        showErrorDialog(errorMsg);
         if (detectBtn) detectBtn.disabled = false;
-      }
+      },
+      { timeout: 10000, enableHighAccuracy: true, maximumAge: 0 }
     );
+  };
+
+  // Helper function to show error dialog
+  const showErrorDialog = (message) => {
+    const dialog = document.createElement('div');
+    dialog.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm';
+    dialog.innerHTML = `
+      <div class="bg-white dark:bg-card-dark rounded-2xl shadow-xl p-6 max-w-sm mx-4 animate-in">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="text-lg font-bold">Location Detection</h3>
+          <button onclick="this.closest('div').remove()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+        </div>
+        <p class="text-gray-600 dark:text-gray-300 mb-5">${message}</p>
+        <button onclick="this.closest('div').remove()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition-colors">
+          OK
+        </button>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+    setTimeout(() => dialog.style.opacity = '0', 2500);
+    setTimeout(() => dialog.remove(), 3000);
+  };
+
+  // Helper function for success toast
+  const showSuccessToast = (message) => {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    Object.assign(toast.style, {
+      position: 'fixed', bottom: '24px', right: '24px', backgroundColor: '#10b981', color: 'white',
+      padding: '12px 24px', borderRadius: '12px', zIndex: '9999', fontWeight: 'bold', 
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)', animation: 'slideIn 0.3s ease-out'
+    });
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
   };
 
   const handleLogout = () => {
@@ -298,9 +337,9 @@ const UserProfile = () => {
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Location</span>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-end">
                   <input
-                    className="flex-1 rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
+                    className="flex-1 rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark focus:outline-none focus:ring-2 focus:ring-primary"
                     value={editForm.location}
                     onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
                     placeholder="Enter or auto-detect farm location"
@@ -308,11 +347,11 @@ const UserProfile = () => {
                   <button
                     data-detect-location
                     onClick={detectLocationManually}
-                    className="px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors flex items-center gap-2 whitespace-nowrap"
-                    title="Auto-detect your farm location using GPS"
+                    type="button"
+                    className="h-12 w-12 bg-gradient-to-br from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Auto-detect farm location using GPS"
                   >
-                    <span className="material-symbols-outlined text-lg">location_on</span>
-                    <span className="hidden sm:inline">Detect</span>
+                    <span className="material-symbols-outlined text-2xl">location_on</span>
                   </button>
                 </div>
               </label>
