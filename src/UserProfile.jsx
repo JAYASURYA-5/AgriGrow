@@ -39,6 +39,63 @@ const UserProfile = () => {
     }
   }, [user]);
 
+  // Auto-detect farm location on mount
+  useEffect(() => {
+    if (navigator.geolocation && !userData.location?.latitude) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude, accuracy } = position.coords;
+          try {
+            // Try to get location name from coordinates using reverse geocoding
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            );
+            const data = await response.json();
+            const locationName = data.address?.village || data.address?.city || data.address?.town || 
+                                data.address?.county || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+            
+            setUserData(prev => ({
+              ...prev,
+              location: {
+                ...prev.location,
+                name: locationName,
+                latitude,
+                longitude,
+                accuracy
+              }
+            }));
+
+            // Show notification
+            const toast = document.createElement('div');
+            toast.textContent = `📍 Farm location detected: ${locationName}`;
+            Object.assign(toast.style, {
+              position: 'fixed', top: '24px', right: '24px', backgroundColor: '#3b82f6', color: 'white',
+              padding: '12px 24px', borderRadius: '12px', zIndex: '9999', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            });
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+          } catch (error) {
+            console.log('Reverse geocoding failed, using coordinates');
+            setUserData(prev => ({
+              ...prev,
+              location: {
+                ...prev.location,
+                name: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
+                latitude,
+                longitude,
+                accuracy
+              }
+            }));
+          }
+        },
+        (error) => {
+          console.log('Geolocation error:', error.message);
+          // Silently fail - user can enter location manually
+        }
+      );
+    }
+  }, []);
+
   const handleEditClick = () => {
     setEditForm({
       name: userData.name || '',
@@ -85,6 +142,57 @@ const UserProfile = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
+  };
+
+  // Manual location detection function
+  const detectLocationManually = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+
+    const detectBtn = document.querySelector('[data-detect-location]');
+    if (detectBtn) detectBtn.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+          const data = await response.json();
+          const locationName = data.address?.village || data.address?.city || data.address?.town || 
+                              data.address?.county || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+          
+          setEditForm({ ...editForm, location: locationName });
+
+          const toast = document.createElement('div');
+          toast.textContent = `✓ Location detected: ${locationName}`;
+          Object.assign(toast.style, {
+            position: 'fixed', bottom: '24px', right: '24px', backgroundColor: '#10b981', color: 'white',
+            padding: '12px 24px', borderRadius: '12px', zIndex: '9999', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          });
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
+        } catch (error) {
+          setEditForm({ ...editForm, location: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` });
+          const toast = document.createElement('div');
+          toast.textContent = '✓ Coordinates detected';
+          Object.assign(toast.style, {
+            position: 'fixed', bottom: '24px', right: '24px', backgroundColor: '#10b981', color: 'white',
+            padding: '12px 24px', borderRadius: '12px', zIndex: '9999', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          });
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
+        }
+        if (detectBtn) detectBtn.disabled = false;
+      },
+      (error) => {
+        alert('Failed to detect location: ' + error.message);
+        if (detectBtn) detectBtn.disabled = false;
+      }
+    );
   };
 
   const handleLogout = () => {
@@ -190,11 +298,23 @@ const UserProfile = () => {
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Location</span>
-                <input
-                  className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
-                  value={editForm.location}
-                  onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                />
+                <div className="flex gap-2">
+                  <input
+                    className="flex-1 rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
+                    value={editForm.location}
+                    onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                    placeholder="Enter or auto-detect farm location"
+                  />
+                  <button
+                    data-detect-location
+                    onClick={detectLocationManually}
+                    className="px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors flex items-center gap-2 whitespace-nowrap"
+                    title="Auto-detect your farm location using GPS"
+                  >
+                    <span className="material-symbols-outlined text-lg">location_on</span>
+                    <span className="hidden sm:inline">Detect</span>
+                  </button>
+                </div>
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Key Crops (comma separated)</span>
