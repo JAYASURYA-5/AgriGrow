@@ -19,7 +19,7 @@ const Scheme = React.lazy(() => import('./Scheme'));
 const Settings = React.lazy(() => import('./Settings'));
 const Upload = React.lazy(() => import('./Upload'));
 const UserProfile = React.lazy(() => import('./UserProfile'));
-const Som = React.lazy(() => import('./som.jsx'));
+const Intercrop = React.lazy(() => import('./Intercrop.jsx'));
 const Quc = React.lazy(() => import('./quc.tsx'));
 const Eco = React.lazy(() => import('./eco.jsx'));
 const Dp = React.lazy(() => import('./dp.jsx'));
@@ -56,7 +56,7 @@ function AppContent() {
         <Route path="/upload" element={<Suspense fallback={<LoadingFallback />}><Upload /></Suspense>} />
         <Route path="/userprofile" element={<Suspense fallback={<LoadingFallback />}><UserProfile /></Suspense>} />
         <Route path="/quc" element={<Suspense fallback={<LoadingFallback />}><Quc /></Suspense>} />
-        <Route path="/som" element={<Suspense fallback={<LoadingFallback />}><Som /></Suspense>} />
+        <Route path="/intercrop" element={<Suspense fallback={<LoadingFallback />}><Intercrop /></Suspense>} />
         <Route path="/eco/*" element={<Suspense fallback={<LoadingFallback />}><Eco /></Suspense>} />
         <Route path="/dp" element={<Suspense fallback={<LoadingFallback />}><Dp /></Suspense>} />
         <Route path="/page" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />

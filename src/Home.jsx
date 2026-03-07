@@ -546,7 +546,7 @@ const Home = () => {
         <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-white/5 via-transparent to-transparent dark:from-[#2a5c32] dark:via-[#1f4820] dark:to-[#19341b] p-4 hover:shadow-2xl hover:from-white/10 hover:to-transparent dark:hover:from-[#3a7c42] dark:hover:to-[#2a5c32] transition-all duration-300 border border-white/20 dark:border-white/10 group hover:scale-[1.02]">
           <div className="flex justify-between items-center">
             <p className="text-black dark:text-white font-bold text-lg">Crop Health</p>
-            <Link to="/som" className="text-primary text-sm font-semibold hover:text-primary/80 hover:scale-105 transition-all duration-200">View Report</Link>
+            <Link to="/intercrop" className="text-primary text-sm font-semibold hover:text-primary/80 hover:scale-105 transition-all duration-200">View Report</Link>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative size-20">
