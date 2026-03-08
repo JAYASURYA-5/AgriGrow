@@ -27,6 +27,7 @@ const Comm = React.lazy(() => import('./comm.jsx'));
 const Fin = React.lazy(() => import('./fin.jsx'));
 const Cal = React.lazy(() => import('./cal.jsx'));
 const LivestockApp = React.lazy(() => import('./LivestockApp/LivestockApp'));
+const Notes = React.lazy(() => import('./components/Notes'));
 
 // Loading fallback component
 const LoadingFallback = () => <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>;
@@ -63,6 +64,7 @@ function AppContent() {
         <Route path="/fin" element={<Suspense fallback={<LoadingFallback />}><Fin /></Suspense>} />
         <Route path="/cal" element={<Suspense fallback={<LoadingFallback />}><Cal /></Suspense>} />
         <Route path="/Livestock/*" element={<Suspense fallback={<LoadingFallback />}><LivestockApp /></Suspense>} />
+        <Route path="/notes" element={<Suspense fallback={<LoadingFallback />}><Notes /></Suspense>} />
       </Routes>
     </Router>
   );
