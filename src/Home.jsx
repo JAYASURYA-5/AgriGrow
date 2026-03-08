@@ -587,6 +587,10 @@ const Home = () => {
           <span className="material-symbols-outlined text-5xl text-yellow-500 group-hover:scale-125 transition-transform">note</span>
           <span className="font-semibold text-sm">Notes</span>
         </Link>
+        <Link to="/news" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-red-400/20 via-red-300/10 to-transparent dark:from-red-500/25 dark:via-red-400/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-red-400/30 hover:to-red-300/10 dark:hover:from-red-500/35 dark:hover:to-red-400/20 transition-all duration-300 active:scale-95 border border-red-400/30 dark:border-red-400/40 group hover:scale-110 hover:-translate-y-1">
+          <span className="material-symbols-outlined text-5xl text-red-500 group-hover:scale-125 transition-transform">article</span>
+          <span className="font-semibold text-sm">News</span>
+        </Link>
         <Link to="/scheme" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-emerald-400/10 to-transparent dark:from-emerald-600/25 dark:via-emerald-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-emerald-500/30 hover:to-emerald-400/10 dark:hover:from-emerald-600/35 dark:hover:to-emerald-500/20 transition-all duration-300 active:scale-95 border border-emerald-400/30 dark:border-emerald-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-emerald-500 group-hover:scale-125 transition-transform">policy</span>
           <span className="font-semibold text-sm">Scheme</span>
