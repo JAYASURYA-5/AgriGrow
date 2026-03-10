@@ -566,12 +566,7 @@ const Home = () => {
       </div>
 
       {/* Section Header: Quick Actions */}
-      <div className="flex items-center justify-between px-4 pt-8 pb-3">
-        <h2 className="text-black dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] animate-fade-in-down">Quick Actions</h2>
-        <button onClick={handleChatClick} aria-label="Open Chat" className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 text-[#112212] hover:scale-110 active:scale-95 transition-all duration-200 z-20" title="Chat with AgroAI">
-          <span className="material-symbols-outlined text-lg">support_agent</span>
-        </button>
-      </div>
+      <h2 className="text-black dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8 animate-fade-in-down">Quick Actions</h2>
 
       {/* Quick Actions Panel */}
       <div className="grid grid-cols-3 gap-4 px-4 pb-24">
@@ -610,6 +605,10 @@ const Home = () => {
         <Link to="/Livestock" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-400/10 to-transparent dark:from-orange-600/25 dark:via-orange-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-orange-500/30 hover:to-orange-400/10 dark:hover:from-orange-600/35 dark:hover:to-orange-500/20 transition-all duration-300 active:scale-95 border border-orange-400/30 dark:border-orange-400/40 group hover:scale-110 hover:-translate-y-1">
           <span className="material-symbols-outlined text-5xl text-orange-500 group-hover:scale-125 transition-transform">pets</span>
           <span className="font-semibold text-sm">Livestock</span>
+        </Link>
+        <Link to="/agrihub" className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-green-500/20 via-green-400/10 to-transparent dark:from-green-600/25 dark:via-green-500/15 dark:to-transparent p-4 h-28 text-black dark:text-white hover:from-green-500/30 hover:to-green-400/10 dark:hover:from-green-600/35 dark:hover:to-green-500/20 transition-all duration-300 active:scale-95 border border-green-400/30 dark:border-green-400/40 group hover:scale-110 hover:-translate-y-1">
+          <span className="material-symbols-outlined text-5xl text-green-500 group-hover:scale-125 transition-transform">hub</span>
+          <span className="font-semibold text-sm">AgriHub</span>
         </Link>
       </div>
 
