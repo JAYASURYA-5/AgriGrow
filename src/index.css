@@ -1,0 +1,376 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Custom Properties for ReactJS Theming */
+:root {
+  /* Forest Green Theme */
+  --primary: 120 100% 50%; /* vivid neon green */
+  --primary-rgb: 35, 93, 58;
+  --primary-foreground: 45 30% 97%;
+  --primary-hover: 120 90% 45%;
+
+  --accent: 35 85% 55%;
+  --success: 145 65% 40%;
+  --error: 0 72% 51%;
+
+  /* Backgrounds  https://7pg0mt7g-3001.inc1.devtunnels.ms/*/
+  --background-light: 45 30% 97%;
+  --background-dark: 150 30% 10%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+html {
+  font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  scroll-behavior: smooth;
+}
+
+html.light {
+  --background-light: 45 30% 97%;
+  --background-dark: 40 30% 96%;
+  --card-light: 45 40% 99%;
+  --card-dark: 45 20% 95%;
+  --text-light: 150 25% 15%;
+  --text-dark: 150 25% 20%;
+  --text-secondary-light: 150 15% 45%;
+  --text-secondary-dark: 150 15% 55%;
+  --border-light: 45 20% 88%;
+  --border-dark: 45 20% 80%;
+  --accent: 35 85% 55%;
+  --success: 145 65% 40%;
+  --error: 0 72% 51%;
+}
+
+html.dark {
+  --background-light: 220 40% 8%; /* dark blue */
+  --background-dark: 220 45% 6%;
+  --card-light: 220 35% 12%;
+  --card-dark: 220 35% 10%;
+  --text-light: 45 30% 95%;
+  --text-dark: 45 30% 90%;
+  --text-secondary-light: 45 15% 70%;
+  --text-secondary-dark: 45 15% 60%;
+  --border-light: 220 25% 25%;
+  --border-dark: 220 25% 20%;
+  --accent: 35 85% 55%;
+  --success: 145 65% 40%;
+  --error: 0 72% 51%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: hsl(var(--background-light));
+  color: hsl(var(--text-light));
+  min-height: 100vh;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ReactJS Utility Classes */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ReactJS Animation Classes */
+.animate-fade-in-down {
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.5s ease-out;
+}
+
+/* ReactJS Keyframe Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Theme Toggle Button Styling */
+.theme-toggle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid hsl(var(--border-light));
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: hsl(var(--text-light));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 20px;
+  padding: 0;
+}
+
+html.dark .theme-toggle {
+  background-color: hsl(var(--card-dark));
+  border-color: hsl(var(--border-dark));
+  color: hsl(var(--text-light));
+}
+
+.theme-toggle:hover {
+  transform: scale(1.05);
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.3);
+}
+
+html.dark .theme-toggle:hover {
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.4);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Livestock Module CSS */
+
+@layer base {
+  :root {
+    /* Earthy farm palette */
+    --background: 45 30% 97%;
+    --foreground: 150 25% 15%;
+
+    --card: 45 40% 99%;
+    --card-foreground: 150 25% 15%;
+
+    --popover: 45 40% 99%;
+    --popover-foreground: 150 25% 15%;
+
+    /* Forest green primary */
+    /* --primary: 150 45% 25%;  <-- Commented out to use Main App's Primary Green */
+    /* --primary-foreground: 45 30% 97%; */
+    /* Use Main App's Primary Green (HSL approx for #0ff022 -> 125, 91%, 50%) */
+    --primary-foreground: 150 25% 10%;
+
+    /* Warm cream secondary */
+    --secondary: 40 35% 92%;
+    --secondary-foreground: 150 25% 20%;
+
+    --muted: 45 20% 92%;
+    --muted-foreground: 150 10% 45%;
+
+    /* Amber accent */
+    --accent: 35 85% 55%;
+    --accent-foreground: 150 25% 15%;
+
+    /* Status colors */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 65% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 150 25% 15%;
+
+    --border: 45 20% 88%;
+    --input: 45 20% 88%;
+    --ring: 150 45% 25%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --gradient-hero: linear-gradient(135deg, hsl(150, 45%, 25%) 0%, hsl(160, 40%, 35%) 50%, hsl(35, 85%, 55%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(45, 40%, 99%) 0%, hsl(45, 30%, 96%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(35, 85%, 55%) 0%, hsl(25, 80%, 50%) 100%);
+    --shadow-soft: 0 4px 20px -4px hsl(150 25% 15% / 0.08);
+    --shadow-card: 0 2px 12px -2px hsl(150 25% 15% / 0.06);
+    --shadow-hover: 0 8px 30px -6px hsl(150 25% 15% / 0.12);
+
+    /* Sidebar */
+    --sidebar-background: 150 35% 20%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 35 85% 55%;
+    --sidebar-primary-foreground: 150 25% 15%;
+    --sidebar-accent: 150 30% 28%;
+    --sidebar-accent-foreground: 45 30% 95%;
+    --sidebar-border: 150 30% 25%;
+    --sidebar-ring: 35 85% 55%;
+  }
+
+  .dark {
+    --background: 150 25% 10%;
+    --foreground: 45 30% 95%;
+
+    --card: 150 25% 12%;
+    --card-foreground: 45 30% 95%;
+
+    --popover: 150 25% 12%;
+    --popover-foreground: 45 30% 95%;
+
+    /* --primary: 150 45% 45%; */
+    /* --primary-foreground: 150 25% 10%; */
+
+    --secondary: 150 20% 18%;
+    --secondary-foreground: 45 30% 90%;
+
+    --muted: 150 15% 20%;
+    --muted-foreground: 45 15% 60%;
+
+    --accent: 35 85% 55%;
+    --accent-foreground: 150 25% 10%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 15% 22%;
+    --input: 150 15% 22%;
+    --ring: 150 45% 45%;
+
+    --sidebar-background: 150 30% 8%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 35 85% 55%;
+    --sidebar-primary-foreground: 150 25% 10%;
+    --sidebar-accent: 150 25% 15%;
+    --sidebar-accent-foreground: 45 30% 95%;
+    --sidebar-border: 150 20% 15%;
+    --sidebar-ring: 35 85% 55%;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-hero);
+  }
+
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+
+  .bg-gradient-card {
+    background-image: var(--gradient-card);
+  }
+
+  .bg-gradient-accent {
+    background-image: var(--gradient-accent);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}

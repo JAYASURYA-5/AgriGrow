@@ -1,0 +1,126 @@
+/* Sticky Notes Board UI */
+.notes-board-bg {
+  min-height: 100vh;
+  background: repeating-linear-gradient(90deg, #f7f7fa 0 1px, transparent 1px 100px), repeating-linear-gradient(0deg, #f7f7fa 0 1px, transparent 1px 100px), #fffbe7;
+  padding: 0;
+}
+
+.notes-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 32px 32px 0 32px;
+}
+.notes-toolbar h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2e7d32;
+  margin: 0;
+}
+
+.sticky-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 32px;
+  padding: 32px;
+}
+
+.sticky-note {
+  min-height: 180px;
+  min-width: 220px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px 0 rgba(0,0,0,0.10), 0 1.5px 0 #e0e0e0;
+  padding: 20px 18px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: box-shadow 0.2s, transform 0.2s;
+  word-break: break-word;
+  font-size: 1.08rem;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background: #fffde7;
+  border: 2.5px solid #f3e99f;
+}
+.sticky-note.new-note {
+  border-style: dashed;
+  opacity: 0.95;
+}
+.sticky-note .note-textarea {
+  width: 100%;
+  min-height: 60px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  padding: 8px;
+  margin-bottom: 8px;
+  background: #fffbe7;
+  resize: vertical;
+  outline: none;
+}
+.sticky-note .note-image {
+  max-width: 100%;
+  max-height: 120px;
+  margin: 8px 0 0 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  object-fit: contain;
+}
+.sticky-note .note-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.note-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.icon-btn:hover {
+  background: #f3e99f;
+}
+.add-btn, .save-btn {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.add-btn:hover, .save-btn:hover {
+  background: #388e3c;
+}
+.cancel-btn {
+  background: #e57373;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.cancel-btn:hover {
+  background: #c62828;
+}
+.no-notes {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #aaa;
+  font-size: 1.1rem;
+  margin-top: 40px;
+}

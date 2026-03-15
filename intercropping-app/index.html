@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#059669">
+    <meta name="description" content="Intercropping App - Plan and manage your crop combinations using scientific companion planting">
+    <title>Intercropping App - Sustainable Agriculture Planning</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="root" class="app-container">
+        <!-- Navigation Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <span class="logo-emoji">🌾</span>
+                    <h1 class="app-title">AgriGrow</h1>
+                </div>
+                <p class="tagline">Smart Intercropping Planning System</p>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <nav class="main-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </button>
+                <button class="nav-btn" data-page="planner">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">Planner</span>
+                </button>
+                <button class="nav-btn" data-page="crops">
+                    <span class="nav-icon">🌱</span>
+                    <span class="nav-label">Crops</span>
+                </button>
+                <button class="nav-btn" data-page="compatibility">
+                    <span class="nav-icon">🔗</span>
+                    <span class="nav-label">Compatibility</span>
+                </button>
+                <button class="nav-btn" data-page="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Settings</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <!-- Dashboard Page -->
+                <section class="page active" id="dashboard-page">
+                    <div class="page-header">
+                        <h2>Dashboard</h2>
+                        <p class="page-subtitle">Overview of your intercropping plans and analytics</p>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <!-- Stats Cards -->
+                        <div class="stats-container">
+                            <div class="stat-card">
+                                <div class="stat-icon">📋</div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Total Plans</p>
+                                    <p class="stat-value" id="total-plans">0</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🌾</div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Total Crops</p>
+                                    <p class="stat-value" id="total-crops">0</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Avg Yield</p>
+                                    <p class="stat-value" id="avg-yield">0%</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🎯</div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Compatibility</p>
+                                    <p class="stat-value" id="compatibility-score">0%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Plans -->
+                        <div class="recent-plans-section">
+                            <h3>Recent Plans</h3>
+                            <div id="dashboard-plans" class="plans-grid">
+                                <p class="empty-state">No plans created yet. Create your first plan!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Planner Page -->
+                <section class="page" id="planner-page">
+                    <div class="page-header">
+                        <h2>Intercropping Planner</h2>
+                        <p class="page-subtitle">Create and manage your intercropping plans</p>
+                    </div>
+
+                    <div class="planner-layout">
+                        <!-- Form Section -->
+                        <div class="form-section">
+                            <h3>Create New Plan</h3>
+                            <form id="plan-form" class="plan-form">
+                                <div class="form-group">
+                                    <label for="plan-name">Plan Name *</label>
+                                    <input type="text" id="plan-name" placeholder="e.g., Summer 2025 Rotation" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="plan-area">Land Area (hectares) *</label>
+                                    <input type="number" id="plan-area" min="0.1" step="0.1" placeholder="2.5" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="plan-season">Season *</label>
+                                    <select id="plan-season" required>
+                                        <option value="">Select Season</option>
+                                        <option value="spring">Spring</option>
+                                        <option value="summer">Summer</option>
+                                        <option value="fall">Fall</option>
+                                        <option value="winter">Winter</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Select Crops *</label>
+                                    <div class="crops-checklist" id="crops-checklist">
+                                        <!-- Dynamically populated -->
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Create Plan</button>
+                                    <button type="reset" class="btn btn-secondary">Clear</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Plans List Section -->
+                        <div class="plans-section">
+                            <h3>Your Plans</h3>
+                            <div id="plans-list" class="plans-list">
+                                <p class="empty-state">No plans yet. Create one to get started!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Crops Page -->
+                <section class="page" id="crops-page">
+                    <div class="page-header">
+                        <h2>Crop Library</h2>
+                        <p class="page-subtitle">Browse and learn about crops for intercropping</p>
+                    </div>
+
+                    <div class="crops-container">
+                        <div class="search-filter">
+                            <input type="text" id="crop-search" placeholder="🔍 Search crops..." class="search-input">
+                            <select id="season-filter" class="filter-select">
+                                <option value="">All Seasons</option>
+                                <option value="spring">Spring</option>
+                                <option value="summer">Summer</option>
+                                <option value="fall">Fall</option>
+                                <option value="winter">Winter</option>
+                            </select>
+                        </div>
+
+                        <div id="crops-grid" class="crops-grid">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Compatibility Page -->
+                <section class="page" id="compatibility-page">
+                    <div class="page-header">
+                        <h2>Crop Compatibility</h2>
+                        <p class="page-subtitle">Check which crops grow well together</p>
+                    </div>
+
+                    <div class="compatibility-container">
+                        <div class="compatibility-selector">
+                            <label for="compat-crop1">Select Crop 1:</label>
+                            <select id="compat-crop1" class="crop-select">
+                                <option value="">Choose a crop...</option>
+                            </select>
+
+                            <label for="compat-crop2">Select Crop 2:</label>
+                            <select id="compat-crop2" class="crop-select">
+                                <option value="">Choose a crop...</option>
+                            </select>
+
+                            <button class="btn btn-primary" id="check-compat">Check Compatibility</button>
+                        </div>
+
+                        <div id="compatibility-result" class="compatibility-result hidden">
+                            <!-- Result displayed here -->
+                        </div>
+
+                        <div class="compatibility-matrix-section">
+                            <h3>Compatibility Matrix</h3>
+                            <div id="compatibility-matrix" class="compatibility-matrix">
+                                <!-- Matrix table displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Page -->
+                <section class="page" id="settings-page">
+                    <div class="page-header">
+                        <h2>Settings</h2>
+                        <p class="page-subtitle">Manage app preferences and data</p>
+                    </div>
+
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h3>Display Settings</h3>
+                            <div class="setting-item">
+                                <label for="unit-system">Measurement Unit:</label>
+                                <select id="unit-system">
+                                    <option value="metric">Metric (hectares, kg)</option>
+                                    <option value="imperial">Imperial (acres, lbs)</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-item">
+                                <label for="theme">Theme:</label>
+                                <select id="theme">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="auto">Auto</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Data Management</h3>
+                            <div class="data-actions">
+                                <button class="btn btn-secondary" id="export-data">📥 Export Data</button>
+                                <button class="btn btn-secondary" id="import-data">📤 Import Data</button>
+                                <button class="btn btn-danger" id="clear-data">🗑️ Clear All Data</button>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>About</h3>
+                            <p>Version 1.0.0</p>
+                            <p>AgriGrow - Sustainable Agriculture Planning System</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 AgriGrow. Making sustainable agriculture accessible to everyone.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
