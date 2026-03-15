@@ -1,5 +1,9 @@
 /**
+<<<<<<< HEAD
  * AgriGrow - Intercropping App
+=======
+ * AGRIFLOW - Intercropping App
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
  * Smart Intercropping Planning System
  * Pure Vanilla JavaScript Implementation
  */
@@ -588,7 +592,11 @@ function handleExportData() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
+<<<<<<< HEAD
     a.download = `AgriGrow-export-${Date.now()}.json`;
+=======
+    a.download = `agriflow-export-${Date.now()}.json`;
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
     a.click();
     URL.revokeObjectURL(url);
 
@@ -635,14 +643,22 @@ function handleClearData() {
 // =============================================
 
 function saveToLocalStorage() {
+<<<<<<< HEAD
     localStorage.setItem('AgriGrow_data', JSON.stringify({
+=======
+    localStorage.setItem('agriflow_data', JSON.stringify({
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
         plans: AppState.plans,
         settings: AppState.settings
     }));
 }
 
 function loadFromLocalStorage() {
+<<<<<<< HEAD
     const stored = localStorage.getItem('AgriGrow_data');
+=======
+    const stored = localStorage.getItem('agriflow_data');
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
     if (stored) {
         try {
             const data = JSON.parse(stored);

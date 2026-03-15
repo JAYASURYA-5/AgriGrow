@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # AgriGrow Image Optimization for Low Network Support
+=======
+# AgriFlow Image Optimization for Low Network Support
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 
 ## Overview
 The News page has been optimized to support low-bandwidth scenarios with lazy loading and category-based placeholder images that load instantly without network requests.
@@ -21,7 +25,11 @@ The News page has been optimized to support low-bandwidth scenarios with lazy lo
 
 ### 3. **Error Handling & Fallbacks**
 - Built-in `NewsImage` component with error fallback
+<<<<<<< HEAD
 - SVG placeholder with AgriGrow branding in case of image load failures
+=======
+- SVG placeholder with AgriFlow branding in case of image load failures
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 - Graceful opacity transitions during loading (0.7 → 1.0)
 
 ### 4. **Image Category Mapping**
@@ -55,7 +63,11 @@ const NewsImage = ({ src, alt, className }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
+<<<<<<< HEAD
   const placeholderSvg = 'data:image/svg+xml;base64,...'; // AgriGrow branded SVG
+=======
+  const placeholderSvg = 'data:image/svg+xml;base64,...'; // AgriFlow branded SVG
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
   
   return (
     <img
@@ -137,4 +149,8 @@ const NewsImage = ({ src, alt, className }) => {
 
 ---
 
+<<<<<<< HEAD
 *Optimized for farmers with limited connectivity to ensure AgriGrow news remains accessible.*
+=======
+*Optimized for farmers with limited connectivity to ensure AgriFlow news remains accessible.*
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366

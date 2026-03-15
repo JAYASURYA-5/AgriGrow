@@ -1,7 +1,13 @@
 {
+<<<<<<< HEAD
   "name": "AgriGrow",
   "version": "1.0.0",
   "description": "AgriGrow - Agricultural Management System",
+=======
+  "name": "agriflow",
+  "version": "1.0.0",
+  "description": "AgriFlow - Agricultural Management System",
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
   "type": "module",
   "scripts": {
     "dev": "vite",

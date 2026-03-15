@@ -160,7 +160,11 @@ function calculateAverageCompatibility(crops) {
 ### localStorage Schema
 ```json
 {
+<<<<<<< HEAD
     "AgriGrow_data": {
+=======
+    "agriflow_data": {
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
         "plans": [
             {
                 "id": 1734661234567,

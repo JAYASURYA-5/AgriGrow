@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # AgriGrow - Intercropping App
+=======
+# AgriFlow - Intercropping App
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 ## Converted from React to Vanilla HTML, CSS & JavaScript
 
 ### Project Analysis & Conversion Summary
@@ -134,7 +138,11 @@ intercropping-app/
 
 All data is saved to `localStorage`:
 ```
+<<<<<<< HEAD
 Key: 'AgriGrow_data'
+=======
+Key: 'agriflow_data'
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 Value: {
     plans: [...],
     settings: {...}

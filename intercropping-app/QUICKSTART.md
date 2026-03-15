@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 🚀 AgriGrow - Quick Start Guide
+=======
+# 🚀 AgriFlow - Quick Start Guide
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 
 ## What You Have
 
@@ -32,14 +36,22 @@ A complete, production-ready **Intercropping Planning Application** built in van
 
 **Using Python 3:**
 ```bash
+<<<<<<< HEAD
 cd c:\coding\AgriGrow\AgriGrow\intercropping-app
+=======
+cd c:\coding\AGRIFLOW\AGRIFLOW\intercropping-app
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 python -m http.server 8000
 # Visit: http://localhost:8000
 ```
 
 **Using Node.js:**
 ```bash
+<<<<<<< HEAD
 cd c:\coding\AgriGrow\AgriGrow\intercropping-app
+=======
+cd c:\coding\AGRIFLOW\AGRIFLOW\intercropping-app
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 npx http-server
 # Visit: http://localhost:8080
 ```
@@ -224,7 +236,11 @@ The code demonstrates:
 ```bash
 # Push to GitHub
 # Enable Pages in repository settings
+<<<<<<< HEAD
 # Live on: username.github.io/AgriGrow
+=======
+# Live on: username.github.io/agriflow
+>>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 ```
 
 ### 2. Netlify (Free)
