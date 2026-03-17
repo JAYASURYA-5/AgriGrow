@@ -861,7 +861,7 @@ const Chatbot = () => {
         />
 
         {/* Text Input Field */}
-        <div className="flex w-full items-center gap-2 rounded-xl bg-white p-2 ring-1 ring-inset ring-gray-200 focus-within:ring-2 focus-within:ring-primary/50 dark:bg-[#1A2C1B] dark:ring-white/10">
+        <div className="flex w-full items-center gap-2 rounded-xl bg-transparent p-2 ring-1 ring-inset ring-primary/30 focus-within:ring-2 focus-within:ring-primary/50">
           <input
             className="flex-1 border-0 bg-transparent text-gray-800 placeholder-gray-400 focus:ring-0 dark:text-white dark:placeholder-gray-500"
             placeholder="Ask about crops, pests, or weather..."
