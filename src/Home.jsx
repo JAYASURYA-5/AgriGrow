@@ -481,7 +481,7 @@ const Home = () => {
               <p className="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal">Check intercrop suggestions for pest control.</p>
             </div>
           </div>
-          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/som')}>
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/intercrop')}>
             <span className="truncate">View Suggestions</span>
           </button>
         </div>
