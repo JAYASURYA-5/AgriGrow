@@ -1,3 +1,16 @@
+// Placeholder image generator - creates SVG images that load instantly
+const getPlaceholderImage = (category, productId) => {
+  const colors = {
+    'Medicines': '%23FF6B6B',
+    'Fertilizers': '%234ECDC4',
+    'Seeds': '%2395E1D3',
+    'Vegetables': '%23A8E6CF',
+    'Fruits': '%23FFD3B6'
+  };
+  const color = colors[category] || '%2395E1D3';
+  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='${color}' width='400' height='400'/%3E%3Ctext x='200' y='160' font-size='48' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'%3E${category}%3C/text%3E%3Ctext x='200' y='240' font-size='32' fill='white' text-anchor='middle' font-family='Arial'%3E%23${productId}%3C/text%3E%3C/svg%3E`;
+};
+
 export const products = [
   // Medicines (Crop Disease Treatments & Pesticides)
   {
@@ -6,7 +19,7 @@ export const products = [
     price: 399,
     description: 'Effective fungicide for treating various crop diseases. Controls powdery mildew and leaf spot.',
     category: 'Medicines',
-    image: 'https://andersonseedandgarden.com/cdn/shop/files/16132FLGCopperFungicide16oz.png?v=1688838720&width=533',
+    image: getPlaceholderImage('Medicines', 1),
     rating: 4.5,
     reviews: 125,
     stock: 50
@@ -17,7 +30,7 @@ export const products = [
     price: 299,
     description: 'Organic insecticide derived from neem seeds. Safe for organic farming. Controls aphids, mites, and scale insects.',
     category: 'Medicines',
-    image: 'https://deesnursery.com/wp-content/uploads/2022/11/B70-024-1.png',
+    image: getPlaceholderImage('Medicines', 2),
     rating: 4.7,
     reviews: 89,
     stock: 45
@@ -28,7 +41,7 @@ export const products = [
     price: 449,
     description: 'Systemic pesticide for soil application. Protects plants from various insect pests for 2-3 weeks.',
     category: 'Medicines',
-    image: 'https://www.blackjungleterrariumsupply.com/assets/images/acephate.jpg',
+    image: getPlaceholderImage('Medicines', 3),
     rating: 4.3,
     reviews: 67,
     stock: 35
