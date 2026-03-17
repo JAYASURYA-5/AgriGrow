@@ -8,7 +8,9 @@ import Login from './Login';
 import Signup from './Signup';
 
 // Lazy load non-critical components
-const News = React.lazy(() => import('./News'));
+const EnhancedNews = React.lazy(() => import('./components/EnhancedNews'));
+const EnhancedNewsArticle = React.lazy(() => import('./components/EnhancedNewsArticle'));
+const SchemeDetail = React.lazy(() => import('./components/SchemeDetail'));
 const Wea = React.lazy(() => import('./wea.jsx'));
 const Market = React.lazy(() => import('./Market'));
 const Analysis = React.lazy(() => import('./Analysis'));
@@ -42,7 +44,9 @@ function AppContent() {
         <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" replace />} />
         <Route path="/signup" element={!isAuthenticated ? <Signup /> : <Navigate to="/" replace />} />
         <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />} />
-        <Route path="/news" element={<Suspense fallback={<LoadingFallback />}><News /></Suspense>} />
+        <Route path="/news" element={<Suspense fallback={<LoadingFallback />}><EnhancedNews /></Suspense>} />
+        <Route path="/news/:id" element={<Suspense fallback={<LoadingFallback />}><EnhancedNewsArticle /></Suspense>} />
+        <Route path="/scheme/:id" element={<Suspense fallback={<LoadingFallback />}><SchemeDetail /></Suspense>} />
         <Route path="/wea" element={<Suspense fallback={<LoadingFallback />}><Wea /></Suspense>} />
         <Route path="/market" element={<Suspense fallback={<LoadingFallback />}><Market /></Suspense>} />
         <Route path="/analysis" element={<Suspense fallback={<LoadingFallback />}><Analysis /></Suspense>} />

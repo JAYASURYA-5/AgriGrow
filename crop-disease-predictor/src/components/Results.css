@@ -240,17 +240,8 @@
 }
 
 .prevention-section li {
-  padding-left: 1.5rem;
+  padding-left: 0;
   position: relative;
-}
-
-.prevention-section li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: #22c55e;
-  font-weight: 700;
-  font-size: 1.25rem;
 }
 
 .no-data {

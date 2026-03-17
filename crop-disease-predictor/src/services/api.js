@@ -192,6 +192,13 @@ function getSoilData(soilType) {
       soil_detected: true,
       soil_type: "Loamy Soil",
       confidence: 85 + Math.floor(Math.random() * 10),
+      common_places: ["Northern plains of India", "Parts of Punjab and Haryana", "River valleys", "Fertile deltas"],
+      soil_condition: "Moderate fertility with good structure; excellent for agriculture",
+      water_holding_capacity: "Moderate (60-90mm per 30cm depth) - Ideal for most crops",
+      suitable_for_harvest: {
+        status: "Yes - Excellent",
+        explanation: "Perfect soil for harvest. Good nutrient retention with optimal water availability. Supports year-round cultivation."
+      },
       characteristics: [
         "Dark, rich color indicating high organic matter",
         "Crumbly texture, holds shape but breaks apart easily",
@@ -204,20 +211,34 @@ function getSoilData(soilType) {
         "20% Clay"
       ],
       recommended_crops: [
-        "Wheat", "Sugar Cane", "Cotton", "Pulses", "Oilseeds",
-        "Vegetables (Tomatoes, Peppers, Green Beans)",
-        "Fruits (Apples, Berries, Mellons)"
+        { name: "Wheat", harvest_period: "March-April", suitable: true },
+        { name: "Rice", harvest_period: "September-October", suitable: true },
+        { name: "Maize", harvest_period: "July-August", suitable: true },
+        { name: "Cotton", harvest_period: "October-November", suitable: true },
+        { name: "Sugar Cane", harvest_period: "October-December", suitable: true },
+        { name: "Pulses", harvest_period: "March-April", suitable: true },
+        { name: "Vegetables (Tomatoes, Peppers, Beans)", harvest_period: "Year-round", suitable: true },
+        { name: "Fruits (Apples, Berries, Melons)", harvest_period: "Season-dependent", suitable: true }
       ],
       farming_tips: [
         "Ideal for most crops, requires regular organic matter addition",
         "Maintain drainage to prevent waterlogging during heavy rains",
-        "Rotate crops to preserve nutrient balance"
+        "Rotate crops to preserve nutrient balance",
+        "Add compost annually to maintain soil fertility",
+        "Use drip irrigation for water efficiency"
       ]
     },
     "Black Soil": {
       soil_detected: true,
       soil_type: "Black Soil (Regur)",
       confidence: 88 + Math.floor(Math.random() * 10),
+      common_places: ["Deccan Plateau (Maharashtra, Karnataka)", "Central India (Madhya Pradesh)", "Parts of Andhra Pradesh", "Black soil regions of India"],
+      soil_condition: "High fertility with good nutrient content; self-ploughing capacity",
+      water_holding_capacity: "High (90-120mm per 30cm depth) - Excellent for drought-prone areas",
+      suitable_for_harvest: {
+        status: "Yes - Very Good",
+        explanation: "Excellent for harvest especially in cotton and pulses. Retains moisture well but requires careful water management."
+      },
       characteristics: [
         "Deep black to grey color",
         "High clay content, cracks when dry",
@@ -225,25 +246,39 @@ function getSoilData(soilType) {
         "High moisture retention capacity"
       ],
       composition: [
-        "High Clay content",
+        "High Clay content (40-50%)",
         "Rich in Calcium Carbonate, Magnesium, Potash",
         "Poor in Phosphorous"
       ],
       recommended_crops: [
-        "Cotton", "Sorghum (Jowar)", "Soybean",
-        "Wheat", "Millets", "Linseed",
-        "Sunflower", "Citrus Fruits"
+        { name: "Cotton", harvest_period: "October-February", suitable: true },
+        { name: "Sorghum (Jowar)", harvest_period: "September-October", suitable: true },
+        { name: "Soybean", harvest_period: "October-November", suitable: true },
+        { name: "Groundnut", harvest_period: "September-October", suitable: true },
+        { name: "Wheat", harvest_period: "March-April", suitable: true },
+        { name: "Millets", harvest_period: "August-September", suitable: true },
+        { name: "Linseed", harvest_period: "March-April", suitable: true },
+        { name: "Chick Pea", harvest_period: "March-April", suitable: true }
       ],
       farming_tips: [
         "Work the soil when it has correct moisture content (too wet = sticky, too dry = hard)",
-        "Use organic manure to improve friability",
-        "Practice deep ploughing in summer"
+        "Use organic manure to improve friability and reduce cracks",
+        "Practice deep ploughing in summer to break hardened layers",
+        "Maintain optimum moisture during crop growth",
+        "Use mulching to conserve soil moisture"
       ]
     },
     "Red Soil": {
       soil_detected: true,
       soil_type: "Red Soil",
       confidence: 86 + Math.floor(Math.random() * 10),
+      common_places: ["Southern India (Tamil Nadu, Karnataka, Andhra Pradesh)", "Eastern India (Odisha, West Bengal)", "Parts of Maharashtra and Telangana"],
+      soil_condition: "Moderate fertility with acidic nature; requires management for balanced nutrients",
+      water_holding_capacity: "Low to Moderate (30-60mm per 30cm depth) - Requires irrigation support",
+      suitable_for_harvest: {
+        status: "Yes - Moderate",
+        explanation: "Good for harvest with proper soil management and amendment. Requires regular fertilizer and organic matter addition."
+      },
       characteristics: [
         "Reddish color due to iron oxide",
         "Porous and friable structure",
@@ -256,19 +291,34 @@ function getSoilData(soilType) {
         "Sandy to Loamy texture"
       ],
       recommended_crops: [
-        "Groundnut", "Potato", "Maize", "Rice",
-        "Ragi", "Tobacco", "Vegetables", "Mango", "Cashew"
+        { name: "Groundnut", harvest_period: "September-October", suitable: true },
+        { name: "Potato", harvest_period: "December-January", suitable: true },
+        { name: "Maize", harvest_period: "July-August", suitable: true },
+        { name: "Rice", harvest_period: "September-October", suitable: true },
+        { name: "Ragi", harvest_period: "October-November", suitable: true },
+        { name: "Tobacco", harvest_period: "March-May", suitable: true },
+        { name: "Vegetables", harvest_period: "Year-round", suitable: true },
+        { name: "Mango", harvest_period: "March-June", suitable: true }
       ],
       farming_tips: [
         "Apply nitrogenous and phosphatic fertilizers regularly",
         "Add organic matter to improve water holding capacity",
-        "Liming may be required if soil is too acidic"
+        "Liming may be required if soil is too acidic (pH < 5.5)",
+        "Use micronutrient spray for iron deficiency",
+        "Practice soil conservation techniques to prevent erosion"
       ]
     },
     "Sandy Soil": {
       soil_detected: true,
       soil_type: "Sandy Soil",
       confidence: 90 + Math.floor(Math.random() * 10),
+      common_places: ["Coastal regions", "Desert margins (Rajasthan)", "River beds and sandy plains", "Arid zones"],
+      soil_condition: "Low fertility with poor water retention; requires amendment for crop cultivation",
+      water_holding_capacity: "Very Low (15-30mm per 30cm depth) - Requires frequent irrigation",
+      suitable_for_harvest: {
+        status: "Conditional - Limited",
+        explanation: "Can support harvest for specific crops requiring good drainage. Requires intensive irrigation and fertilizer management."
+      },
       characteristics: [
         "Large particles, gritty feel",
         "Drains very quickly, poor water retention",
@@ -281,25 +331,39 @@ function getSoilData(soilType) {
         "Low organic matter"
       ],
       recommended_crops: [
-        "Carrots", "Potatoes", "Radishes",
-        "Cucumbers", "Watermelon", "Muskmelon",
-        "Peanuts", "Corn (with irrigation)"
+        { name: "Carrots", harvest_period: "November-December", suitable: true },
+        { name: "Radishes", harvest_period: "October-November", suitable: true },
+        { name: "Potatoes", harvest_period: "August-September", suitable: true },
+        { name: "Peas", harvest_period: "February-March", suitable: true },
+        { name: "Groundnut", harvest_period: "September-October", suitable: true },
+        { name: "Watermelon", harvest_period: "May-June", suitable: true },
+        { name: "Muskmelon", harvest_period: "April-May", suitable: true },
+        { name: "Maize (with irrigation)", harvest_period: "July-August", suitable: true }
       ],
       farming_tips: [
-        "Requires frequent but light irrigation",
-        "Add heavy amounts of organic matter to improve retention",
-        "Apply fertilizers in small, frequent doses"
+        "Requires frequent but light irrigation (every 3-5 days)",
+        "Add 20-30 tons of organic matter per hectare annually",
+        "Apply fertilizers in small, frequent doses (split application)",
+        "Use mulch to reduce water evaporation",
+        "Practice zero tillage to preserve soil structure"
       ]
     },
     "Clay Soil": {
       soil_detected: true,
       soil_type: "Clay Soil",
       confidence: 89 + Math.floor(Math.random() * 10),
+      common_places: ["Floodplain areas", "Depressional zones", "River deltas", "Valley soils"],
+      soil_condition: "High fertility but poor drainage; requires soil improvement for optimal growth",
+      water_holding_capacity: "Very High (120-150mm per 30cm depth) - Often waterlogged",
+      suitable_for_harvest: {
+        status: "Conditional - Requires Management",
+        explanation: "Can support good harvest with proper drainage management. Needs aeration and structure improvement for better results."
+      },
       characteristics: [
         "Very fine particles",
         "Sticky when wet, rock hard when dry",
         "Poor drainage, slow to warm up",
-        "High nutrient density"
+        "High nutrient density but often locked up"
       ],
       composition: [
         "> 35% Clay particles",
@@ -307,14 +371,22 @@ function getSoilData(soilType) {
         "High mineral content"
       ],
       recommended_crops: [
-        "Broccoli", "Cabbage", "Cauliflower",
-        "Leafy Greens (Spinach/Chard)",
-        "Rice", "Sunflowers", "Beans"
+        { name: "Rice (in waterlogged areas)", harvest_period: "September-October", suitable: true },
+        { name: "Cabbage", harvest_period: "November-January", suitable: true },
+        { name: "Broccoli", harvest_period: "November-December", suitable: true },
+        { name: "Cauliflower", harvest_period: "December-January", suitable: true },
+        { name: "Spinach/Leafy Greens", harvest_period: "November-February", suitable: true },
+        { name: "Beans", harvest_period: "May-July", suitable: true },
+        { name: "Sunflower", harvest_period: "September-October", suitable: true },
+        { name: "Sugarcane", harvest_period: "October-December", suitable: true }
       ],
       farming_tips: [
-        "Avoid working soil when wet to prevent compaction",
-        "Add Gypsum to improve soil structure and aeration",
-        "Use raised beds to improve drainage"
+        "Never work soil when wet to prevent compaction and loss of structure",
+        "Add Gypsum (500-1000 kg/ha) to improve soil structure and aeration",
+        "Use raised beds to improve drainage",
+        "Add organic matter and coarse sand to improve friability",
+        "Create furrows for proper water drainage",
+        "Practice minimal tilling to preserve structure"
       ]
     }
   };

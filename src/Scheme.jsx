@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Scheme = () => {
   const navigate = useNavigate();
@@ -73,13 +73,13 @@ const Scheme = () => {
       link: 'https://rkvy.nic.in/',
       tags: ['Investment', 'State Support']
     },
-    {
+{
       id: 8,
       title: 'Pradhan Mantri Kisan Maandhan Yojana (PM-KMY)',
       summary: 'A pension scheme for small and marginal farmers to provide income security in old age.',
       type: 'pension',
       date: '2019-09-01',
-      link: '',
+      link: 'https://pmkmy.gov.in/',
       tags: ['Pension', 'Social Security']
     },
     {
@@ -88,7 +88,7 @@ const Scheme = () => {
       summary: 'Mission to increase the production of rice, wheat, pulses and coarse cereals through area expansion and productivity enhancement.',
       type: 'mission',
       date: '2007-01-01',
-      link: '',
+      link: 'https://nfsm.gov.in/',
       tags: ['Mission', 'Production']
     },
     {
@@ -97,7 +97,7 @@ const Scheme = () => {
       summary: 'Promotes sustainable agriculture practices and resilience-building for climate-smart agriculture.',
       type: 'mission',
       date: '2014-01-01',
-      link: '',
+      link: 'https://nmsa.dac.gov.in/',
       tags: ['Mission', 'Sustainability']
     },
     {
@@ -106,7 +106,7 @@ const Scheme = () => {
       summary: 'Supports organic farming through cluster-based models and certification support for farmers.',
       type: 'subsidy,organic',
       date: '2015-01-01',
-      link: '',
+      link: 'https://pkvy.dac.gov.in/',
       tags: ['Organic', 'Cluster']
     },
     {
@@ -115,7 +115,7 @@ const Scheme = () => {
       summary: 'Supports development of horticulture through improved production, post-harvest management and value addition.',
       type: 'horticulture',
       date: '2014-04-01',
-      link: '',
+      link: 'https://midh.gov.in/',
       tags: ['Horticulture', 'Value Addition']
     },
     {
@@ -124,7 +124,7 @@ const Scheme = () => {
       summary: 'Provides price support and procurement mechanisms to ensure remunerative prices to farmers.',
       type: 'subsidy',
       date: '2018-01-01',
-      link: '',
+      link: 'https://pib.gov.in/newsite/PrintRelease.aspx?relid=184959',
       tags: ['Price Support', 'Procurement']
     },
     {
@@ -133,7 +133,7 @@ const Scheme = () => {
       summary: 'Strengthens agricultural extension services, farmer training and technology dissemination through ATMA.',
       type: 'extension',
       date: '2005-01-01',
-      link: '',
+      link: 'https://atma.dac.gov.in/',
       tags: ['Extension', 'Training']
     },
     {
@@ -142,7 +142,7 @@ const Scheme = () => {
       summary: 'Programmes to increase fish production, productivity and farmer incomes in fisheries and aquaculture.',
       type: 'fisheries',
       date: '2015-01-01',
-      link: '',
+      link: 'https://nfdb.gov.in/',
       tags: ['Fisheries', 'Aquaculture']
     },
     {
@@ -151,7 +151,7 @@ const Scheme = () => {
       summary: 'Supports beekeeping, honey production and value chains to increase farm incomes and biodiversity.',
       type: 'mission',
       date: '2020-01-01',
-      link: '',
+      link: 'https://nbhm.nbb.gov.in/',
       tags: ['Beekeeping', 'Livelihoods']
     }
   ];
@@ -186,10 +186,8 @@ const Scheme = () => {
     }
   };
 
-  const handleSchemeClick = (link) => {
-    if (link) {
-      window.open(link, '_blank', 'noopener,noreferrer');
-    }
+  const handleSchemeClick = (schemeId) => {
+    navigate(`/scheme/${schemeId}`);
   };
 
   const toggleFilterPanel = () => {
@@ -427,7 +425,7 @@ const Scheme = () => {
           <div
             key={scheme.id}
             className="flex cursor-pointer flex-col overflow-hidden rounded-lg bg-card-light dark:bg-card-dark shadow-sm transition-shadow hover:shadow-md"
-            onClick={() => handleSchemeClick(scheme.link)}
+            onClick={() => handleSchemeClick(scheme.id)}
           >
             <div className="flex flex-col gap-3 p-4">
               <h2 className="text-lg font-bold text-text-primary-light dark:text-text-primary-dark">{scheme.title}</h2>
@@ -448,7 +446,7 @@ const Scheme = () => {
                 className="view-details text-sm font-medium text-primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleSchemeClick(scheme.link);
+                  handleSchemeClick(scheme.id);
                 }}
               >
                 View Details

@@ -82,6 +82,50 @@ function Results({ results, loading, mode = 'disease' }) {
             </div>
           </div>
 
+          {results.common_places && results.common_places.length > 0 && (
+            <div className="result-section">
+              <h4>
+                <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                Common Geographic Locations
+              </h4>
+              <ul>
+                {results.common_places.map((place, index) => (
+                  <li key={index}>{place}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {results.soil_condition && (
+            <div className="result-section" style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)', padding: '12px', borderLeft: '4px solid #3b82f6', borderRadius: '4px' }}>
+              <h4>Soil Condition</h4>
+              <p style={{ lineHeight: '1.6', color: '#555' }}>{results.soil_condition}</p>
+            </div>
+          )}
+
+          {results.water_holding_capacity && (
+            <div className="result-section" style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)', padding: '12px', borderLeft: '4px solid #3b82f6', borderRadius: '4px' }}>
+              <h4>💧 Water Holding Capacity</h4>
+              <p style={{ lineHeight: '1.6', color: '#555', fontWeight: '500' }}>{results.water_holding_capacity}</p>
+            </div>
+          )}
+
+          {results.suitable_for_harvest && (
+            <div className="result-section" style={{ 
+              backgroundColor: results.suitable_for_harvest.status.includes('Yes') ? 'rgba(34, 197, 94, 0.05)' : 'rgba(251, 146, 60, 0.05)',
+              padding: '12px',
+              borderLeft: results.suitable_for_harvest.status.includes('Yes') ? '4px solid #22c55e' : '4px solid #fb923c',
+              borderRadius: '4px'
+            }}>
+              <h4>✅ Suitable for Harvest</h4>
+              <p style={{ lineHeight: '1.6', color: '#555', fontWeight: '500' }}>{results.suitable_for_harvest.status}</p>
+              <p style={{ lineHeight: '1.6', color: '#666', marginTop: '8px' }}>{results.suitable_for_harvest.explanation}</p>
+            </div>
+          )}
+
           <div className="result-section">
             <h4>Characteristics</h4>
             <ul>
@@ -105,21 +149,25 @@ function Results({ results, loading, mode = 'disease' }) {
               <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
-              Recommended Crops
+              Recommended Crops & Harvest Season
             </h4>
-            <div className="treatment-steps" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {results.recommended_crops && results.recommended_crops.map((crop, index) => (
-                <span key={index} style={{
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  color: '#15803d',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  fontSize: '0.9rem',
-                  fontWeight: 500
-                }}>
-                  {crop}
-                </span>
-              ))}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
+              {results.recommended_crops && results.recommended_crops.map((crop, index) => {
+                const cropObj = typeof crop === 'object' ? crop : { name: crop, harvest_period: 'Season-dependent', suitable: true };
+                return (
+                  <div key={index} style={{
+                    background: cropObj.suitable ? 'rgba(34, 197, 94, 0.1)' : 'rgba(156, 163, 175, 0.1)',
+                    color: cropObj.suitable ? '#15803d' : '#6b7280',
+                    padding: '10px 12px',
+                    borderRadius: '6px',
+                    borderLeft: cropObj.suitable ? '3px solid #22c55e' : '3px solid #9ca3af',
+                    fontSize: '0.95rem'
+                  }}>
+                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>{cropObj.name}</div>
+                    <div style={{ fontSize: '0.85rem', opacity: 0.9 }}>🕒 {cropObj.harvest_period}</div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -128,7 +176,7 @@ function Results({ results, loading, mode = 'disease' }) {
               <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
-              Farming Tips
+              Farming Tips & Best Practices
             </h4>
             <ul>
               {results.farming_tips && results.farming_tips.map((tip, index) => (
@@ -153,7 +201,7 @@ function Results({ results, loading, mode = 'disease' }) {
       </h2>
       <div className="analysis-summary">
         <div className="summary-item">
-          <strong>Disease:</strong> {results.disease_name || 'Unknown Disease'}
+          <strong>🦠 Disease Detected:</strong> {results.disease_name || 'Unknown Disease'}
         </div>
       </div>
 
@@ -184,12 +232,68 @@ function Results({ results, loading, mode = 'disease' }) {
 
         {!isHealthy && (
           <>
-            <div className="result-section">
-              <h4>Disease Detected</h4>
-              <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#ef4444', marginBottom: '0.5rem' }}>
-                {results.disease_name || 'Unknown Disease'}
+
+
+            {results.reason && (
+              <div className="result-section" style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)', padding: '12px', borderLeft: '4px solid #3b82f6', borderRadius: '4px' }}>
+                <h4>
+                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  Why This Disease Occurred
+                </h4>
+                <p style={{ lineHeight: '1.6', color: '#555', fontSize: '0.95rem' }}>{results.reason}</p>
               </div>
-            </div>
+            )}
+
+            {results.symptoms && results.symptoms.length > 0 && (
+              <div className="result-section">
+                <h4>
+                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 2v20" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                  Symptoms Observed
+                </h4>
+                <ul style={{ lineHeight: '1.8' }}>
+                  {results.symptoms.map((symptom, index) => (
+                    <li key={index} style={{ color: '#555', marginBottom: '6px' }}>
+                      <span style={{ marginRight: '8px', fontWeight: 'bold', color: '#ef4444' }}>•</span>
+                      {symptom}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {results.level_in_plant && (
+              <div className="result-section">
+                <h4>Infection Level in Plant</h4>
+                <p style={{ lineHeight: '1.6', color: '#555', padding: '10px', backgroundColor: 'rgba(251, 146, 60, 0.1)', borderRadius: '6px' }}>{results.level_in_plant}</p>
+              </div>
+            )}
+
+            {results.plant_part_affected && results.plant_part_affected.length > 0 && (
+              <div className="result-section">
+                <h4>Affected Plant Parts</h4>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {results.plant_part_affected.map((part, index) => (
+                    <span key={index} style={{
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      color: '#991b1b',
+                      padding: '6px 12px',
+                      borderRadius: '20px',
+                      fontSize: '0.9rem',
+                      fontWeight: 500
+                    }}>
+                      {part}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {results.severity && (
               <div className="result-section">
@@ -200,23 +304,22 @@ function Results({ results, loading, mode = 'disease' }) {
               </div>
             )}
 
-            {results.symptoms && results.symptoms.length > 0 && (
-              <div className="result-section">
-                <h4>Symptoms Observed</h4>
-                <ul>
-                  {results.symptoms.map((symptom, index) => (
-                    <li key={index}>{symptom}</li>
-                  ))}
-                </ul>
+            {results.future_consequences && (
+              <div className="result-section" style={{ backgroundColor: 'rgba(239, 68, 68, 0.05)', padding: '12px', borderLeft: '4px solid #ef4444', borderRadius: '4px' }}>
+                <h4>⚠️ Future Consequences (If Untreated)</h4>
+                <p style={{ lineHeight: '1.6', color: '#555' }}>{results.future_consequences}</p>
               </div>
             )}
 
             {results.causes && results.causes.length > 0 && (
               <div className="result-section">
-                <h4>Possible Causes</h4>
-                <ul>
+                <h4>Root Causes</h4>
+                <ul style={{ lineHeight: '1.8' }}>
                   {results.causes.map((cause, index) => (
-                    <li key={index}>{cause}</li>
+                    <li key={index} style={{ color: '#555', marginBottom: '6px' }}>
+                      <span style={{ marginRight: '8px', fontWeight: 'bold', color: '#3b82f6' }}>→</span>
+                      {cause}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -247,11 +350,62 @@ function Results({ results, loading, mode = 'disease' }) {
                   <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
-                  Prevention Tips
+                  Prevention & Precautions
                 </h4>
-                <ul>
+                <ul style={{ lineHeight: '1.8' }}>
                   {results.prevention.map((tip, index) => (
-                    <li key={index}>{tip}</li>
+                    <li key={index} style={{ color: '#555', marginBottom: '6px' }}>
+                      <span style={{ marginRight: '8px', fontWeight: 'bold', color: '#22c55e' }}>✓</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        )}
+
+        {isHealthy && (
+          <>
+            <div className="result-section" style={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', padding: '12px', borderLeft: '4px solid #22c55e', borderRadius: '4px' }}>
+              <h4>✅ Healthy Plant Status</h4>
+              <p style={{ lineHeight: '1.6', color: '#555' }}>Your {results.crop_name || 'plant'} is in excellent condition with no disease detected.</p>
+            </div>
+
+            {results.symptoms && results.symptoms.length > 0 && (
+              <div className="result-section">
+                <h4>
+                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 2v20" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                  Healthy Plant Indicators
+                </h4>
+                <ul style={{ lineHeight: '1.8' }}>
+                  {results.symptoms.map((symptom, index) => (
+                    <li key={index} style={{ color: '#555', marginBottom: '6px' }}>
+                      <span style={{ marginRight: '8px', fontWeight: 'bold', color: '#22c55e' }}>✓</span>
+                      {symptom}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {results.prevention && results.prevention.length > 0 && (
+              <div className="result-section prevention-section">
+                <h4>
+                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  Maintenance & Care Tips
+                </h4>
+                <ul style={{ lineHeight: '1.8' }}>
+                  {results.prevention.map((tip, index) => (
+                    <li key={index} style={{ color: '#555', marginBottom: '6px' }}>
+                      <span style={{ marginRight: '8px', fontWeight: 'bold', color: '#22c55e' }}>✓</span>
+                      {tip}
+                    </li>
                   ))}
                 </ul>
               </div>

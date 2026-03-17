@@ -1,77 +1,104 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { diseaseApi } from '../services/diseaseApi';
 
 const Desease = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [scanHistory, setScanHistory] = useState([]);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  // Load scan history from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('diseaseScans');
+    if (saved) {
+      setScanHistory(JSON.parse(saved));
+    }
+  }, []);
 
   const handleBack = () => {
     navigate('/');
   };
 
-  const handleTakePhoto = () => {
-    // Placeholder for camera functionality
-    console.log('Take photo clicked');
+  const handleFromGallery = () => {
+    fileInputRef.current?.click();
   };
 
-  const handleFromGallery = () => {
-    // Placeholder for gallery functionality
-    console.log('From gallery clicked');
+  const handleTakePhoto = () => {
+    // For now, open file picker (camera support requires HTTPS and specific browser permissions)
+    fileInputRef.current?.click();
+  };
+
+  const saveScanToHistory = (predictionData, file) => {
+    const newScan = {
+      id: Date.now(),
+      disease: predictionData.disease_name || 'Unknown',
+      isHealthy: !predictionData.disease_detected,
+      date: new Date().toLocaleDateString(),
+      crop: predictionData.crop_name || 'Unknown',
+      confidence: predictionData.confidence || 0,
+      image: imageUrl,
+    };
+    const updated = [newScan, ...scanHistory].slice(0, 10); // Keep last 10
+    setScanHistory(updated);
+    localStorage.setItem('diseaseScans', JSON.stringify(updated));
   };
 
   const handleSaveToLog = () => {
-    // Placeholder for save functionality
-    console.log('Save to log clicked');
+    if (result) {
+      saveScanToHistory(result, selectedFile);
+      alert('Scan saved to history!');
+    }
   };
 
   const handleViewProducts = () => {
-    // Placeholder for view products functionality
-    console.log('View products clicked');
+    // Navigate to market or products page
+    navigate('/market');
   };
-
-  const diagnosisData = {
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAE8RwD_lHkmZGDenSpuFi27DbgHTeRZ2xXoqR9dldze3T9LwTAUKHikjuBiRuiddOhD8buaTzUcJDXvSn48f6fvF05H5yCdOvcMTjQZnPgoGI8zASwV7WM6XpKQE0SMImM1T7XVdqucXvNbaQwq4KLsVWqN3FHG2QtiVqlwM_CN5GWTwqr7VxnaCMFFeu0A6yOe3AF3EsrKkHb6XMz_25zwu9huo5QyPnviwtB8gX3rIRB6bdIMu_J6wifazSkZlnmraiH07bNiwU",
-    disease: "Tomato Late Blight",
-    confidence: 95,
-    overview: "A destructive disease of tomatoes and potatoes caused by the oomycete Phytophthora infestans. It can spread rapidly in humid conditions, leading to significant crop loss.",
-    symptoms: "Dark, water-soaked lesions on leaves, stems, and fruits. White, fuzzy growth on the underside of leaves in humid conditions. Rapid wilting and browning of plant tissues.",
-    treatment: "Remove and destroy infected plant material. Apply copper-based fungicides preventively. Improve air circulation and avoid overhead watering. Use resistant varieties when available."
-  };
-
-  const historyItems = [
-    {
-      id: 1,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBFwtZsR-Xh4khTjS4ZMgnJ9Z8IafAdSmpW0wHAep0nx-L5yMSTR0KLGvsIo7tMalwQzl2U3NYI3ya--4uQbCBjFHXEJiM7LOAJf511V5DknCoD0PREbiHROUe9TL2FDTcqVPGbjrX8UIH_agbxYkjuuBmz7xFUa_3G2C0byxvNaHEE86h2H7S0ByVZrGcfI68zkNfjdcKnJhy5v2Z1bFy98kLOjMJnL0K3JMXfQnXPo9Pxs1g7XmVd9auO-vpXEM_Ok4Zx9HsUYdU",
-      disease: "Corn Gray Leaf Spot",
-      date: "July 18, 2024",
-      isHealthy: false
-    },
-    {
-      id: 2,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCI4hxnofKwh2yqz1G37RqS2215mVfMzd2KsUtKHv3T8oaroFtC5j0UqX1Xchtc6zsD9AUm5j-AHnMpBwI7Ni8Mru9lqtUT-lSjjdK18HITiekZfVg7wshP3R1DvW3CbNaYfYsfZRdVyqDsIYu-q5VeRjtB7MEAUdJ5l13fKbzI_SgtpfDQ1lGi3ppY5wx90-831WhWLrAc9P_vNX6z9aDlm9TEwbY4Mvb1jsBUuhcm8G8rOeBHB3jOdSI9of-GyKjHn4QEXT2mSNk",
-      disease: "Potato Leaf",
-      date: "",
-      isHealthy: true
-    },
-    {
-      id: 3,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDPH-NUy5dNClKHAnsrniWm-JNgpZ1MNmeiPYXqUl9yw-x-fqYcg7Xfhlr9VaMb_cJwu0O5iatk3T49IBTQsUKTb7E86caPIoDORg_pAJaUHy84XLM2_r_pyOz-2K7TsazRlWXZM8eDa1rYsa0AGLMOe1rFwhnPtZteUWKX0rnS6psosZr0hfzqqQiSHVhmLzXcD7Gzxsnc0MGSLr_JF9XfGbVdB_BI1pCOM0TC1K-EdhYlyZfQ76fmsPaXgTRFMINQlKT2EA0xkOU",
-      disease: "Grape Powdery Mildew",
-      date: "July 15, 2024",
-      isHealthy: false
-    }
-  ];
 
   const getTabContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return diagnosisData.overview;
-      case 'symptoms':
-        return diagnosisData.symptoms;
-      case 'treatment':
-        return diagnosisData.treatment;
-      default:
-        return diagnosisData.overview;
+    if (!result) return 'No analysis available';
+
+    const content = {
+      overview: result.reason || 'Analyzing plant health...',
+      symptoms: (result.symptoms || []).join('\n') || 'No symptoms data',
+      treatment: (result.treatment || []).join('\n') || 'No treatment data',
+    };
+    return content[activeTab];
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Create image preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageUrl(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    setSelectedFile(file);
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const prediction = await diseaseApi.predict(file);
+      setResult(prediction);
+      
+      // Auto-save successful scan
+      setTimeout(() => saveScanToHistory(prediction, file), 500);
+    } catch (err) {
+      setError(err.message || 'Failed to analyze image. Please try again.');
+      console.error('Disease prediction error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,144 +132,242 @@ const Desease = () => {
           </p>
           <div className="flex w-full items-center justify-center gap-4 pt-2">
             <button
-              className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg h-24 bg-primary/10 dark:bg-primary/20 text-primary text-sm font-medium leading-normal cursor-pointer"
+              className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg h-24 bg-primary/10 dark:bg-primary/20 text-primary text-sm font-medium leading-normal cursor-pointer hover:bg-primary/20 dark:hover:bg-primary/30 transition"
               onClick={handleTakePhoto}
+              disabled={loading}
             >
               <span className="material-symbols-outlined text-3xl">photo_camera</span>
               <span className="truncate">Take a Photo</span>
             </button>
             <button
-              className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg h-24 bg-primary/10 dark:bg-primary/20 text-primary text-sm font-medium leading-normal cursor-pointer"
+              className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg h-24 bg-primary/10 dark:bg-primary/20 text-primary text-sm font-medium leading-normal cursor-pointer hover:bg-primary/20 dark:hover:bg-primary/30 transition"
               onClick={handleFromGallery}
+              disabled={loading}
             >
               <span className="material-symbols-outlined text-3xl">photo_library</span>
               <span className="truncate">From Gallery</span>
             </button>
           </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+
+          {loading && (
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent"></div>
+              <span className="text-text-light dark:text-text-dark text-sm">Analyzing image...</span>
+            </div>
+          )}
+
+          {error && (
+            <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500 text-red-600 text-sm w-full">
+              {error}
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Section Header: Diagnosis */}
-      <h3 className="text-text-light dark:text-text-dark text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">
-        Diagnosis Results
-      </h3>
 
       {/* Results Display Card */}
-      <div className="p-4 @container">
-        <div className="flex flex-col items-stretch justify-start rounded-xl bg-white dark:bg-black/20 shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
-          <div
-            className="w-full bg-center bg-no-repeat aspect-video bg-cover"
-            style={{ backgroundImage: `url("${diagnosisData.image}")` }}
-            data-alt="Close-up of a tomato leaf with late blight disease"
-          ></div>
-          <div className="flex w-full grow flex-col items-stretch justify-center gap-4 p-4">
-            <div>
-              <p className="text-text-light dark:text-text-dark text-xl font-bold leading-tight tracking-[-0.015em]">
-                {diagnosisData.disease}
-              </p>
-              <div className="flex items-center gap-2 mt-2">
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div
-                    className="bg-accent h-2 rounded-full"
-                    style={{ width: `${diagnosisData.confidence}%` }}
-                  ></div>
+      {result && (
+        <>
+          <h3 className="text-text-light dark:text-text-dark text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">
+            Diagnosis Results
+          </h3>
+
+          <div className="p-4 @container">
+            <div className="flex flex-col items-stretch justify-start rounded-xl bg-white dark:bg-black/20 shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+              {imageUrl && (
+                <div
+                  className="w-full bg-center bg-no-repeat aspect-video bg-cover"
+                  style={{ backgroundImage: `url("${imageUrl}")` }}
+                  data-alt="Plant image for disease detection"
+                ></div>
+              )}
+              <div className="flex w-full grow flex-col items-stretch justify-center gap-4 p-4">
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-text-light dark:text-text-dark text-xl font-bold leading-tight tracking-[-0.015em]">
+                        {result.disease_name || 'Unknown Disease'}
+                      </p>
+                      <p className="text-text-light/70 dark:text-text-dark/70 text-sm mt-1">
+                        Crop: {result.crop_name || 'Unknown'}
+                      </p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      !result.disease_detected 
+                        ? 'bg-green-500/20 text-green-600 dark:text-green-400'
+                        : 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400'
+                    }`}>
+                      {!result.disease_detected ? 'Healthy' : 'Disease Detected'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-3">
+                    <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div
+                        className={`h-2 rounded-full transition-all ${
+                          result.confidence > 80 ? 'bg-green-500' :
+                          result.confidence > 60 ? 'bg-yellow-500' :
+                          'bg-red-500'
+                        }`}
+                        style={{ width: `${result.confidence}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-text-light dark:text-text-dark text-sm font-bold leading-normal whitespace-nowrap">
+                      {Math.round(result.confidence)}% Confidence
+                    </p>
+                  </div>
                 </div>
-                <p className="text-accent text-sm font-bold leading-normal whitespace-nowrap">
-                  {diagnosisData.confidence}% Confidence
-                </p>
-              </div>
-            </div>
 
-            {/* Tabbed Information */}
-            <div className="flex flex-col">
-              <div className="flex border-b border-gray-200 dark:border-gray-700">
-                <button
-                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'overview'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-text-light/70 dark:text-text-dark/70'
-                    }`}
-                  onClick={() => setActiveTab('overview')}
-                >
-                  Overview
-                </button>
-                <button
-                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'symptoms'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-text-light/70 dark:text-text-dark/70'
-                    }`}
-                  onClick={() => setActiveTab('symptoms')}
-                >
-                  Symptoms
-                </button>
-                <button
-                  className={`px-4 py-2 text-sm font-medium ${activeTab === 'treatment'
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-text-light/70 dark:text-text-dark/70'
-                    }`}
-                  onClick={() => setActiveTab('treatment')}
-                >
-                  Treatment
-                </button>
-              </div>
-              <div className="pt-3">
-                <p className="text-text-light dark:text-text-dark text-base font-normal leading-normal">
-                  {getTabContent()}
-                </p>
-              </div>
-            </div>
+                {result.simple_explanation && (
+                  <div className="p-3 bg-blue-500/10 dark:bg-blue-400/10 border border-blue-500/30 rounded-lg">
+                    <p className="text-text-light dark:text-text-dark text-sm font-medium mb-1">Easy to Understand:</p>
+                    <p className="text-text-light/80 dark:text-text-dark/80 text-sm">
+                      {result.simple_explanation}
+                    </p>
+                  </div>
+                )}
 
-            <div className="flex items-center gap-3 justify-between pt-2">
-              <button
-                className="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 dark:bg-primary/30 text-primary text-sm font-medium leading-normal"
-                onClick={handleSaveToLog}
-              >
-                <span className="truncate">Save to Log</span>
-              </button>
-              <button
-                className="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-medium leading-normal"
-                onClick={handleViewProducts}
-              >
-                <span className="truncate">View Products</span>
-              </button>
+                {/* Tabbed Information */}
+                <div className="flex flex-col">
+                  <div className="flex border-b border-gray-200 dark:border-gray-700">
+                    <button
+                      className={`px-4 py-2 text-sm font-medium transition ${
+                        activeTab === 'overview'
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-text-light/70 dark:text-text-dark/70 hover:text-text-light dark:hover:text-text-dark'
+                      }`}
+                      onClick={() => setActiveTab('overview')}
+                    >
+                      Overview
+                    </button>
+                    <button
+                      className={`px-4 py-2 text-sm font-medium transition ${
+                        activeTab === 'symptoms'
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-text-light/70 dark:text-text-dark/70 hover:text-text-light dark:hover:text-text-dark'
+                      }`}
+                      onClick={() => setActiveTab('symptoms')}
+                    >
+                      Symptoms
+                    </button>
+                    <button
+                      className={`px-4 py-2 text-sm font-medium transition ${
+                        activeTab === 'treatment'
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-text-light/70 dark:text-text-dark/70 hover:text-text-light dark:hover:text-text-dark'
+                      }`}
+                      onClick={() => setActiveTab('treatment')}
+                    >
+                      Treatment
+                    </button>
+                  </div>
+                  <div className="pt-3">
+                    <div className="text-text-light dark:text-text-dark text-base font-normal leading-normal whitespace-pre-wrap">
+                      {activeTab === 'overview' && (
+                        <>
+                          <p className="font-semibold mb-2">Reason:</p>
+                          <p>{result.reason || 'No information available'}</p>
+                          <p className="font-semibold mt-4 mb-2">Future Consequences:</p>
+                          <p>{result.future_consequences || 'Will progress if untreated'}</p>
+                        </>
+                      )}
+                      {activeTab === 'symptoms' && (
+                        <>
+                          <p className="font-semibold mb-2">Symptoms:</p>
+                          {Array.isArray(result.symptoms) ? (
+                            <ul className="list-disc list-inside space-y-1">
+                              {result.symptoms.map((s, i) => <li key={i}>{s}</li>)}
+                            </ul>
+                          ) : (
+                            <p>{result.symptoms || 'No symptoms data'}</p>
+                          )}
+                        </>
+                      )}
+                      {activeTab === 'treatment' && (
+                        <>
+                          <p className="font-semibold mb-2">Treatment:</p>
+                          {Array.isArray(result.treatment) ? (
+                            <ul className="list-disc list-inside space-y-1">
+                              {result.treatment.map((t, i) => <li key={i}>{t}</li>)}
+                            </ul>
+                          ) : (
+                            <p>{result.treatment || 'No treatment data'}</p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 justify-between pt-2">
+                  <button
+                    className="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 dark:bg-primary/30 text-primary text-sm font-medium leading-normal hover:bg-primary/30 dark:hover:bg-primary/40 transition"
+                    onClick={handleSaveToLog}
+                  >
+                    <span className="truncate">Save to Log</span>
+                  </button>
+                  <button
+                    className="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition"
+                    onClick={handleViewProducts}
+                  >
+                    <span className="truncate">View Solutions</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
-      {/* Section Header: History */}
-      <h3 className="text-text-light dark:text-text-dark text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">
-        Recent Scans
-      </h3>
+      {/* Recent Scans Section */}
+      {scanHistory.length > 0 && (
+        <>
+          <h3 className="text-text-light dark:text-text-dark text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">
+            Recent Scans
+          </h3>
 
-      {/* History List */}
-      <div className="flex flex-col gap-3 px-4 pb-6">
-        {historyItems.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center gap-4 rounded-xl bg-white dark:bg-black/20 p-3 shadow-sm border border-gray-200 dark:border-gray-800"
-          >
-            <div
-              className="w-16 h-16 shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-lg"
-              style={{ backgroundImage: `url("${item.image}")` }}
-              data-alt={`Image of ${item.disease}`}
-            ></div>
-            <div className="flex flex-col flex-1">
-              <p className="text-text-light dark:text-text-dark text-base font-bold leading-tight">
-                {item.disease}
-              </p>
-              <p className={`text-sm leading-normal ${item.isHealthy
-                ? 'text-success font-medium'
-                : 'text-text-light/70 dark:text-text-dark/70'
-                }`}>
-                {item.isHealthy ? 'Healthy' : item.date}
-              </p>
-            </div>
-            <span className="material-symbols-outlined text-text-light/50 dark:text-text-dark/50">
-              chevron_right
-            </span>
+          <div className="flex flex-col gap-3 px-4 pb-6">
+            {scanHistory.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-4 rounded-xl bg-white dark:bg-black/20 p-3 shadow-sm border border-gray-200 dark:border-gray-800 cursor-pointer hover:shadow-md transition"
+                onClick={() => {
+                  // Could implement click to view full history item
+                  console.log('View scan:', item);
+                }}
+              >
+                {item.image && (
+                  <div
+                    className="w-16 h-16 shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-lg"
+                    style={{ backgroundImage: `url("${item.image}")` }}
+                    data-alt={`Image of ${item.disease}`}
+                  ></div>
+                )}
+                <div className="flex flex-col flex-1">
+                  <p className="text-text-light dark:text-text-dark text-base font-bold leading-tight">
+                    {item.disease}
+                  </p>
+                  <p className={`text-sm leading-normal ${item.isHealthy
+                    ? 'text-green-600 dark:text-green-400 font-medium'
+                    : 'text-text-light/70 dark:text-text-dark/70'
+                    }`}>
+                    {item.isHealthy ? 'Healthy' : `${item.crop} • ${item.date}`}
+                  </p>
+                </div>
+                <span className="material-symbols-outlined text-text-light/50 dark:text-text-dark/50">
+                  chevron_right
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 };
