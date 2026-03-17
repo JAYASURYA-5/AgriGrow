@@ -1,9 +1,6 @@
 {
-<<<<<<< HEAD
+{
   "name": "agrigrow",
-=======
-  "name": "AgriGrow",
->>>>>>> 33abfe12c74a977979e081fe422754103d48f308
   "version": "1.0.0",
   "description": "AgriGrow - Agricultural Management System",
   "type": "module",
