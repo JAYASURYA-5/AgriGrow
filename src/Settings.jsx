@@ -145,13 +145,8 @@ For more help, visit our website or contact support.
   };
 
   const handleContactUs = () => {
-<<<<<<< HEAD
     const email = 'support@AgriGrow.com';
     const subject = 'Support Request from AgriGrow App';
-=======
-    const email = 'support@agriflow.com';
-    const subject = 'Support Request from AgriFlow App';
->>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
     const body = 'Please describe your issue or question:';
 
     window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

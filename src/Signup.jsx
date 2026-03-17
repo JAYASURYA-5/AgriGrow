@@ -4,6 +4,22 @@ import { db } from './services/db';
 import { useAuth } from './Contexts';
 
 const Signup = () => {
+        // Automatically detect location on mount
+        React.useEffect(() => {
+            if (formData.location.lat === null && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                        const data = await res.json();
+                        const name = data.address.city || data.address.town || data.address.village || data.display_name.split(',')[0];
+                        setFormData((prev) => ({ ...prev, location: { name, lat: latitude, lon: longitude } }));
+                    } catch (err) {
+                        setFormData((prev) => ({ ...prev, location: { name: 'Current Location', lat: latitude, lon: longitude } }));
+                    }
+                });
+            }
+        }, []);
     const { login } = useAuth();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
