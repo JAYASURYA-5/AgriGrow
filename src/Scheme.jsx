@@ -187,7 +187,19 @@ const Scheme = () => {
   };
 
   const handleSchemeClick = (schemeId) => {
-    navigate(`/scheme/${schemeId}`);
+    const scheme = schemes.find(s => s.id === schemeId);
+    if (scheme && scheme.link) {
+      // Open scheme's official link in new tab
+      window.open(scheme.link, '_blank', 'noopener,noreferrer');
+    } else {
+      // Fallback to general schemes portal
+      window.open('https://services.india.gov.in/service/detail/major-schemes-for-farmers-1', '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleSchemeAnalysis = () => {
+    // Open scheme analysis page
+    window.open('https://vajiramandravi.com/current-affairs/agriculture-schemes-in-india/', '_blank', 'noopener,noreferrer');
   };
 
   const toggleFilterPanel = () => {
@@ -223,7 +235,14 @@ const Scheme = () => {
             <span className="material-symbols-outlined text-2xl">arrow_back</span>
           </button>
           <h1 className="flex-1 text-center text-lg font-bold text-text-primary-light dark:text-text-primary-dark">Government Schemes</h1>
-          <div className="h-10 w-10 shrink-0"></div>
+          <button 
+            className="flex h-10 w-10 shrink-0 items-center justify-center text-text-primary-light dark:text-text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            onClick={handleSchemeAnalysis}
+            aria-label="View scheme analysis"
+            title="View Scheme Analysis"
+          >
+            <span className="material-symbols-outlined text-2xl">info</span>
+          </button>
         </div>
         {/* Search Bar */}
         <div className="px-4 pb-3">
@@ -443,7 +462,7 @@ const Scheme = () => {
             </div>
             <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-4 py-3">
               <button
-                className="view-details text-sm font-medium text-primary"
+                className="view-details text-sm font-medium text-primary hover:underline transition-all"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSchemeClick(scheme.id);
