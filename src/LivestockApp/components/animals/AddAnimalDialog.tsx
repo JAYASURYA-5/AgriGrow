@@ -133,11 +133,12 @@ export function AddAnimalDialog({ open, onOpenChange }: AddAnimalDialogProps) {
       // First insert the animal to get the ID
       const { data: animalData, error } = await supabase
         .from("animals")
-        .insert({
-          name: data.name,
-          type: data.type,
-          breed: data.breed || null,
-          age: data.age || null,
+          .insert({
+            name: data.name,
+            type: data.type,
+            breed: data.breed || null,
+            age: data.age || null,
+            status: "healthy",
           weight: data.weight || null,
           location: data.location || null,
           status: "healthy",
@@ -167,10 +168,11 @@ export function AddAnimalDialog({ open, onOpenChange }: AddAnimalDialogProps) {
       form.reset();
       removeImage();
       onOpenChange(false);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to add animal";
       toast({
         title: "Error",
-        description: error.message || "Failed to add animal",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

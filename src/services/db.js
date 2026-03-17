@@ -5,6 +5,32 @@
 
 const DB_KEY = 'ag_db_users';
 
+// Test users for development
+const TEST_USERS = [
+    {
+        id: '1',
+        name: 'Raj Kumar',
+        email: 'raj@agrigrow.com',
+        phone: '9876543210',
+        password: 'password123',
+        gender: 'Male',
+        location: { name: 'Punjab', lat: 31.1471, lon: 74.8755 },
+        profileImage: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John&style=circle',
+        createdAt: new Date('2024-01-15').toISOString()
+    },
+    {
+        id: '2',
+        name: 'Priya Singh',
+        email: 'priya@agrigrow.com',
+        phone: '9876543211',
+        password: 'password123',
+        gender: 'Female',
+        location: { name: 'Haryana', lat: 29.0588, lon: 77.0745 },
+        profileImage: 'https://api.dicebear.com/7.x/notionists/svg?seed=Emma',
+        createdAt: new Date('2024-02-10').toISOString()
+    }
+];
+
 const getUsers = () => {
     const users = localStorage.getItem(DB_KEY);
     return users ? JSON.parse(users) : [];
@@ -14,7 +40,39 @@ const saveUsers = (users) => {
     localStorage.setItem(DB_KEY, JSON.stringify(users));
 };
 
+// Initialize with test data if empty
+const initializeTestData = () => {
+    try {
+        const users = getUsers();
+        if (users.length === 0) {
+            console.log('Initializing test data...');
+            saveUsers(TEST_USERS);
+            console.log('Test data initialized:', TEST_USERS);
+        } else {
+            console.log('Users already exist:', users.length);
+        }
+    } catch (error) {
+        console.error('Error initializing test data:', error);
+    }
+};
+
+// Initialize on module load
+initializeTestData();
+
 export const db = {
+    // Initialize test data (manual call if needed)
+    initializeTestData: () => {
+        initializeTestData();
+    },
+
+    // Reset and reload test data (manual reset)
+    resetTestData: () => {
+        console.log('🔄 Resetting test data...');
+        localStorage.removeItem(DB_KEY);
+        initializeTestData();
+        console.log('✅ Test data reset complete');
+    },
+
     // Register a new user
     register: async (userData) => {
         return new Promise((resolve, reject) => {
@@ -47,15 +105,33 @@ export const db = {
     login: async (identifier, password) => {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                const users = getUsers();
-                const user = users.find(u =>
-                    (u.email === identifier || u.phone === identifier) && u.password === password
-                );
+                // Fallback: Ensure test data exists
+                let users = getUsers();
+                if (users.length === 0) {
+                    console.warn('⚠️ No users found, re-initializing test data...');
+                    saveUsers(TEST_USERS);
+                    users = getUsers();
+                }
+
+                console.log('🔍 Attempting login with identifier:', identifier);
+                console.log('📦 Available users:', users.map(u => ({ email: u.email, phone: u.phone })));
+                
+                const user = users.find(u => {
+                    const emailMatch = u.email === identifier;
+                    const phoneMatch = u.phone === identifier;
+                    const passwordMatch = u.password === password;
+                    
+                    console.log(`Checking user ${u.email}:`, { emailMatch, phoneMatch, passwordMatch });
+                    
+                    return (emailMatch || phoneMatch) && passwordMatch;
+                });
 
                 if (user) {
+                    console.log('✅ Login successful for user:', user.name);
                     localStorage.setItem('ag_user', JSON.stringify(user));
                     resolve(user);
                 } else {
+                    console.error('❌ Login failed - Invalid credentials');
                     reject(new Error('Invalid credentials.'));
                 }
             }, 800);

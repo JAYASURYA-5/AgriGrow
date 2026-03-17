@@ -33,7 +33,9 @@ export function MarketPrices() {
     try {
       const { data, error } = await supabase.functions.invoke("market-prices");
       
-      if (error) throw error;
+      if (error) {
+        throw new Error(error.message || "Failed to fetch market prices");
+      }
       
       if (data?.prices) {
         const formattedPrices: MarketPrice[] = [

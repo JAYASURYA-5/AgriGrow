@@ -1,36 +1,55 @@
-# Conversion Plan: HTML to JSX Components
+# Authentication System Implementation Plan (Flask Backend + MySQL)
 
-## Overview
-Convert all HTML files to proper JSX components with correct working styles, maintaining functionality and interactivity.
+**Status: In Progress** ✅
 
-## Files to Convert
-- [x] upload.html → Upload.jsx
-- [x] userprofile.html → UserProfile.jsx
-- [x] scheme.html → Scheme.jsx
-- [x] news.html → News.jsx
-- [x] weather.html → Weather.jsx
-- [x] chatbot.html → Chatbot.jsx
-- [x] community.html → Community.jsx
-- [x] desease.html → Desease.jsx
-- [x] market.html → Market.jsx
-- [x] analysis.html → Analysis.jsx
+## Breakdown of Approved Plan (Step-by-step)
 
-## Conversion Steps for Each File
-1. Read HTML content
-2. Transform HTML to JSX syntax (class → className, etc.)
-3. Extract inline scripts to React hooks and state
-4. Convert event handlers to React event handlers
-5. Ensure Tailwind CSS styles are preserved
-6. Handle localStorage and API calls appropriately
-7. Test component rendering and functionality
+### 1. **Setup Flask Backend Directory** ✅ **COMPLETE**
 
-## Dependencies
-- React and React hooks
-- Tailwind CSS for styling
-- Material Symbols icons (via Google Fonts)
-- Any existing routing or state management
+- Create AgriGrow/backend/
+- Add app.py, requirements.txt, .env.example, README.md
+- Create database/schema.sql (MySQL users table)
 
-## Followup
-- Integrate components into the app
-- Test for proper functionality
-- Ensure responsive design
+### 2. **Database Schema** ✅ **COMPLETE**
+
+- MySQL CREATE TABLE users (id INT AUTO_INCREMENT, username, email UNIQUE, password_hash, created_at)
+- Indexes: PRIMARY KEY(id), UNIQUE(email), INDEX(email)
+
+### 3. **Flask Backend Implementation** ✅ **COMPLETE**
+
+- app.py: Flask app with SQLAlchemy/MySQL
+- Routes: POST /api/register, POST /api/login (JWT/session), POST /api/logout
+- bcrypt hashing/verification
+- Input validation, parameterized queries
+
+### 4. **Setup Scripts** ✅ **COMPLETE**
+
+- requirements.txt (flask, flask-cors, bcrypt, flask-jwt-extended, PyMySQL)
+- run.py / run.bat for dev server
+- init-db.sql / deploy script
+
+### 5. **Testing** [PENDING]
+
+- Test register/login/logout via curl/Postman
+- Verify DB inserts, hash comparison
+
+### 6. **Frontend Integration (Optional)** [PENDING]
+
+- Update authService.js to call Flask API
+- Config toggle (Supabase vs Flask)
+
+### 7. **Documentation** [PENDING]
+
+- Add to QUICK_REFERENCE.md
+- API docs in backend/README.md
+
+### 8. **Advanced Features** [OPTIONAL - Post-MVP]
+
+- JWT refresh tokens
+- Rate limiting
+- Email verification
+- Password reset
+
+**Next Action:** Create backend directory and core files
+**Estimated Time:** 30-45 minutes
+**Completion Criteria:** Working register/login API endpoints with MySQL DB

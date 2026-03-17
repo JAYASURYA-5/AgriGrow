@@ -1,12 +1,19 @@
 {
+<<<<<<< HEAD
   "name": "agrigrow",
+=======
+  "name": "AgriGrow",
+>>>>>>> 33abfe12c74a977979e081fe422754103d48f308
   "version": "1.0.0",
   "description": "AgriGrow - Agricultural Management System",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:deploy": "powershell -ExecutionPolicy Bypass -File deploy-db.ps1",
+    "db:verify": "node verify-db.js",
+    "db:setup": "npm run db:deploy && npm run db:verify"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

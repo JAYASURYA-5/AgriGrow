@@ -29,11 +29,11 @@ const Home = () => {
   // Image Carousel State
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const agriImages = [
-    'https://images.unsplash.com/photo-1625246333195-bf404ec83659?q=80&w=1000&auto=format&fit=crop', // Tractor/Field
+    
     'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop', // Green Field
-    'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1000&auto=format&fit=crop', // Farmer
+    'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1000&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?q=80&w=1000&auto=format&fit=crop', // Crops
-    'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=1000&auto=format&fit=crop'  // Wheat
+    'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=1000&auto=format&fit=crop',  // Wheat
   ];
 
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
@@ -481,14 +481,24 @@ const Home = () => {
               <p className="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal">Check intercrop suggestions for pest control.</p>
             </div>
           </div>
-          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/som')}>
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#112212] text-sm font-semibold leading-normal hover:bg-primary/90 active:scale-95 transition-all duration-200 shrink-0" onClick={() => navigate('/intercrop')}>
             <span className="truncate">View Suggestions</span>
           </button>
         </div>
       </div>
 
       {/* Section Header: Live Sensor Data */}
-      <h2 className="text-black dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8 animate-fade-in-down">Live Sensor Data</h2>
+      <div className="flex items-center justify-between px-4 pb-3 pt-8">
+        <h2 className="text-black dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] animate-fade-in-down">Live Sensor Data</h2>
+        <button
+          onClick={handleChatClick}
+          aria-label="Open Chatbot"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 text-primary shadow-sm z-20 ml-2"
+          title="Chat with AgriBot"
+        >
+          <span className="material-symbols-outlined text-2xl">smart_toy</span>
+        </button>
+      </div>
 
       {/* Sensor Data Grid */}
       <div className="grid grid-cols-2 gap-4 px-4 pb-4">
@@ -626,6 +636,10 @@ const Home = () => {
           <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/eco">
             <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">storefront</span>
             <span className="text-xs font-medium">Market</span>
+          </Link>
+          <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/Livestock">
+            <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">pets</span>
+            <span className="text-xs font-medium">Livestock</span>
           </Link>
           <Link className="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors flex-1" to="/news">
             <span className="material-symbols-outlined bg-white dark:bg-white/20 rounded-lg p-2">article</span>
