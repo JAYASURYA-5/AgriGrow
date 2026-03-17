@@ -121,7 +121,6 @@ export function AddHealthRecordDialog({
         type: data.type,
         description: data.description || null,
         next_due_date: data.next_due_date || null,
-        user_id: userData.user?.id,
       });
 
       if (error) throw error;

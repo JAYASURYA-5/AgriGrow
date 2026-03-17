@@ -133,11 +133,12 @@ export function AddAnimalDialog({ open, onOpenChange }: AddAnimalDialogProps) {
       // First insert the animal to get the ID
       const { data: animalData, error } = await supabase
         .from("animals")
-        .insert({
-          name: data.name,
-          type: data.type,
-          breed: data.breed || null,
-          age: data.age || null,
+          .insert({
+            name: data.name,
+            type: data.type,
+            breed: data.breed || null,
+            age: data.age || null,
+            status: "healthy",
           weight: data.weight || null,
           location: data.location || null,
           status: "healthy",

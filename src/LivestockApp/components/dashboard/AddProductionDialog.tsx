@@ -103,7 +103,6 @@ export function AddProductionDialog({
       const category = productionCategories.find(c => c.value === data.category);
 
       const { error } = await supabase.from("daily_production").upsert({
-        user_id: userData.user?.id,
         date: new Date().toISOString().split('T')[0],
         animal_type: data.animal_type,
         category: data.category,
