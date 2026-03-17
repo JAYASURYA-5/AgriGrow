@@ -1,182 +1,275 @@
-// placeholder for Index page
-import { Layout } from "@livestock/components/layout/Layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@livestock/components/ui/card";
-import { Button } from "@livestock/components/ui/button";
-import { Badge } from "@livestock/components/ui/badge";
-import { QuickActions } from "@livestock/components/dashboard/QuickActions";
-import { StatCard } from "@livestock/components/dashboard/StatCard";
-import { MarketPrices } from "@livestock/components/dashboard/MarketPrices";
-import { AnimalCard } from "@livestock/components/dashboard/AnimalCard";
-import { 
-  AlertCircle, 
-  TrendingUp, 
-  PawPrint, 
-  Heart, 
-  Thermometer,
-  Droplets,
-  Plus
-} from "lucide-react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {
+  PawPrint,
+  HeartPulse,
+  AlertTriangle,
+  Syringe,
+  Droplets,
+  Egg,
+  Plus,
+  Beef,
+  Milk
+} from "lucide-react";
+import { Layout } from "@livestock/components/layout/Layout";
+import { StatCard } from "@livestock/components/dashboard/StatCard";
+import { AnimalCard } from "@livestock/components/dashboard/AnimalCard";
+import { AlertItem } from "@livestock/components/dashboard/AlertItem";
+import { QuickActions } from "@livestock/components/dashboard/QuickActions";
+import { ProductivityChart } from "@livestock/components/dashboard/ProductivityChart";
+import { MarketPrices } from "@livestock/components/dashboard/MarketPrices";
+import { AddProductionDialog } from "@livestock/components/dashboard/AddProductionDialog";
+import { mockAnimals, mockAlerts, farmStats } from "@livestock/data/mockData";
+import { Button } from "@livestock/components/ui/button";
+import { supabase } from "@livestock/integrations/supabase/client";
 
-interface Animal {
-  id: string;
-  name: string;
-  type: "cattle" | "sheep" | "goat" | "pig" | "chicken" | "horse";
-  breed: string;
-  status: "healthy" | "attention" | "critical";
-  weight?: number;
-  lastCheckup?: string;
-  age?: string;
-  location?: string;
-  image?: string;
+interface ProductionData {
+  category: string;
+  quantity: number;
+  unit: string;
+  animal_type: string;
 }
 
-const mockAnimals: Animal[] = [
-  {
-    id: "1",
-    name: "Bessie",
-    type: "cattle",
-    breed: "Holstein",
-    status: "healthy",
-    weight: 650,
-    lastCheckup: "Today",
-    age: "3 years",
-    location: "Barn A",
-    image: "https://via.placeholder.com/400x300?text=Bessie",
-  },
-  {
-    id: "2",
-    name: "Daisy",
-    type: "cattle",
-    breed: "Jersey",
-    status: "attention",
-    weight: 480,
-    lastCheckup: "3 days ago",
-    age: "2 years",
-    location: "Barn B",
-    image: "https://via.placeholder.com/400x300?text=Daisy",
-  },
-  {
-    id: "3",
-    name: "Baa-baa",
-    type: "sheep",
-    breed: "Merino",
-    status: "healthy",
-    weight: 85,
-    lastCheckup: "5 days ago",
-    age: "1.5 years",
-    location: "Pasture A",
-    image: "https://via.placeholder.com/400x300?text=Baa-baa",
-  },
-];
-
-export default function Index() {
+const Index = () => {
   const navigate = useNavigate();
-  const [animals, setAnimals] = useState<Animal[]>(mockAnimals);
-  const [alerts, setAlerts] = useState(0);
+  const [isProductionDialogOpen, setIsProductionDialogOpen] = useState(false);
+  const [todayProduction, setTodayProduction] = useState<ProductionData[]>([]);
+
+  const fetchTodayProduction = async () => {
+    const today = new Date().toISOString().split('T')[0];
+    const { data } = await supabase
+      .from("daily_production")
+      .select("category, quantity, unit, animal_type")
+      .eq("date", today);
+
+    if (data) {
+      setTodayProduction(data);
+    }
+  };
 
   useEffect(() => {
-    // Calculate alerts
-    const criticalAlerts = animals.filter(a => a.status === 'critical').length;
-    const attentionAlerts = animals.filter(a => a.status === 'attention').length;
-    setAlerts(criticalAlerts + attentionAlerts);
-  }, [animals]);
+    fetchTodayProduction();
+  }, []);
+
+  const getTotalByCategory = (category: string) => {
+    return todayProduction
+      .filter(p => p.category === category)
+      .reduce((sum, p) => sum + Number(p.quantity), 0);
+  };
+
+  const milkTotal = getTotalByCategory("milk");
+  const eggsTotal = getTotalByCategory("eggs");
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="p-6 lg:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground mt-1">Welcome back to your livestock management system</p>
-          </div>
-          <Button onClick={() => navigate('/animals')} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Animal
-          </Button>
+        <div className="mb-8">
+          <h1 className="font-serif text-3xl font-bold text-foreground tracking-tight">
+            Good morning, Farmer! 🌾
+          </h1>
+          <p className="mt-1 text-muted-foreground">
+            Here's what's happening on your farm today
+          </p>
         </div>
 
-        {/* Stats */}
-        <div className="grid gap-4 md:grid-cols-4">
+        {/* Stats Grid */}
+        <div className="mb-8 grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <StatCard
             title="Total Animals"
-            value={animals.length.toString()}
+            value={farmStats.totalAnimals}
             icon={PawPrint}
-            variant="default"
-            subtitle="+2 this month"
+            trend={{ value: 3.2, positive: true }}
+            className="bg-card border-border/50"
           />
           <StatCard
             title="Healthy"
-            value={(animals.filter(a => a.status === 'healthy').length).toString()}
-            icon={Heart}
+            value={farmStats.healthyAnimals}
+            icon={HeartPulse}
             variant="success"
-            subtitle="82% of total"
+            className="bg-[#e8f5e9] border-transparent"
           />
           <StatCard
-            title="Alerts"
-            value={alerts.toString()}
-            icon={AlertCircle}
+            title="Needs Attention"
+            value={farmStats.needsAttention}
+            icon={AlertTriangle}
             variant="warning"
-            subtitle="Needs attention"
+            className="bg-[#fff8e1] border-transparent"
           />
           <StatCard
-            title="Avg Temperature"
-            value="23°C"
-            icon={Thermometer}
+            title="Critical"
+            value={farmStats.critical}
+            icon={AlertTriangle}
             variant="accent"
-            subtitle="Normal range"
+            className="bg-[#fff3e0] border-transparent"
+          />
+          <StatCard
+            title="Vaccines Due"
+            value={farmStats.vaccinesDue}
+            icon={Syringe}
+            subtitle="Next 7 days"
+            className="bg-card border-border/50"
+          />
+          <StatCard
+            title="Milk Today"
+            value={`${farmStats.avgMilkYield}L`}
+            icon={Droplets}
+            trend={{ value: 8.5, positive: true }}
+            className="bg-card border-border/50"
           />
         </div>
 
-        {/* Quick Actions */}
-        <QuickActions />
-
-        {/* Market Prices */}
-        <MarketPrices />
-
-        {/* Recent Animals */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Recent Animals</CardTitle>
-            <Button variant="ghost" onClick={() => navigate('/animals')}>View All</Button>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              {animals.slice(0, 3).map((animal) => (
-                <AnimalCard key={animal.id} animal={animal} />
-              ))}
+        {/* Main Content Grid */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Left Column - Animals & Chart */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Recent Animals */}
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <h2 className="font-display text-xl font-semibold">
+                    Your Animals
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Quick overview of your livestock
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => navigate("/Livestock/animals")}>
+                  View All
+                </Button>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {mockAnimals.slice(0, 6).map((animal, index) => (
+                  <div
+                    key={animal.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <AnimalCard animal={animal} />
+                  </div>
+                ))}
+              </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Alerts Section */}
-        {alerts > 0 && (
-          <Card className="border-destructive/50 bg-destructive/5">
-            <CardHeader>
-              <CardTitle className="text-destructive">Active Alerts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {animals
-                  .filter(a => a.status === 'critical' || a.status === 'attention')
-                  .map(animal => (
-                    <div key={animal.id} className="flex items-center justify-between p-2 rounded-lg bg-background">
-                      <div>
-                        <p className="font-medium">{animal.name}</p>
-                        <p className="text-sm text-muted-foreground">{animal.type} - {animal.breed}</p>
+            {/* Productivity Chart */}
+            <ProductivityChart />
+          </div>
+
+          {/* Right Column - Alerts & Actions */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <QuickActions />
+
+            {/* Market Prices */}
+            <MarketPrices />
+
+            {/* Recent Alerts */}
+            <div className="rounded-xl border bg-card p-6 shadow-card">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-display text-lg font-semibold">
+                  Recent Alerts
+                </h3>
+                <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate("/Livestock/alerts")}>
+                  View All
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {mockAlerts.slice(0, 3).map((alert, index) => (
+                  <div
+                    key={alert.id}
+                    className="animate-slide-in-right"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <AlertItem alert={alert} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Today's Production */}
+            <div className="rounded-xl border bg-gradient-card p-6 shadow-card">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display text-lg font-semibold">
+                  Today's Production
+                </h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsProductionDialogOpen(true)}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add
+                </Button>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                      <Droplets className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Milk Collected</p>
+                      <p className="text-sm text-muted-foreground">
+                        Today's total
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xl font-bold">
+                    {milkTotal > 0 ? `${milkTotal}L` : `${farmStats.avgMilkYield}L`}
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+                      <Egg className="h-5 w-5 text-accent" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Eggs Collected</p>
+                      <p className="text-sm text-muted-foreground">
+                        Today's total
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xl font-bold">
+                    {eggsTotal > 0 ? eggsTotal : farmStats.eggsToday}
+                  </p>
+                </div>
+
+                {/* Show other production entries */}
+                {todayProduction
+                  .filter(p => !["milk", "eggs"].includes(p.category))
+                  .map((prod, idx) => (
+                    <div key={idx} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/10">
+                          <Beef className="h-5 w-5 text-success" />
+                        </div>
+                        <div>
+                          <p className="font-medium capitalize">{prod.category}</p>
+                          <p className="text-sm text-muted-foreground capitalize">
+                            {prod.animal_type}
+                          </p>
+                        </div>
                       </div>
-                      <Badge variant={animal.status === 'critical' ? 'destructive' : 'secondary'}>
-                        {animal.status}
-                      </Badge>
+                      <p className="text-xl font-bold">
+                        {prod.quantity}{prod.unit}
+                      </p>
                     </div>
                   ))}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          </div>
+        </div>
+
+        <AddProductionDialog
+          open={isProductionDialogOpen}
+          onOpenChange={setIsProductionDialogOpen}
+          onProductionAdded={fetchTodayProduction}
+        />
       </div>
     </Layout>
   );
-}
+};
+
+export default Index;
