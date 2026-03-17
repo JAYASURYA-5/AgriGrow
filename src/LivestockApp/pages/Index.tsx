@@ -32,6 +32,15 @@ interface ProductionData {
 }
 
 const Index = () => {
+    // Back to Home quick actions
+    const handleBackToHome = () => {
+      navigate('/');
+      // Optionally, you can scroll to the quick actions area after navigation
+      setTimeout(() => {
+        const quickActions = document.querySelector('[data-quick-actions]');
+        if (quickActions) quickActions.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 500);
+    };
   const navigate = useNavigate();
   const [isProductionDialogOpen, setIsProductionDialogOpen] = useState(false);
   const [todayProduction, setTodayProduction] = useState<ProductionData[]>([]);
@@ -63,6 +72,17 @@ const Index = () => {
 
   return (
     <Layout>
+      {/* Back Button */}
+      <div className="mb-4 flex items-center">
+        <button
+          onClick={handleBackToHome}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          aria-label="Back to Home"
+        >
+          <span className="material-symbols-outlined">arrow_back</span>
+          <span>Back</span>
+        </button>
+      </div>
       <div className="p-6 lg:p-8">
         {/* Header */}
         <div className="mb-8">
