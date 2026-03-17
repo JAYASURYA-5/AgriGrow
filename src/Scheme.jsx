@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
+/**
+ * Scheme Component - Government Agricultural Schemes Page
+ * 
+ * FALLBACK URL LOGIC:
+ * When a user clicks "View Details":
+ * 1. Check if scheme.link exists and is a valid URL
+ * 2. If valid → Open the scheme's dedicated official portal
+ * 3. If invalid/missing → Fallback to major schemes page:
+ *    https://services.india.gov.in/service/detail/major-schemes-for-farmers-1
+ * 
+ * This ensures:
+ * ✓ No broken links
+ * ✓ Users always land on relevant information
+ * ✓ Links open in new tab with security settings
+ * ✓ Console logs for debugging (dev tools)
+ */
+
 const Scheme = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,7 +69,7 @@ const Scheme = () => {
       summary: 'Scheme for agro-processing clusters and post-harvest management to reduce wastage and increase value addition.',
       type: 'subsidy,processing',
       date: '2016-03-15',
-      link: 'https://pmksy.gov.in/',
+      link: 'https://mofpi.gov.in/en/',
       tags: ['Processing', 'Value Addition']
     },
     {
@@ -88,7 +105,7 @@ const Scheme = () => {
       summary: 'Mission to increase the production of rice, wheat, pulses and coarse cereals through area expansion and productivity enhancement.',
       type: 'mission',
       date: '2007-01-01',
-      link: 'https://nfsm.gov.in/',
+      link: 'https://dah.gov.in/en/schemes-programmes',
       tags: ['Mission', 'Production']
     },
     {
@@ -97,7 +114,7 @@ const Scheme = () => {
       summary: 'Promotes sustainable agriculture practices and resilience-building for climate-smart agriculture.',
       type: 'mission',
       date: '2014-01-01',
-      link: 'https://nmsa.dac.gov.in/',
+      link: 'https://dah.gov.in/en/schemes-programmes',
       tags: ['Mission', 'Sustainability']
     },
     {
@@ -115,7 +132,7 @@ const Scheme = () => {
       summary: 'Supports development of horticulture through improved production, post-harvest management and value addition.',
       type: 'horticulture',
       date: '2014-04-01',
-      link: 'https://midh.gov.in/',
+      link: 'https://midh.gov.in/en',
       tags: ['Horticulture', 'Value Addition']
     },
     {
@@ -124,7 +141,7 @@ const Scheme = () => {
       summary: 'Provides price support and procurement mechanisms to ensure remunerative prices to farmers.',
       type: 'subsidy',
       date: '2018-01-01',
-      link: 'https://pib.gov.in/newsite/PrintRelease.aspx?relid=184959',
+      link: 'https://dah.gov.in/en/schemes-programmes',
       tags: ['Price Support', 'Procurement']
     },
     {
@@ -187,19 +204,72 @@ const Scheme = () => {
   };
 
   const handleSchemeClick = (schemeId) => {
-    const scheme = schemes.find(s => s.id === schemeId);
-    if (scheme && scheme.link) {
-      // Open scheme's official link in new tab
-      window.open(scheme.link, '_blank', 'noopener,noreferrer');
-    } else {
-      // Fallback to general schemes portal
-      window.open('https://services.india.gov.in/service/detail/major-schemes-for-farmers-1', '_blank', 'noopener,noreferrer');
+    navigate(`/scheme/${schemeId}`);
+  };
+
+  // Utility function to validate URL with enhanced checks
+  const isValidUrl = (urlString) => {
+    try {
+      if (!urlString || typeof urlString !== 'string') {
+        return false;
+      }
+      // Check if string is empty or just whitespace
+      if (urlString.trim() === '') {
+        return false;
+      }
+      // Try to create a URL object
+      const urlObj = new URL(urlString);
+      // Verify it's an http(s) URL
+      if (!urlObj.protocol.startsWith('http')) {
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.warn('Invalid URL detected:', urlString, err);
+      return false;
     }
   };
 
-  const handleSchemeAnalysis = () => {
-    // Open scheme analysis page
-    window.open('https://vajiramandravi.com/current-affairs/agriculture-schemes-in-india/', '_blank', 'noopener,noreferrer');
+  // Fallback URL for schemes without proper URLs - Updated to working DAH portal
+  const FALLBACK_SCHEMES_URL = 'https://dah.gov.in/en/schemes-programmes';
+
+  const handleViewDetails = (e, scheme) => {
+    e.stopPropagation();
+    
+    if (!scheme) {
+      console.error('No scheme provided');
+      return;
+    }
+    
+    // Validate if scheme has a valid link
+    let urlToOpen;
+    
+    if (scheme.link && isValidUrl(scheme.link)) {
+      // Scheme has a valid link, use it
+      urlToOpen = scheme.link;
+      console.log(`✓ Opening scheme: "${scheme.title}" | URL: ${urlToOpen}`);
+    } else {
+      // Fallback to default government schemes page
+      urlToOpen = FALLBACK_SCHEMES_URL;
+      console.warn(`⚠ Invalid/missing link for: "${scheme.title}" | Using fallback: ${FALLBACK_SCHEMES_URL}`);
+    }
+    
+    // Open URL in new tab with security settings
+    try {
+      const newWindow = window.open(urlToOpen, '_blank', 'noopener,noreferrer');
+      if (!newWindow) {
+        console.error('Pop-up blocked. Trying without security params...');
+        window.open(urlToOpen, '_blank');
+      }
+    } catch (error) {
+      console.error('Error opening URL:', error);
+      // Ultimate fallback: try opening without security params
+      try {
+        window.open(urlToOpen, '_blank');
+      } catch (finalError) {
+        console.error('Final attempt failed:', finalError);
+      }
+    }
   };
 
   const toggleFilterPanel = () => {
@@ -231,18 +301,11 @@ const Scheme = () => {
       {/* Top App Bar */}
       <div className="sticky top-0 z-10 flex flex-col bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
         <div className="flex items-center p-4">
-          <button className="flex h-10 w-10 shrink-0 items-center justify-center text-text-primary-light dark:text-text-primary-dark ag-back" onClick={handleBack} aria-label="Back to home">
+          <button className="flex h-10 w-10 shrink-0 items-center justify-center text-text-primary-light dark:text-text-primary-dark ag-back hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition" onClick={handleBack} aria-label="Back to home">
             <span className="material-symbols-outlined text-2xl">arrow_back</span>
           </button>
           <h1 className="flex-1 text-center text-lg font-bold text-text-primary-light dark:text-text-primary-dark">Government Schemes</h1>
-          <button 
-            className="flex h-10 w-10 shrink-0 items-center justify-center text-text-primary-light dark:text-text-primary-dark hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
-            onClick={handleSchemeAnalysis}
-            aria-label="View scheme analysis"
-            title="View Scheme Analysis"
-          >
-            <span className="material-symbols-outlined text-2xl">info</span>
-          </button>
+          <div className="h-10 w-10 shrink-0"></div>
         </div>
         {/* Search Bar */}
         <div className="px-4 pb-3">
@@ -462,13 +525,12 @@ const Scheme = () => {
             </div>
             <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-4 py-3">
               <button
-                className="view-details text-sm font-medium text-primary hover:underline transition-all"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSchemeClick(scheme.id);
-                }}
+                className="view-details text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                onClick={(e) => handleViewDetails(e, scheme)}
+                title={isValidUrl(scheme?.link) ? `Visit official portal: ${scheme.title}` : 'View government schemes portal'}
               >
                 View Details
+                <span className="material-symbols-outlined text-base">open_in_new</span>
               </button>
               <span className="material-symbols-outlined text-primary">arrow_forward</span>
             </div>
