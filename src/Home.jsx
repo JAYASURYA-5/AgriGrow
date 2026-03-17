@@ -29,11 +29,11 @@ const Home = () => {
   // Image Carousel State
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const agriImages = [
-    'https://images.unsplash.com/photo-1625246333195-bf404ec83659?q=80&w=1000&auto=format&fit=crop', // Tractor/Field
+    
     'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop', // Green Field
-    'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1000&auto=format&fit=crop', // Farmer
+    'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1000&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?q=80&w=1000&auto=format&fit=crop', // Crops
-    'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=1000&auto=format&fit=crop'  // Wheat
+    'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=1000&auto=format&fit=crop',  // Wheat
   ];
 
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
