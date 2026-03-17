@@ -1,6 +1,13 @@
 import React from 'react';
 import './CropCalendar.css';
 
+// Back icon SVG
+const BackIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 18l-6-6 6-6" stroke="#0ea5e9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 const cropData = [
   {
     crop: 'Rice',
@@ -85,13 +92,26 @@ const cropData = [
   }
 ];
 
-const CropCalendar = () => {
+const CropCalendar = ({ navigate }) => {
+  // If using react-router, replace with useNavigate or useHistory
+  const goQuickAction = () => {
+    if (navigate) {
+      navigate('/quick-actions'); // Use the route for Quick Actions area
+    } else {
+      window.location.href = 'http://localhost:3000/'; // fallback
+    }
+  };
+
   return (
     <div className="crop-calendar-container">
-      <header className="header">
-        <h1>
+      <header className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <button onClick={goQuickAction} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '16px' }} title="Back to Quick Actions">
+          <BackIcon />
+        </button>
+        <h1 style={{ flex: 1, textAlign: 'center' }}>
           <span className="icon">📅</span> Crop Calendar
         </h1>
+        <div style={{ width: 28 }} /> {/* Spacer for symmetry */}
       </header>
 
       <div className="guide-box">

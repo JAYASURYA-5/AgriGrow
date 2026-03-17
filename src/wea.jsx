@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { Search, Share2, X } from 'lucide-react';
 
 export default function WeatherDashboard() {
-  const [city, setCity] = useState('');
+  const [city, setCity] = useState('Chennai');
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [loading, setLoading] = useState(false);
