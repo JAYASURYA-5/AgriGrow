@@ -167,10 +167,11 @@ export function AddAnimalDialog({ open, onOpenChange }: AddAnimalDialogProps) {
       form.reset();
       removeImage();
       onOpenChange(false);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to add animal";
       toast({
         title: "Error",
-        description: error.message || "Failed to add animal",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

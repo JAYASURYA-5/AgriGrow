@@ -145,13 +145,8 @@ For more help, visit our website or contact support.
   };
 
   const handleContactUs = () => {
-<<<<<<< HEAD
     const email = 'support@AgriGrow.com';
     const subject = 'Support Request from AgriGrow App';
-=======
-    const email = 'support@agriflow.com';
-    const subject = 'Support Request from AgriFlow App';
->>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
     const body = 'Please describe your issue or question:';
 
     window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -159,20 +154,12 @@ For more help, visit our website or contact support.
 
   const handleAbout = () => {
     const aboutText = `
-<<<<<<< HEAD
 About AgriGrow
-=======
-About AgriFlow
->>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 
 Version: 1.0.0
 Platform: Web Application
 
-<<<<<<< HEAD
 AgriGrow is a comprehensive agricultural management platform designed to help farmers make informed decisions through:
-=======
-AgriFlow is a comprehensive agricultural management platform designed to help farmers make informed decisions through:
->>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
 
 - Real-time weather monitoring
 - Market price tracking
@@ -183,11 +170,7 @@ AgriFlow is a comprehensive agricultural management platform designed to help fa
 
 Developed with modern web technologies for optimal performance and user experience.
 
-<<<<<<< HEAD
 © 2024 AgriGrow. All rights reserved.
-=======
-© 2024 AgriFlow. All rights reserved.
->>>>>>> fe82cd6137968a35adf4325fe480306ec0731366
     `;
     alert(aboutText);
   };

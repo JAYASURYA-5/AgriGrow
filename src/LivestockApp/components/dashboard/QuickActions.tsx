@@ -12,12 +12,12 @@ import { Button } from "@livestock/components/ui/button";
 import { cn } from "@livestock/lib/utils";
 
 const actions = [
-  { icon: PlusCircle, label: "Add Animal", color: "text-primary", path: "/Livestock/animals" },
-  { icon: Stethoscope, label: "Health Check", color: "text-success", path: "/Livestock/health" },
-  { icon: Syringe, label: "Log Vaccination", color: "text-accent", path: "/Livestock/health" },
-  { icon: Camera, label: "Disease Scan", color: "text-warning", path: "/Livestock/disease" },
-  { icon: MapPin, label: "Track Location", color: "text-primary", path: "/Livestock/tracking" },
-  { icon: FileText, label: "Generate Report", color: "text-muted-foreground", path: "/Livestock/analytics" },
+  { icon: PlusCircle, label: "Add Animal", color: "text-primary", path: "/animals" },
+  { icon: Stethoscope, label: "Health Check", color: "text-success", path: "/health" },
+  { icon: Syringe, label: "Log Vaccination", color: "text-accent", path: "/health" },
+  { icon: Camera, label: "Disease Scan", color: "text-warning", path: "/disease" },
+  { icon: MapPin, label: "Track Location", color: "text-primary", path: "/tracking" },
+  { icon: FileText, label: "Generate Report", color: "text-muted-foreground", path: "/analytics" },
 ];
 
 interface QuickActionsProps {

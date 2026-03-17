@@ -63,10 +63,10 @@ export default function Auth() {
     });
 
     if (error) {
-      if (error.message.includes("Invalid login credentials")) {
+      if (error?.message?.includes("Invalid login credentials")) {
         toast.error("Invalid email or password. Please try again.");
       } else {
-        toast.error(error.message);
+        toast.error(error?.message || "An error occurred during sign in");
       }
     } else {
       toast.success("Welcome back!");
@@ -93,10 +93,10 @@ export default function Auth() {
     });
 
     if (error) {
-      if (error.message.includes("already registered")) {
+      if (error?.message?.includes("already registered")) {
         toast.error("This email is already registered. Please sign in instead.");
       } else {
-        toast.error(error.message);
+        toast.error(error?.message || "An error occurred during sign up");
       }
     } else {
       toast.success("Account created successfully! Welcome to Farm.");

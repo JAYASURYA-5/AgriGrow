@@ -99,7 +99,7 @@ export function AddHealthRecordDialog({
 
       if (error) throw error;
       setAnimals(data || []);
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
         description: "Failed to load animals",
@@ -134,10 +134,11 @@ export function AddHealthRecordDialog({
       form.reset();
       onOpenChange(false);
       onRecordAdded?.();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to add health record";
       toast({
         title: "Error",
-        description: error.message || "Failed to add health record",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

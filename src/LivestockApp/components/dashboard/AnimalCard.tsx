@@ -53,7 +53,7 @@ export function AnimalCard({ animal }: AnimalCardProps) {
   return (
     <Card
       className="group cursor-pointer overflow-hidden rounded-xl border bg-card shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-hover"
-      onClick={() => navigate(`/Livestock/animals/${animal.id}`)}
+      onClick={() => navigate(`/animals/${animal.id}`)}
     >
       {/* Image */}
       <div className="relative h-40 overflow-hidden bg-muted">
