@@ -54,7 +54,7 @@ const Orders = () => {
                 py: 1.2,
                 fontWeight: 'bold'
               }}
-              href="/products"
+              href={`/eco/products${localStorage.getItem('lastCategory') ? `?category=${encodeURIComponent(localStorage.getItem('lastCategory'))}` : ''}`}
             >
               Continue Shopping
             </Button>
@@ -118,7 +118,7 @@ const Orders = () => {
                         size="small"
                         variant="outlined"
                         component={RouterLink}
-                        to={`/orders/${order.id}`}
+                        to={`/eco/orders/${order.id}`}
                         sx={{
                           color: '#2e7d32',
                           borderColor: '#2e7d32',

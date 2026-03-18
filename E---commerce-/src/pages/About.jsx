@@ -162,7 +162,7 @@ const About = () => {
             color="secondary"
             size="large"
             component={Link}
-            to="/products"
+            to="/eco/products"
             sx={{ mt: 2, fontWeight: 'bold' }}
           >
             Start Shopping

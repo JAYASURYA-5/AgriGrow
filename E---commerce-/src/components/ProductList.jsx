@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid, Typography, Box, FormControl, InputLabel, Select, MenuItem, TextField, InputAdornment } from '@mui/material';
 import { Search, FilterAlt } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 import ProductCard from './ProductCard';
 
 const ProductList = ({ products, onAddToCart }) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryParam = queryParams.get('category');
+  
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Set category from URL parameter on component mount
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+      // Store category in localStorage for "Continue Shopping" buttons
+      localStorage.setItem('lastCategory', categoryParam);
+    }
+  }, [categoryParam]);
 
   const categories = ['All', ...new Set(products.map(product => product.category))];
 

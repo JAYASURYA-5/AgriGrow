@@ -41,7 +41,7 @@ const Checkout = () => {
         <Button
           variant="contained"
           component={Link}
-          to="/products"
+          to={`/eco/products${localStorage.getItem('lastCategory') ? `?category=${encodeURIComponent(localStorage.getItem('lastCategory'))}` : ''}`}
           size="large"
           sx={{
             px: 4,
@@ -216,7 +216,7 @@ const Checkout = () => {
             <Button
               variant="contained"
               component={Link}
-              to="/orders"
+              to="/eco/orders"
               size="large"
               sx={{
                 px: 4,
@@ -246,7 +246,7 @@ const Checkout = () => {
             <Button
               variant="outlined"
               component={Link}
-              to="/products"
+              to={`/eco/products${localStorage.getItem('lastCategory') ? `?category=${encodeURIComponent(localStorage.getItem('lastCategory'))}` : ''}`}
               size="large"
               sx={{
                 px: 4,
@@ -528,7 +528,7 @@ const Checkout = () => {
                       variant="outlined"
                       size="large"
                       component={Link}
-                      to="/cart"
+                      to="/eco/cart"
                       sx={{
                         flex: 1,
                         borderColor: '#2e7d32',
