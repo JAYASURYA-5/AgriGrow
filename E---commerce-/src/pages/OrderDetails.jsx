@@ -20,7 +20,7 @@ const OrderDetails = () => {
         <Button
           variant="contained"
           startIcon={<ArrowBack />}
-          onClick={() => navigate('/orders')}
+          onClick={() => navigate('/eco/orders')}
           sx={{
             background: 'linear-gradient(135deg, #2e7d32 0%, #4caf50 100%)',
             px: 4,
@@ -41,7 +41,7 @@ const OrderDetails = () => {
         <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button
             startIcon={<ArrowBack />}
-            onClick={() => navigate('/orders')}
+            onClick={() => navigate('/eco/orders')}
             sx={{
               color: '#2e7d32',
               fontWeight: 'bold',
@@ -331,7 +331,7 @@ const OrderDetails = () => {
           <Button
             variant="contained"
             component={RouterLink}
-            to="/products"
+            to={`/eco/products${localStorage.getItem('lastCategory') ? `?category=${encodeURIComponent(localStorage.getItem('lastCategory'))}` : ''}`}
             sx={{
               background: 'linear-gradient(135deg, #2e7d32 0%, #4caf50 100%)',
               px: 4,
@@ -344,7 +344,7 @@ const OrderDetails = () => {
           <Button
             variant="outlined"
             component={RouterLink}
-            to="/orders"
+            to="/eco/orders"
             sx={{
               color: '#2e7d32',
               borderColor: '#2e7d32',

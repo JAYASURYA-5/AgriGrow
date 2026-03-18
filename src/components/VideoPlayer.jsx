@@ -197,9 +197,20 @@ const VideoPlayer = ({ videoUrl, title, onClose, description = '', autoPlay = tr
   return (
     <div className="video-player-modal-overlay" onClick={onClose}>
       <div className="video-player-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close-btn" onClick={onClose}>
-          <span className="material-symbols-outlined">close</span>
-        </button>
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#2d5a8c] to-[#1e3f5a] sticky top-0 z-50">
+          <button 
+            className="flex items-center gap-2 px-4 py-2 bg-white text-[#2d5a8c] rounded-lg font-bold hover:bg-opacity-90 transition-all" 
+            onClick={onClose}
+            title="Go Back"
+          >
+            <span className="material-symbols-outlined text-2xl">arrow_back</span>
+            <span>Back</span>
+          </button>
+          <h2 className="text-white font-bold text-center flex-1 px-4 truncate">{title}</h2>
+          <button className="flex size-10 items-center justify-center text-white hover:bg-white/20 rounded-lg transition-all" onClick={onClose}>
+            <span className="material-symbols-outlined text-2xl">close</span>
+          </button>
+        </div>
 
         <div className="video-player-container" ref={containerRef}>
           {isYouTube ? (

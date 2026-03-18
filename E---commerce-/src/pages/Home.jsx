@@ -90,7 +90,7 @@ const Home = () => {
             color="secondary"
             size="large"
             component={Link}
-            to="/products"
+            to="/eco/products"
             sx={{
               mt: 2,
               px: 4,
@@ -159,7 +159,7 @@ const Home = () => {
               <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
                 <Card
                   component={Link}
-                  to="/products"
+                  to={`/eco/products?category=${encodeURIComponent(category.name.split(' ').slice(1).join(' '))}`}
                   sx={{
                     height: '280px',
                     background: `linear-gradient(135deg, ${category.color}ff 0%, ${category.color}dd 50%, ${category.color}aa 100%)`,

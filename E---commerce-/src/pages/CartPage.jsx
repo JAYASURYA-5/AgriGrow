@@ -24,7 +24,7 @@ const CartPage = () => {
         <Button
           variant="contained"
           component={Link}
-          to="/products"
+          to={`/eco/products${localStorage.getItem('lastCategory') ? `?category=${encodeURIComponent(localStorage.getItem('lastCategory'))}` : ''}`}
           size="large"
           sx={{
             px: 4,
@@ -42,6 +42,7 @@ const CartPage = () => {
 
   return (
     <Box sx={{ bgcolor: '#fafafa', py: 4, minHeight: '100vh' }}>
+
       <Container maxWidth="lg">
         <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: '#2e7d32', mb: 4 }}>
           🛒 Shopping Cart ({cart.length} items)
@@ -142,7 +143,7 @@ const CartPage = () => {
                 fullWidth
                 size="large"
                 startIcon={<ShoppingCartCheckout />}
-                onClick={() => navigate('/checkout')}
+                onClick={() => navigate('/eco/checkout')}
                 sx={{
                   background: 'linear-gradient(45deg, #2e7d32 30%, #4caf50 90%)',
                   mb: 1.5,
@@ -157,7 +158,7 @@ const CartPage = () => {
                 variant="outlined"
                 fullWidth
                 component={Link}
-                to="/products"
+                to={`/eco/products${localStorage.getItem('lastCategory') ? `?category=${encodeURIComponent(localStorage.getItem('lastCategory'))}` : ''}`}
                 sx={{
                   borderColor: '#2e7d32',
                   color: '#2e7d32',

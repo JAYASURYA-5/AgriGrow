@@ -94,8 +94,8 @@ const Lms = () => {
       description: 'Learn step-by-step rice cultivation techniques for maximum yield.',
       readTime: 'Video • 15 min',
       image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=250&fit=crop',
-      videoUrl: 'https://www.youtube.com/embed/A3M-sXbvDyo',
-      youtubeId: 'A3M-sXbvDyo',
+      videoUrl: 'https://www.youtube.com/embed/YsCVpRhqPuk',
+      youtubeId: 'YsCVpRhqPuk',
       isVideo: true
     },
     {
@@ -105,8 +105,8 @@ const Lms = () => {
       description: 'Complete guide to setting up and maintaining drip irrigation systems.',
       readTime: 'Video • 20 min',
       image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=400&h=250&fit=crop',
-      videoUrl: 'https://www.youtube.com/embed/pMQH6Hg8sUE',
-      youtubeId: 'pMQH6Hg8sUE',
+      videoUrl: 'https://www.youtube.com/embed/xPaGLW0sWdI',
+      youtubeId: 'xPaGLW0sWdI',
       isVideo: true
     },
     {
@@ -116,8 +116,8 @@ const Lms = () => {
       description: 'Eco-friendly strategies to manage crop pests and diseases.',
       readTime: 'Video • 18 min',
       image: 'https://images.unsplash.com/photo-1488459716781-6f3ee109e5e4?w=400&h=250&fit=crop',
-      videoUrl: 'https://www.youtube.com/embed/0aQHnS6gFh8',
-      youtubeId: '0aQHnS6gFh8',
+      videoUrl: 'https://www.youtube.com/embed/L9vWNbz3b8Q',
+      youtubeId: 'L9vWNbz3b8Q',
       isVideo: true
     },
     {
@@ -127,8 +127,8 @@ const Lms = () => {
       description: 'Understand soil composition and optimize nutrient levels.',
       readTime: 'Video • 17 min',
       image: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc4?w=400&h=250&fit=crop',
-      videoUrl: 'https://www.youtube.com/embed/8sKg8Q_8Qhc',
-      youtubeId: '8sKg8Q_8Qhc',
+      videoUrl: 'https://www.youtube.com/embed/tYDdXH9ECPU',
+      youtubeId: 'tYDdXH9ECPU',
       isVideo: true
     },
     {
@@ -138,8 +138,8 @@ const Lms = () => {
       description: 'Expert techniques for growing high-yield wheat crops.',
       readTime: 'Video • 19 min',
       image: 'https://images.unsplash.com/photo-1574914103412-32882c60e0e4?w=400&h=250&fit=crop',
-      videoUrl: 'https://www.youtube.com/embed/HqQSFrP0BuA',
-      youtubeId: 'HqQSFrP0BuA',
+      videoUrl: 'https://www.youtube.com/embed/nP6tMDCJNQM',
+      youtubeId: 'nP6tMDCJNQM',
       isVideo: true
     },
     {
@@ -149,16 +149,17 @@ const Lms = () => {
       description: 'How to design and install efficient sprinkler irrigation systems.',
       readTime: 'Video • 21 min',
       image: 'https://images.unsplash.com/photo-1585420261730-b91ba36265f0?w=400&h=250&fit=crop',
-      videoUrl: 'https://www.youtube.com/embed/VJ3lDNR0sB4',
-      youtubeId: 'VJ3lDNR0sB4',
+      videoUrl: 'https://www.youtube.com/embed/LdMlC2vTDr8',
+      youtubeId: 'LdMlC2vTDr8',
       isVideo: true
     }
   ];
 
   // Combine articles with user uploads and filter by category
   const allContent = [
-    ...userVideos.map(video => ({
+    ...userVideos.map((video, idx) => ({
       ...video,
+      id: video.id || `user-video-${idx}`,
       isVideo: true,
       category: video.category || 'Community Videos',
       readTime: `Video • ${video.duration || '0'} min`,
@@ -169,33 +170,39 @@ const Lms = () => {
     ...articles
   ];
   
-  // Filter by category and search query
+  // Filter by category and search query with better matching
   const filteredArticles = allContent.filter(item => {
-    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+    const matchesCategory = activeCategory === 'All' || 
+      (item.category && item.category.toLowerCase()) === activeCategory.toLowerCase();
+    
+    const searchLower = searchQuery.toLowerCase();
     const matchesSearch = searchQuery === '' || 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.category && item.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      (item.title && item.title.toLowerCase().includes(searchLower)) ||
+      (item.description && item.description.toLowerCase().includes(searchLower)) ||
+      (item.category && item.category.toLowerCase().includes(searchLower)) ||
+      (item.fileName && item.fileName.toLowerCase().includes(searchLower)) ||
+      (item.author && item.author.toLowerCase().includes(searchLower));
+    
     return matchesCategory && matchesSearch;
   });
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display">
       {/* Top App Bar */}/*
-      <div className="flex items-center p-4 pb-2 bg-gradient-to-r from-[#2d5a8c] to-[#1e3f5a] sticky top-0 z-10 shadow-lg">
+      <div className="flex items-center p-4 pb-2 bg-background-light dark:bg-background-dark sticky top-0 z-50 border-b-2 border-[#234826]">
         <button
           onClick={handleBack}
-          className="flex size-12 shrink-0 items-center justify-center text-white bg-white/20 hover:bg-white/40 rounded-lg transition-all duration-200 font-bold"
+          className="flex size-12 shrink-0 items-center justify-center text-[#234826] dark:text-[#91ca96] hover:bg-[#f0f7ff] dark:hover:bg-[#1f4427] rounded-lg transition-all font-bold"
           aria-label="Back to home"
           title="Back to Home"
         >
-          <span className="material-symbols-outlined text-2xl">arrow_back</span>
+          <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </button>
-        <div className="flex flex-1"></div>
-        <h1 className="text-2xl font-bold leading-tight tracking-[-0.015em] text-white">
-          🌾 Knowledge Hub
+        <div className="flex size-12 shrink-0 items-center justify-start"></div>
+        <h1 className="text-xl font-bold leading-tight tracking-[-0.015em] flex-1 text-center text-black dark:text-white">
+          Knowledge Hub
         </h1>
-        <div className="flex flex-1"></div>
+        <div className="flex w-12 items-center justify-end"></div>
       </div>
 
       {/* Search Bar */}/*
