@@ -32,6 +32,13 @@ const LivestockApp = React.lazy(() => import('./LivestockApp/LivestockApp'));
 const Notes = React.lazy(() => import('./components/Notes'));
 const AgriHub = React.lazy(() => import('./AgriHub'));
 
+// NEW LMS Components
+const LmsMain = React.lazy(() => import('./components/LmsMain'));
+const CourseDetail = React.lazy(() => import('./components/CourseDetail'));
+const LmsProfile = React.lazy(() => import('./components/LmsProfile'));
+const VideoUpload = React.lazy(() => import('./components/VideoUpload'));
+const Certificate = React.lazy(() => import('./components/Certificate'));
+
 // Loading fallback component
 const LoadingFallback = () => <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>;
 
@@ -53,8 +60,15 @@ function AppContent() {
         <Route path="/chatbot" element={<Suspense fallback={<LoadingFallback />}><Chatbot /></Suspense>} />
         <Route path="/comm" element={<Suspense fallback={<LoadingFallback />}><Comm /></Suspense>} />
         <Route path="/disease" element={<Suspense fallback={<LoadingFallback />}><Desease /></Suspense>} />
-        <Route path="/lms" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
-        <Route path="/courses" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
+        
+        {/* LMS Routes */}
+        <Route path="/lms" element={<Suspense fallback={<LoadingFallback />}><LmsMain /></Suspense>} />
+        <Route path="/lms/course/:courseId" element={<Suspense fallback={<LoadingFallback />}><CourseDetail /></Suspense>} />
+        <Route path="/lms/profile" element={<Suspense fallback={<LoadingFallback />}><LmsProfile /></Suspense>} />
+        <Route path="/lms/upload-content" element={<Suspense fallback={<LoadingFallback />}><VideoUpload /></Suspense>} />
+        <Route path="/lms/certificate" element={<Suspense fallback={<LoadingFallback />}><Certificate /></Suspense>} />
+        <Route path="/courses" element={<Suspense fallback={<LoadingFallback />}><LmsMain /></Suspense>} />
+        
         <Route path="/playlists" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
         <Route path="/favorites" element={<Suspense fallback={<LoadingFallback />}><Page /></Suspense>} />
         <Route path="/scheme" element={<Suspense fallback={<LoadingFallback />}><Scheme /></Suspense>} />

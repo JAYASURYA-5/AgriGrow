@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from './Contexts';
 import { db } from './services/db';
+import Certificate from './components/Certificate';
 
 const UserProfile = () => {
   const { user, logout, login } = useAuth();
@@ -11,6 +12,11 @@ const UserProfile = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('activity');
+  const [userUploadedVideos, setUserUploadedVideos] = useState([]);
+  const [userCertificates, setUserCertificates] = useState([]);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
+  const [editingVideo, setEditingVideo] = useState(null);
+  const [editForm, setEditForm] = useState({ title: '', description: '', keywords: '' });
   const [userData, setUserData] = useState({
     name: '',
     farm: '',
@@ -23,7 +29,7 @@ const UserProfile = () => {
     gender: ''
   });
 
-  const [editForm, setEditForm] = useState({
+  const [profileEditForm, setProfileEditForm] = useState({
     name: '',
     farm: '',
     phone: '',
@@ -37,6 +43,16 @@ const UserProfile = () => {
     if (user) {
       setUserData(prev => ({ ...prev, ...user }));
     }
+
+    // Load user's uploaded videos
+    const allVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+    const myVideos = allVideos.filter(video => video.uploadedBy === user?.id);
+    setUserUploadedVideos(myVideos);
+
+    // Load user's certificates
+    const allCertificates = JSON.parse(localStorage.getItem('courseCertificates') || '[]');
+    const myCertificates = allCertificates.filter(cert => cert.userId === (user?.name || user?.id));
+    setUserCertificates(myCertificates);
   }, [user]);
 
   // Auto-detect farm location on mount
@@ -97,7 +113,7 @@ const UserProfile = () => {
   }, []);
 
   const handleEditClick = () => {
-    setEditForm({
+    setProfileEditForm({
       name: userData.name || '',
       farm: userData.farm || '',
       phone: userData.phone || '',
@@ -112,13 +128,13 @@ const UserProfile = () => {
   const handleSave = async () => {
     try {
       const updatedFields = {
-        name: editForm.name,
-        farm: editForm.farm,
-        phone: editForm.phone,
-        email: editForm.email,
-        farmSize: editForm.farmSize,
-        location: { ...userData.location, name: editForm.location },
-        keyCrops: editForm.keyCrops.split(',').map(c => c.trim()).filter(c => c !== '')
+        name: profileEditForm.name,
+        farm: profileEditForm.farm,
+        phone: profileEditForm.phone,
+        email: profileEditForm.email,
+        farmSize: profileEditForm.farmSize,
+        location: { ...userData.location, name: profileEditForm.location },
+        keyCrops: profileEditForm.keyCrops.split(',').map(c => c.trim()).filter(c => c !== '')
       };
 
       const saved = await db.updateProfile(user.id, updatedFields);
@@ -168,7 +184,7 @@ const UserProfile = () => {
                               data.address?.county || data.address?.state || 
                               `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
           
-          setEditForm({ ...editForm, location: locationName });
+          setProfileEditForm({ ...profileEditForm, location: locationName });
           setUserData(prev => ({
             ...prev,
             location: { ...prev.location, name: locationName, latitude, longitude, accuracy }
@@ -178,7 +194,7 @@ const UserProfile = () => {
         } catch (error) {
           // Fallback to coordinates only
           const coordsOnly = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-          setEditForm({ ...editForm, location: coordsOnly });
+          setProfileEditForm({ ...profileEditForm, location: coordsOnly });
           setUserData(prev => ({
             ...prev,
             location: { ...prev.location, name: coordsOnly, latitude, longitude, accuracy }
@@ -237,6 +253,73 @@ const UserProfile = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleDeleteVideo = (videoId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this video? This action cannot be undone.');
+    if (!confirmed) return;
+
+    // Get all videos
+    const allVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+    
+    // Find video and check permission
+    const videoIndex = allVideos.findIndex(v => v.id === videoId);
+    const video = allVideos[videoIndex];
+
+    // Check if user is uploader or admin
+    const isUploader = video.uploadedBy === user?.id;
+    const isAdmin = user?.role === 'admin';
+
+    if (!isUploader && !isAdmin) {
+      alert('❌ You do not have permission to delete this video.');
+      return;
+    }
+
+    // Remove video
+    allVideos.splice(videoIndex, 1);
+    localStorage.setItem('uploadedVideos', JSON.stringify(allVideos));
+
+    // Update state
+    const myVideos = allVideos.filter(v => v.uploadedBy === user?.id);
+    setUserUploadedVideos(myVideos);
+
+    alert('✅ Video deleted successfully');
+  };
+
+  const handleEditVideo = (video) => {
+    setEditingVideo(video);
+    setEditForm({
+      title: video.title,
+      description: video.description,
+      keywords: video.keywords?.join(', ') || ''
+    });
+  };
+
+  const handleSaveVideoEdits = () => {
+    if (!editingVideo) return;
+
+    // Get all videos
+    const allVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+    
+    // Find and update video
+    const videoIndex = allVideos.findIndex(v => v.id === editingVideo.id);
+    allVideos[videoIndex] = {
+      ...allVideos[videoIndex],
+      title: editForm.title,
+      description: editForm.description,
+      keywords: editForm.keywords.split(',').map(k => k.trim())
+    };
+
+    // Save to localStorage
+    localStorage.setItem('uploadedVideos', JSON.stringify(allVideos));
+
+    // Update state
+    const myVideos = allVideos.filter(v => v.uploadedBy === user?.id);
+    setUserUploadedVideos(myVideos);
+
+    // Clear editing state
+    setEditingVideo(null);
+    alert('✅ Video updated successfully');
   };
 
   const activities = [
@@ -299,40 +382,40 @@ const UserProfile = () => {
                 <span className="text-sm font-medium">Name</span>
                 <input
                   className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
-                  value={editForm.name}
-                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  value={profileEditForm.name}
+                  onChange={(e) => setProfileEditForm({ ...profileEditForm, name: e.target.value })}
                 />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Farm Name</span>
                 <input
                   className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
-                  value={editForm.farm}
-                  onChange={(e) => setEditForm({ ...editForm, farm: e.target.value })}
+                  value={profileEditForm.farm}
+                  onChange={(e) => setProfileEditForm({ ...profileEditForm, farm: e.target.value })}
                 />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Phone Number</span>
                 <input
                   className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
-                  value={editForm.phone}
-                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                  value={profileEditForm.phone}
+                  onChange={(e) => setProfileEditForm({ ...profileEditForm, phone: e.target.value })}
                 />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Email</span>
                 <input
                   className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
-                  value={editForm.email}
-                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  value={profileEditForm.email}
+                  onChange={(e) => setProfileEditForm({ ...profileEditForm, email: e.target.value })}
                 />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Farm Size</span>
                 <input
                   className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
-                  value={editForm.farmSize}
-                  onChange={(e) => setEditForm({ ...editForm, farmSize: e.target.value })}
+                  value={profileEditForm.farmSize}
+                  onChange={(e) => setProfileEditForm({ ...profileEditForm, farmSize: e.target.value })}
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -340,8 +423,8 @@ const UserProfile = () => {
                 <div className="flex gap-2 items-end">
                   <input
                     className="flex-1 rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={editForm.location}
-                    onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                    value={profileEditForm.location}
+                    onChange={(e) => setProfileEditForm({ ...profileEditForm, location: e.target.value })}
                     placeholder="Enter or auto-detect farm location"
                   />
                   <button
@@ -359,8 +442,8 @@ const UserProfile = () => {
                 <span className="text-sm font-medium">Key Crops (comma separated)</span>
                 <input
                   className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
-                  value={editForm.keyCrops}
-                  onChange={(e) => setEditForm({ ...editForm, keyCrops: e.target.value })}
+                  value={profileEditForm.keyCrops}
+                  onChange={(e) => setProfileEditForm({ ...profileEditForm, keyCrops: e.target.value })}
                 />
               </label>
               <div className="flex gap-3 pt-4">
@@ -430,14 +513,14 @@ const UserProfile = () => {
 
         {/* Tabs section */}
         <div className="pb-8">
-          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 mb-4">
-            {['activity', 'saved'].map(tab => (
+          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 mb-4 overflow-x-auto">
+            {['activity', 'videos', 'upload-history', 'certificates'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-2 text-sm font-bold rounded-lg capitalize transition-all ${activeTab === tab ? 'bg-primary text-white shadow-md' : 'text-gray-500'}`}
+                className={`flex-1 py-2 text-sm font-bold rounded-lg capitalize transition-all whitespace-nowrap ${activeTab === tab ? 'bg-primary text-white shadow-md' : 'text-gray-500'}`}
               >
-                {tab}
+                {tab === 'videos' ? 'My Videos' : tab === 'upload-history' ? 'Upload History' : tab === 'certificates' ? 'Certificates' : tab}
               </button>
             ))}
           </div>
@@ -458,13 +541,234 @@ const UserProfile = () => {
             </div>
           )}
 
-          {activeTab === 'saved' && (
-            <div className="text-center py-10 opacity-50">
-              <span className="material-symbols-outlined text-5xl mb-2">bookmark_border</span>
-              <p>No saved items yet</p>
+          {activeTab === 'videos' && (
+            <div className="space-y-4">
+              {userUploadedVideos.length > 0 ? (
+                userUploadedVideos.map(video => (
+                  <div key={video.id} className="bg-card-light dark:bg-card-dark rounded-2xl overflow-hidden shadow-sm border border-border-light dark:border-border-dark">
+                    <div className="flex gap-4 p-4">
+                      {/* Thumbnail */}
+                      <div className="relative w-32 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                        <img 
+                          src={video.thumbnailData} 
+                          alt={video.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/60 transition-colors">
+                          <span className="material-symbols-outlined text-white text-3xl">play_circle</span>
+                        </div>
+                      </div>
+
+                      {/* Video Info */}
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-bold text-sm line-clamp-2">{video.title}</h3>
+                          <p className="text-xs opacity-60 line-clamp-1">{video.description}</p>
+                          <div className="flex gap-2 mt-2 flex-wrap">
+                            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">{video.duration}</span>
+                            <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full text-gray-600 dark:text-gray-300">
+                              {(video.size / (1024 * 1024)).toFixed(2)} MB
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="opacity-50">
+                            {new Date(video.uploadedAt).toLocaleDateString()} • {video.views} views
+                          </span>
+                          <button
+                            onClick={() => handleDeleteVideo(video.id)}
+                            className="text-red-500 hover:text-red-700 font-semibold flex items-center gap-1"
+                          >
+                            <span className="material-symbols-outlined text-lg">delete</span>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-10 opacity-50">
+                  <span className="material-symbols-outlined text-5xl mb-2">video_library</span>
+                  <p>No videos uploaded yet</p>
+                  <p className="text-xs mt-1">Start uploading videos to share with the community</p>
+                </div>
+              )}
             </div>
           )}
-        </div>
+
+          {activeTab === 'upload-history' && (
+            <div className="space-y-4">
+              {userUploadedVideos.length > 0 ? (
+                <div>
+                  <div className="bg-card-light dark:bg-card-dark rounded-2xl overflow-hidden shadow-sm border border-border-light dark:border-border-dark">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-primary/10 border-b border-border-light dark:border-border-dark">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-sm font-bold">Title</th>
+                            <th className="px-4 py-3 text-left text-sm font-bold">Duration</th>
+                            <th className="px-4 py-3 text-left text-sm font-bold">Upload Date</th>
+                            <th className="px-4 py-3 text-left text-sm font-bold">Views</th>
+                            <th className="px-4 py-3 text-right text-sm font-bold">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {userUploadedVideos.map(video => (
+                            <tr key={video.id} className="border-b border-border-light dark:border-border-dark hover:bg-white/5 dark:hover:bg-black/10 transition-colors">
+                              <td className="px-4 py-3 text-sm font-medium truncate max-w-64">{video.title}</td>
+                              <td className="px-4 py-3 text-sm">{video.duration}</td>
+                              <td className="px-4 py-3 text-sm">{new Date(video.uploadedAt).toLocaleDateString()}</td>
+                              <td className="px-4 py-3 text-sm">{video.views}</td>
+                              <td className="px-4 py-3 text-right">
+                                <div className="flex gap-2 justify-end">
+                                  <button
+                                    onClick={() => handleEditVideo(video)}
+                                    className="px-3 py-1 text-sm font-semibold bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors flex items-center gap-1"
+                                  >
+                                    <span className="material-symbols-outlined text-base">edit</span>
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteVideo(video.id)}
+                                    className="px-3 py-1 text-sm font-semibold bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500/30 transition-colors flex items-center gap-1"
+                                  >
+                                    <span className="material-symbols-outlined text-base">delete</span>
+                                    Delete
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-10 opacity-50">
+                  <span className="material-symbols-outlined text-5xl mb-2">upload_file</span>
+                  <p>No upload history yet</p>
+                  <p className="text-xs mt-1">Your uploaded videos will appear here</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'certificates' && (
+            <div className="space-y-4">
+              {userCertificates.length > 0 ? (
+                userCertificates.map(certificate => {
+                  const courseMap = {
+                    '1': 'Soil Preparation & Health',
+                    '2': 'Irrigation Techniques',
+                    '3': 'Organic Farming Practices',
+                    '4': 'Pest & Disease Management',
+                    '5': 'Crop Rotation & Diversity',
+                    'soil-health': 'Soil Preparation & Health',
+                    'irrigation': 'Irrigation Techniques',
+                    'organic-farming': 'Organic Farming Practices',
+                    'pest-management': 'Pest & Disease Management',
+                    'crop-rotation': 'Crop Rotation & Diversity'
+                  };
+                  const courseName = courseMap[certificate.courseId] || 'Agricultural Course';
+                  
+                  return (
+                    <div key={certificate.id} className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-2xl overflow-hidden shadow-md border-2 border-amber-200 dark:border-amber-700">
+                      <div className="p-6">
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-3xl">🏅</span>
+                              <h4 className="text-lg font-bold text-amber-900 dark:text-amber-200">Certificate of Achievement</h4>
+                            </div>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">Course: <span className="font-semibold">{courseName}</span></p>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">Score: <span className="font-bold text-green-600 dark:text-green-400">{certificate.score}%</span></p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                              Completed: {new Date(certificate.completionDate).toLocaleDateString()}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">ID: {certificate.id}</p>
+                          </div>
+                          <button
+                            onClick={() => setSelectedCertificate(certificate)}
+                            className="flex-shrink-0 px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all whitespace-nowrap"
+                          >
+                            View Full
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <span className="material-symbols-outlined text-5xl mb-2 opacity-30">card_membership</span>
+                  <p className="opacity-70">No certificates yet</p>
+                  <p className="text-xs mt-1 opacity-50">Complete course assessments to earn certificates</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Edit Video Modal */}
+          {editingVideo && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+              <div className="w-full max-w-md bg-white dark:bg-card-dark rounded-3xl shadow-2xl p-6">
+                <h3 className="text-xl font-bold mb-4">Edit Video</h3>
+                <div className="space-y-4">
+                  <label className="flex flex-col gap-1">
+                    <span className="text-sm font-medium">Title</span>
+                    <input
+                      type="text"
+                      className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
+                      value={editForm.title}
+                      onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                    />
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-sm font-medium">Description</span>
+                    <textarea
+                      className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
+                      rows="3"
+                      value={editForm.description}
+                      onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                    />
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-sm font-medium">Keywords (comma separated)</span>
+                    <input
+                      type="text"
+                      className="rounded-xl p-3 border border-border-light dark:border-border-dark bg-gray-50 dark:bg-background-dark"
+                      value={editForm.keywords}
+                      onChange={(e) => setEditForm({ ...editForm, keywords: e.target.value })}
+                    />
+                  </label>
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      onClick={handleSaveVideoEdits}
+                      className="flex-1 bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition-all"
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      onClick={() => setEditingVideo(null)}
+                      className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-200 transition-all"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Certificate Display Modal */}
+          {selectedCertificate && (
+            <Certificate 
+              certificate={selectedCertificate}
+              onClose={() => setSelectedCertificate(null)}
+            />
+          )}
       </div>
     </div>
   );

@@ -1,10 +1,50 @@
-/*import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import VideoPlayer from './components/VideoPlayer';
 
 const Lms = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [userVideos, setUserVideos] = useState([]);
+
+  // Load uploaded videos on mount and listen for new uploads
+  React.useEffect(() => {
+    const loadVideos = () => {
+      try {
+        const uploadedVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+        const userUploads = uploadedVideos.filter(v => v.isUserUploaded);
+        setUserVideos(userUploads);
+        console.log('✅ Loaded videos from storage:', userUploads.length, 'videos');
+      } catch (error) {
+        console.error('Error loading videos:', error);
+      }
+    };
+
+    loadVideos();
+
+    // Listen for new video uploads and refresh
+    const handleVideoUpload = (event) => {
+      console.log('🎬 Video upload event received');
+      loadVideos(); // Reload all videos to ensure latest appears
+    };
+    
+    window.addEventListener('videoUploaded', handleVideoUpload);
+    
+    // Also reload videos when user navigates to LMS
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadVideos();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('videoUploaded', handleVideoUpload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   const handleBack = () => {
     navigate('/');
@@ -14,74 +54,148 @@ const Lms = () => {
     navigate('/chatbot');
   };
 
-  const categories = ['All', 'Crop Guides', 'Scheme', 'Irrigation', 'Tutorials', 'Soil Health'];
+  const categories = ['All', 'Soil Health', 'Irrigation', 'Pest Control', 'Crop Management', 'Organic Farming', 'Schemes', 'Livestock', 'Weather', 'Market', 'Crop Guides', 'Water Management', 'Pest Management'];
 
   const featuredContent = [
     {
       id: 1,
-      title: 'Optimizing Irrigation with IoT',
-      description: 'Learn how sensors can save water and boost yields.',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBWrglrcnGZ2VQhC52aajZ-4hajBsDVcnRJLf4Jp_DCLq2jbxyt6iyHUg-fc6rJN_IhkYE7PjSyx9bgjb4iJ74gtq0s-lK1906X26odeAXWDE8rlYDJJMEtcv-X_8ONBjGQOWKTsLwTljPjcKgCt_dqLq3TWmrgB7vFM73xCCukZMGT34rAupx7m1mP8RCq1K4RlQnU1kaF8Wg15-pPK2BEaskmuqp27yu9w8CG6ZBsfv0p23DQdMbjEwIpY249l5OsCHGSDA5WXzk'
+      title: 'Optimizing Irrigation with IoT Sensors',
+      description: 'Learn how IoT sensors can save water and boost crop yields.',
+      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=800&h=450&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/1q2efRJFBRo',
+      youtubeId: '1q2efRJFBRo',
+      isVideo: true
     },
     {
       id: 2,
-      title: 'Video: Identifying Common Pests',
-      description: 'A visual guide to protecting your crops.',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBuuJJo61faFBIu9CFPM6a1yJXLYNRKfI-tn9F81GIUXvQc5iohqOAVFcXd-b1lwCxhgCklNX8BN0dwp3547DFdA5s0R0bbBMcu0MF_O3oHJlNwQp4dPjmSxrr8DLEqHJ1FLrHrF6FI2pysNgrpYE5g53sNrNBYIbzvtRWQXFAvZBRW7tnOquItFZYDf3K-Wbon8Kim9loPz4SiC4ytJSyDC06W8GERkWIjb03Py4mu9HYFP4z3bDTroto6dsfiUfOzyNKDj1DEkx0'
+      title: 'Identifying and Managing Common Pests',
+      description: 'A visual guide to identifying and controlling crop pests naturally.',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=450&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/KfqZfX8BQGE',
+      youtubeId: 'KfqZfX8BQGE',
+      isVideo: true
     },
     {
       id: 3,
-      title: 'Expert Q&A: Soil Health',
-      description: 'Read the latest advice from our agronomists.',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-IXJnKrg1xgfoH5pgM7mMDS8_g-orr69Sj5jAo4oB9k6jfKAdhEymZpL1yKCkYPWtMnf_UMK5FOscmhHHOIJva91aVkglcUYUesvjT5-7W2Vvy2yLD1w8CtNANFlMaMiDwSCthS39j58xI7_w0fFwKm2WV3-clTQ7fnNh4by2P_p7cpHpD3VuexmONoAtk6CDQVyPcC4tvc7qTj2TYz9FX8D7uCWUDkb2p_DGuy35dOEc2Q2Z7LHmPRlYq-DZH-QsMe5fJZ3Tfdk'
+      title: 'Organic Farming & Soil Health',
+      description: 'Expert advice on maintaining healthy soil for sustainable farming.',
+      image: 'https://images.unsplash.com/photo-1500541961454-2e30c00f3817?w=800&h=450&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/YkzZ6N8GdDI',
+      youtubeId: 'YkzZ6N8GdDI',
+      isVideo: true
     }
   ];
 
   const articles = [
     {
       id: 1,
-      category: "Beginner's Guide",
-      title: 'Getting Started with Arigrow',
-      description: 'A step-by-step guide to setting up your smart farm for the first time.',
-      readTime: 'Article • 5 min read',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBGGcBBVW4t6YHqBGgephzvaGJz1Vwe8FpJpnW0pBJTW4ER6rKfIlk_qv_jV3JMzqoK26-gK1R6IUpmhUua8oi250J56dC24h5rPvkNgiqUV2gsqr83ybhWpXwW8hZWuRTdyJUfRyipUp0PeuKG1Z8HCA-iW-YmRecL59jbYzoPeBBjaXBIcl9nS26vOw5qejFEN2vfMpaDaMZ0qdjWXCy2jvrUmCFT441vgRkbW4nUmFrroQxu-bUEZM_iiHbmjmmdS8r_Szmep64'
+      category: "Crop Guides",
+      title: 'Complete Guide to Rice Farming',
+      description: 'Learn step-by-step rice cultivation techniques for maximum yield.',
+      readTime: 'Video • 15 min',
+      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=250&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/A3M-sXbvDyo',
+      youtubeId: 'A3M-sXbvDyo',
+      isVideo: true
     },
     {
       id: 2,
       category: 'Water Management',
-      title: 'Advanced Drip Irrigation Techniques',
-      description: 'Maximize water efficiency and crop health with these expert tips.',
-      readTime: 'Article • 8 min read',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjzz9ol8gnT_0zdO4iUitz6DHvpovZSkxh_aeuRgBdbXkz7VQZEErTQ7XCFifXpsVoIY2brsibA3x8dr-eMFFD9n3m2NeTuQg2CRjxdhXa_lf5NHZADp0EN-mQDLboBDdoRQs7HpxBcus_T26Cj3fLPUdIo6--38B_rzp4Xy1L2yfY-CN8lSi1V5jGd7MXUH9HItvjMwBkO9S-yIkAhC9f_yQMEH7YiOVLYguacSvvkVmaUzyXN_7hH62urRoB2HIA2G85aG7dlZo'
+      title: 'Drip Irrigation System Installation',
+      description: 'Complete guide to setting up and maintaining drip irrigation systems.',
+      readTime: 'Video • 20 min',
+      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=400&h=250&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/pMQH6Hg8sUE',
+      youtubeId: 'pMQH6Hg8sUE',
+      isVideo: true
     },
     {
       id: 3,
-      category: 'Community Forum',
-      title: 'Join the Discussion: Best Corn Varieties for 2024',
-      description: 'Share your experience and learn from fellow farmers in our community forum.',
-      readTime: 'Trending Topic',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuArRQo79jmI59rT590g3ksg5bU4nd81yAAHqy_QL8UMDGw-CCv611u7ESfSvMkarJQxv_vdI4DjWmE23wST49Kfhy2k-sZM0_1g5WY5PaKG7joK2SQ2R--4EQT5pNN4taBzZnXodOijaQcyHSxX0sDTIOneANsd0B6J1eJ2RafatWuh9SXsobKmqnffwoSeVaHqsOq7QXTn_WQ4E_XYhncGy4fEVxOVIL4Wut6j_XlX1aW89CDTAcvF8edq_3WxfbnVmWx7hQByoSE'
+      category: 'Pest Management',
+      title: 'Natural Pest Control Methods',
+      description: 'Eco-friendly strategies to manage crop pests and diseases.',
+      readTime: 'Video • 18 min',
+      image: 'https://images.unsplash.com/photo-1488459716781-6f3ee109e5e4?w=400&h=250&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/0aQHnS6gFh8',
+      youtubeId: '0aQHnS6gFh8',
+      isVideo: true
+    },
+    {
+      id: 4,
+      category: 'Soil Health',
+      title: 'Soil Testing and Nutrient Management',
+      description: 'Understand soil composition and optimize nutrient levels.',
+      readTime: 'Video • 17 min',
+      image: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc4?w=400&h=250&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/8sKg8Q_8Qhc',
+      youtubeId: '8sKg8Q_8Qhc',
+      isVideo: true
+    },
+    {
+      id: 5,
+      category: 'Crop Guides',
+      title: 'Wheat Farming Best Practices',
+      description: 'Expert techniques for growing high-yield wheat crops.',
+      readTime: 'Video • 19 min',
+      image: 'https://images.unsplash.com/photo-1574914103412-32882c60e0e4?w=400&h=250&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/HqQSFrP0BuA',
+      youtubeId: 'HqQSFrP0BuA',
+      isVideo: true
+    },
+    {
+      id: 6,
+      category: 'Irrigation',
+      title: 'Sprinkler System Design & Installation',
+      description: 'How to design and install efficient sprinkler irrigation systems.',
+      readTime: 'Video • 21 min',
+      image: 'https://images.unsplash.com/photo-1585420261730-b91ba36265f0?w=400&h=250&fit=crop',
+      videoUrl: 'https://www.youtube.com/embed/VJ3lDNR0sB4',
+      youtubeId: 'VJ3lDNR0sB4',
+      isVideo: true
     }
   ];
 
-  const filteredArticles = activeCategory === 'All' ? articles : articles.filter(article => article.category === activeCategory);
+  // Combine articles with user uploads and filter by category
+  const allContent = [
+    ...userVideos.map(video => ({
+      ...video,
+      isVideo: true,
+      category: video.category || 'Community Videos',
+      readTime: `Video • ${video.duration || '0'} min`,
+      image: video.image || 'https://via.placeholder.com/400x250',
+      videoUrl: video.videoData || video.videoUrl,
+      youtubeId: video.youtubeId || null,
+    })),
+    ...articles
+  ];
+  
+  // Filter by category and search query
+  const filteredArticles = allContent.filter(item => {
+    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+    const matchesSearch = searchQuery === '' || 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.category && item.category.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display">
       {/* Top App Bar */}/*
-      <div className="flex items-center p-4 pb-2 bg-background-light dark:bg-background-dark sticky top-0 z-10">
+      <div className="flex items-center p-4 pb-2 bg-gradient-to-r from-[#2d5a8c] to-[#1e3f5a] sticky top-0 z-10 shadow-lg">
         <button
           onClick={handleBack}
-          className="flex size-12 shrink-0 items-center justify-center text-black dark:text-white"
+          className="flex size-12 shrink-0 items-center justify-center text-white bg-white/20 hover:bg-white/40 rounded-lg transition-all duration-200 font-bold"
           aria-label="Back to home"
+          title="Back to Home"
         >
-          <span className="material-symbols-outlined text-3xl">arrow_back</span>
+          <span className="material-symbols-outlined text-2xl">arrow_back</span>
         </button>
-        <div className="flex size-12 shrink-0 items-center justify-start"></div>
-        <h1 className="text-xl font-bold leading-tight tracking-[-0.015em] flex-1 text-center text-black dark:text-white">
-          Knowledge Hub
+        <div className="flex flex-1"></div>
+        <h1 className="text-2xl font-bold leading-tight tracking-[-0.015em] text-white">
+          🌾 Knowledge Hub
         </h1>
-        <div className="flex w-12 items-center justify-end"></div>
+        <div className="flex flex-1"></div>
       </div>
 
       {/* Search Bar */}/*
@@ -110,12 +224,29 @@ const Lms = () => {
       {/* Carousel */}/*
       <div className="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex items-stretch p-4 pt-0 gap-4">
-          {featuredContent.map((item) => (
-            <div key={item.id} className="flex h-full flex-1 flex-col gap-3 rounded-lg min-w-64">
+          {[
+            ...userVideos.slice(0, 2).map(video => ({
+              ...video,
+              isVideo: true,
+              image: video.thumbnailData || 'https://via.placeholder.com/800x450'
+            })),
+            ...featuredContent
+          ].slice(0, 3).map((item) => (
+            <div
+              key={item.id}
+              className="flex h-full flex-1 flex-col gap-3 rounded-lg min-w-64 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setSelectedVideo(item)}
+            >
               <div
-                className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl"
+                className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl relative group"
                 style={{ backgroundImage: `url("${item.image}")` }}
-              ></div>
+              >
+                {item.isVideo && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors rounded-xl">
+                    <span className="material-symbols-outlined text-white text-5xl">play_circle</span>
+                  </div>
+                )}
+              </div>
               <div>
                 <p className="text-black dark:text-white text-base font-medium leading-normal">{item.title}</p>
                 <p className="text-gray-600 dark:text-[#91ca96] text-sm font-normal leading-normal">{item.description}</p>
@@ -147,20 +278,32 @@ const Lms = () => {
       {/* Content Cards Section */}/*
       <div className="flex flex-col gap-4 px-4 pb-24">
         {filteredArticles.map((article) => (
-          <div key={article.id} className="@container">
-            <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden bg-white/5 dark:bg-[#19341b]">
+          <div key={article.id} className="@container" onClick={() => article.isVideo && setSelectedVideo(article)}>
+            <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden bg-white/5 dark:bg-[#19341b] hover:bg-white/10 dark:hover:bg-[#1f4427] transition-colors cursor-pointer">
               <div
-                className="w-full bg-center bg-no-repeat aspect-video bg-cover"
+                className="w-full bg-center bg-no-repeat aspect-video bg-cover relative group"
                 style={{ backgroundImage: `url("${article.image}")` }}
-              ></div>
+              >
+                {article.isVideo && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
+                    <span className="material-symbols-outlined text-white text-5xl">play_circle</span>
+                  </div>
+                )}
+              </div>
               <div className="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-2 p-4">
                 <p className="text-gray-600 dark:text-[#91ca96] text-sm font-normal leading-normal">{article.category}</p>
                 <p className="text-black dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">{article.title}</p>
                 <p className="text-gray-700 dark:text-[#91ca96] text-base font-normal leading-normal">{article.description}</p>
                 <div className="flex items-center gap-3 justify-between mt-2">
                   <p className="text-gray-600 dark:text-[#91ca96] text-sm font-normal leading-normal">{article.readTime}</p>
-                  <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-primary text-[#112212] text-sm font-medium leading-normal">
-                    <span className="truncate">Read More</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (article.isVideo) setSelectedVideo(article);
+                    }}
+                    className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-primary text-[#112212] text-sm font-medium leading-normal hover:shadow-md transition-shadow"
+                  >
+                    <span className="truncate">{article.isVideo ? 'Watch Now' : 'Read More'}</span>
                   </button>
                 </div>
               </div>
@@ -168,6 +311,16 @@ const Lms = () => {
           </div>
         ))}
       </div>
+
+      {/* Video Player Modal */}/*
+      {selectedVideo && (
+        <VideoPlayer
+          videoUrl={selectedVideo.videoUrl || selectedVideo.videoData || selectedVideo.youtubeUrl}
+          title={selectedVideo.title}
+          description={selectedVideo.description}
+          onClose={() => setSelectedVideo(null)}
+        />
+      )}
 
       {/* AI Chat FAB */}/*
       <div className="fixed bottom-6 right-6 z-20">
@@ -185,4 +338,3 @@ const Lms = () => {
 };
 
 export default Lms;
-/*

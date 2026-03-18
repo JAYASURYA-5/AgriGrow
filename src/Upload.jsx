@@ -65,11 +65,70 @@ const Upload = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', { videoType, title, description, keywords, videoFile, thumbnailFile });
-    alert('Video upload functionality would be implemented here with backend integration.');
-    // Redirect to community page
-    navigate('/community');
+
+    if (!videoFile || !thumbnailFile) {
+      alert('Please upload both video and thumbnail');
+      return;
+    }
+
+    // Get current user from localStorage
+    const userStr = localStorage.getItem('lmsUserProfile');
+    const user = userStr ? JSON.parse(userStr) : { id: 'user_' + Date.now(), name: 'Anonymous' };
+
+    // Read video file as Data URL
+    const videoReader = new FileReader();
+    videoReader.onload = (e) => {
+      const videoData = e.target.result;
+
+      // Read thumbnail file as Data URL
+      const thumbnailReader = new FileReader();
+      thumbnailReader.onload = (e) => {
+        const thumbnailData = e.target.result;
+
+        // Create video object
+        const newVideo = {
+          id: 'video_' + Date.now(),
+          title: title,
+          description: description,
+          keywords: keywords.split(',').map(k => k.trim()),
+          videoType: videoType,
+          videoData: videoData,
+          thumbnailData: thumbnailData,
+          uploadedBy: user.id,
+          uploaderName: user.name,
+          uploadedAt: new Date().toISOString(),
+          views: 0,
+          likes: 0,
+          comments: [],
+          size: videoFile.size,
+          duration: videoType === 'short' ? '1-5 min' : '15-30 min'
+        };
+
+        // Get existing videos from localStorage
+        const existingVideos = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+        existingVideos.push(newVideo);
+
+        // Save to localStorage
+        localStorage.setItem('uploadedVideos', JSON.stringify(existingVideos));
+
+        // Show success message
+        alert(`✅ Video "${title}" uploaded successfully!\n\nYou can view and manage it in your profile.`);
+
+        // Reset form
+        setVideoFile(null);
+        setThumbnailFile(null);
+        setTitle('');
+        setDescription('');
+        setKeywords('');
+        setVideoFileName('MP4, MOV up to 10MB');
+        setThumbnailFileName('PNG, JPG, GIF up to 5MB');
+
+        // Redirect to community page
+        navigate('/community');
+      };
+      thumbnailReader.readAsDataURL(thumbnailFile);
+    };
+    videoReader.readAsDataURL(videoFile);
   };
 
   const handleBack = () => {

@@ -9,8 +9,14 @@ import bcrypt
 import os
 from dotenv import load_dotenv
 import datetime
+from werkzeug.utils import secure_filename
+import uuid
+import os
+from werkzeug.utils import secure_filename
+import uuid
 
 load_dotenv()
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-change-me')
@@ -143,6 +149,184 @@ def profile():
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({'status': 'healthy'})
+
+
+class Video(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    youtube_url = db.Column(db.String(500), nullable=False)
+    video_id = db.Column(db.String(50), nullable=False)
+    thumbnail = db.Column(db.String(500))
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    keywords = db.Column(db.JSON)
+    category = db.Column(db.String(100))
+    views = db.Column(db.Integer, default=0)
+    uploaded_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    user = db.relationship('User', backref='videos')
+
+@app.route('/api/videos', methods=['POST'])
+@jwt_required()
+def upload_video():
+    data = request.json
+    try:
+        current_user_id = get_jwt_identity()['id']
+        video = Video(
+            user_id=current_user_id,
+            youtube_url=data['youtube_url'],
+            video_id=data['video_id'],
+            thumbnail=data.get('thumbnail'),
+            title=data['title'],
+            description=data.get('description'),
+            keywords=data.get('keywords', []),
+            category=data.get('category', 'General')
+        )
+        db.session.add(video)
+        db.session.commit()
+        return jsonify({'success': True, 'video': {
+            'id': video.id,
+            'title': video.title,
+            'youtube_url': video.youtube_url
+        }}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/api/videos/user', methods=['GET'])
+@jwt_required()
+def get_user_videos():
+    current_user_id = get_jwt_identity()['id']
+    videos = Video.query.filter_by(user_id=current_user_id).order_by(Video.uploaded_at.desc()).all()
+    return jsonify({
+        'success': True,
+        'videos': [{
+            'id': v.id,
+            'title': v.title,
+            'youtube_url': v.youtube_url,
+            'thumbnail': v.thumbnail,
+            'description': v.description,
+            'keywords': v.keywords,
+            'category': v.category,
+            'views': v.views,
+            'uploaded_at': v.uploaded_at.isoformat()
+        } for v in videos]
+    })
+
+@app.route('/api/videos', methods=['GET'])
+@jwt_required()
+def get_all_videos():
+    current_user_id = get_jwt_identity()['id']
+    user = User.query.get(current_user_id)
+    if user.username != 'admin':
+        return jsonify({'error': 'Admin only'}), 403
+    videos = Video.query.order_by(Video.uploaded_at.desc()).all()
+    return jsonify({
+        'success': True,
+        'videos': [{
+            'id': v.id,
+            'user_id': v.user_id,
+            'title': v.title,
+            'youtube_url': v.youtube_url,
+            'thumbnail': v.thumbnail,
+            'description': v.description,
+            'keywords': v.keywords,
+            'views': v.views,
+            'uploaded_at': v.uploaded_at.isoformat()
+        } for v in videos]
+    })
+
+@app.route('/api/videos/<int:video_id>', methods=['PUT'])
+@jwt_required()
+def update_video(video_id):
+    current_user_id = get_jwt_identity()['id']
+    data = request.json
+    video = Video.query.get_or_404(video_id)
+    if video.user_id != current_user_id and User.query.get(current_user_id).username != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 403
+    video.title = data.get('title', video.title)
+    video.description = data.get('description', video.description)
+    video.keywords = data.get('keywords', video.keywords)
+    video.category = data.get('category', video.category)
+    db.session.commit()
+    return jsonify({'success': True})
+
+@app.route('/api/videos/upload', methods=['POST'])
+@jwt_required()
+def upload_video_file():
+    try:
+        current_user_id = get_jwt_identity()['id']
+        
+        # Create uploads directory if not exists
+        upload_dir = 'static/videos'
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Handle video file
+        if 'video' not in request.files:
+            return jsonify({'error': 'No video file provided'}), 400
+        
+        video_file = request.files['video']
+        if video_file.filename == '':
+            return jsonify({'error': 'No video file selected'}), 400
+        
+        # Secure filename and generate unique name
+        filename = secure_filename(video_file.filename)
+        video_id = str(uuid.uuid4())[:8]
+        video_ext = os.path.splitext(filename)[1] or '.mp4'
+        video_path = f"{upload_dir}/{video_id}{video_ext}"
+        video_file.save(video_path)
+        
+        # Get form data
+        title = request.form.get('title', 'Untitled Video')
+        description = request.form.get('description', '')
+        category = request.form.get('category', 'General')
+        keywords_str = request.form.get('keywords', '')
+        keywords = [k.strip() for k in keywords_str.split(',') if k.strip()]
+        
+        # Create video record (store relative path)
+        video = Video(
+            user_id=current_user_id,
+            youtube_url=f"http://localhost:5000/{video_path}",
+            video_id=video_id,
+            thumbnail=None,
+            title=title,
+            description=description,
+            keywords=keywords,
+            category=category
+        )
+        db.session.add(video)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'video': {
+                'id': video.id,
+                'title': video.title,
+                'url': video.youtube_url,
+                'video_id': video.video_id
+            }
+        }), 201
+        
+    except Exception as e:
+        if 'db' in locals():
+            db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/videos/<int:video_id>', methods=['DELETE'])
+@jwt_required()
+def delete_video(video_id):
+    current_user_id = get_jwt_identity()['id']
+    video = Video.query.get_or_404(video_id)
+    if video.user_id != current_user_id and User.query.get(current_user_id).username != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    # Delete file if exists
+    video_path = video.youtube_url.replace('http://localhost:5000/', '')
+    if os.path.exists(video_path):
+        os.remove(video_path)
+    
+    db.session.delete(video)
+    db.session.commit()
+    return jsonify({'success': True})
 
 
 if __name__ == '__main__':

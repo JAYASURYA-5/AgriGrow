@@ -30,10 +30,31 @@ CREATE TABLE users
     (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Sample data (remove in production)
--- INSERT INTO users (username, email, password_hash) VALUES 
--- ('admin', 'admin@agrigrow.com', '$2b$12$KIXpH3.Rcw8TL.0T7.3t8OozPa5YQ.9jQXgN.PQ8eT.0d3mKXhJq');
+-- Sample admin user (bcrypt: admin123)
+INSERT INTO users (username, email, password_hash, is_active) VALUES 
+('admin', 'admin@agrigrow.com', '$2b$12$9jQXgN.PQ8eT.0d3mKXhJqKIXpH3.Rcw8TL.0T7.3t8OozPa5YQ.', TRUE);
 
 -- Verification: 
 -- SELECT * FROM users LIMIT 5;
+
+-- LMS Videos table
+CREATE TABLE videos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    youtube_url VARCHAR(500) NOT NULL,
+    video_id VARCHAR(50) NOT NULL,
+    thumbnail VARCHAR(500),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    keywords JSON,
+    category VARCHAR(100),
+    views INT DEFAULT 0,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_videos_user (user_id),
+    INDEX idx_videos_uploaded (uploaded_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Verification:
+-- SELECT * FROM videos LIMIT 5;
 
